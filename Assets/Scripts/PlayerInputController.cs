@@ -31,7 +31,7 @@ public class PlayerInputController : MonoBehaviour
 
         cursorPosition = Input.mousePosition;
 
-        if (Input.GetKeyDown("up"))
+        if (Input.GetKey("up"))
         {
             upKey = true;   
         }
@@ -39,7 +39,7 @@ public class PlayerInputController : MonoBehaviour
         {
             upKey = false;
         }
-        if (Input.GetKeyDown("down"))
+        if (Input.GetKey("down"))
         {
             downKey = true;   
         }
@@ -47,7 +47,7 @@ public class PlayerInputController : MonoBehaviour
         {
             downKey = false;
         }
-        if (Input.GetKeyDown("left"))
+        if (Input.GetKey("left"))
         {
             leftKey = true;   
         }
@@ -55,13 +55,13 @@ public class PlayerInputController : MonoBehaviour
         {
             leftKey = false;
         }
-        if (Input.GetKeyDown("right"))
+        if (Input.GetKey("right"))
         {
-            upKey = true;   
+            rightKey = true;   
         }
         else
         {
-            upKey = false;
+            rightKey = false;
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -71,7 +71,7 @@ public class PlayerInputController : MonoBehaviour
         {
             mouseClicked = false;
         }
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKey("space"))
         {
             spaceBar = true;
         }

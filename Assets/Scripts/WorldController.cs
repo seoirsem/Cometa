@@ -5,10 +5,10 @@ using UnityEngine;
 public class WorldController : MonoBehaviour
 {
     GameObject playergo;
-    Player player;
+    public Player player;
     Reference reference;
     // Start is called before the first frame update
-    Vector2 worldSize = new Vector2(1300 / 90, 800 / 90);
+    public Vector2 worldSize = new Vector2(1300 / 90, 800 / 90);
 
     void Start()
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player
 {
     public Vector2 velocity;
-    public float mass;
+    public float mass = 1;
     public int lives;
     public GameObject go;
 
