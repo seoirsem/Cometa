@@ -64,10 +64,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Asteroid.cs" />
+    <Compile Include="Assets\Scripts\AsteroidController.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\PlayerEdgeVisualsController.cs" />
     <Compile Include="Assets\Scripts\PlayerInputController.cs" />
     <Compile Include="Assets\Scripts\PlayerSpriteController.cs" />
+    <Compile Include="Assets\Scripts\Projectile.cs" />
+    <Compile Include="Assets\Scripts\ProjectileController.cs" />
     <Compile Include="Assets\Scripts\Reference.cs" />
+    <Compile Include="Assets\Scripts\SimplePool.cs" />
     <Compile Include="Assets\Scripts\WorldController.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/2019.4.11f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

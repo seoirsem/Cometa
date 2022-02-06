@@ -11,9 +11,13 @@ public class PlayerSpriteController : MonoBehaviour
     float engineForce = 6; 
     Reference reference;
     float rotation = 0;
-    Vector3 velocity = new Vector3(0, 0,0);
+    Vector3 velocity = new Vector3(0, 0, 0);
     Vector2 worldEdges;
     float maxSpeed = 10;
+    List<GameObject> visualClones;
+    float shootingCooldownTimer;
+    float cooldown = 0.75f;//s
+    
 
     void Start()
     {
@@ -24,6 +28,7 @@ public class PlayerSpriteController : MonoBehaviour
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
+        SpawnVisualClones();
     }
 
     // Update is called once per frame
@@ -31,8 +36,47 @@ public class PlayerSpriteController : MonoBehaviour
     {
         UpdatePlayerRotation();
         UpdatePlayerMotion();
+        UpdatePlayerShooting();
     }
 
+
+    void UpdatePlayerShooting()
+    {
+        if (playerInputController.spaceBar)
+        {
+            if (Time.time - shootingCooldownTimer > cooldown)
+            {//space to set variable cooldowns, and noises if on cooldown....etc
+                shootingCooldownTimer = Time.time;
+                Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90));
+            }
+        }
+    }
+
+    void SpawnVisualClones()
+    {
+        //visualClones = new List<GameObject>(4);
+        GameObject go;
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("up");
+        go.transform.parent = this.gameObject.transform;
+        //visualClones[0] = go;
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("down");
+        go.transform.parent = this.gameObject.transform;
+
+        //visualClones[1] = go; 
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("left");
+        go.transform.parent = this.gameObject.transform;
+
+        //visualClones[2] = go; 
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("right");
+        go.transform.parent = this.gameObject.transform;
+
+        //visualClones[3] = go;
+
+    }
     void UpdatePlayerRotation()
     {
 
@@ -76,7 +120,7 @@ public class PlayerSpriteController : MonoBehaviour
             velocity = velocity.normalized * maxSpeed;
         }
         playergo.transform.position += velocity * Time.deltaTime;
-        Debug.Log(velocity.magnitude);
+        //Debug.Log(velocity.magnitude);
 
 
 
