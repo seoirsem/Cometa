@@ -18,18 +18,24 @@ public class Asteroid : MonoBehaviour
     Vector3 rotation;
     public float rotationRate;
     GameObject asteroidgo;
-    Vector3 velocity;
+    public Vector3 velocity;
     Vector2 worldSize;
     Vector2 location;
     List<GameObject> asteroidPack;
-    MeshCollider meshCollider;
+    PolygonCollider2D polygonCollider;
+    Rigidbody2D rigid_body;
+    AsteroidController asteroidController;
+    public int size;
+    GameObject mainAsteroid;
 
 
 
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector3 velocity)
     {
+        this.size = size;
+        asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
         asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
-
+        rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
         asteroidgo = this.gameObject;
         this.velocity = velocity;
@@ -146,7 +152,16 @@ public class Asteroid : MonoBehaviour
         MeshFilter outlineFilter = asteroidOutlines.GetComponent<MeshFilter>();
         Mesh mesh2 = new Mesh();
         outlineFilter.mesh = mesh2;
-        mesh2.vertices = vertices;
+        Vector3[] verticesReduced = new Vector3[vertices.Length - 1];
+        for (int i = 0; i < vertices.Length - 1; i++)
+        {
+            verticesReduced[i] = vertices[i];
+        }
+        //foreach (Vector2 item in verticesReduced)
+        //{
+        //    Debug.Log(item.x + " " + item.y);
+        //}
+        mesh2.vertices = verticesReduced;
         mesh2.SetIndices(meshIndices, MeshTopology.Lines, 0);
 
 
@@ -156,8 +171,15 @@ public class Asteroid : MonoBehaviour
     void DrawCollider(Vector3[] vertices, int[] triangles)
     {
         colliderMesh = mesh;
-        meshCollider = this.gameObject.GetComponent<MeshCollider>();
-        meshCollider.sharedMesh = mesh;
+        polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
+
+        Vector2[] xyPoints = new Vector2[vertices.Length-1];
+        for (int i = 0; i < vertices.Length - 1; i++)
+        {
+            xyPoints[i] = new Vector2(vertices[i].x, vertices[i].y);
+        }
+        polygonCollider.points = xyPoints; 
+
     }
 
     // Update is called once per frame
@@ -192,7 +214,21 @@ public class Asteroid : MonoBehaviour
     void UpdateAsteroidRotation()
     {
         float frameRotation = Time.deltaTime * rotationRate;
-
-        this.gameObject.transform.Rotate(new Vector3(0, 0, frameRotation));
+        rigid_body.rotation += frameRotation;
+        //this.gameObject.transform.Rotate(new Vector3(0, 0, frameRotation));
     }
+
+
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        //if (this.gameObject == mainAsteroid)
+        //{
+            if (collision.gameObject.GetComponent<Asteroid>() is null)
+            {
+                asteroidController.AsteroidHit(this, collision, asteroidPack);
+            }
+        //}
+    }
+
 }

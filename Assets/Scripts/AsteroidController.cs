@@ -17,11 +17,58 @@ public class AsteroidController : MonoBehaviour
         SpawnAsteroid(3, new Vector3(2, 0, 0), new Vector3(1,1,0));
     }
 
+
+
     void Update()
     {
-        
+        if (Reference.playerInputController.mouseClicked)
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            SpawnAsteroid(3, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(1, 1, 0));    
+        }
+    }
+    public void AsteroidHit(Asteroid asteroid, Collider2D collider2D, List<GameObject> asteroidPack)
+    {
+        int size = asteroid.size;
+        Vector3 asteroidPosition = asteroid.gameObject.transform.position;
+        Vector3 asteroidVelocity = asteroid.velocity;
+        Vector3 collisionPoint = collider2D.transform.position;
+        Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
+        Vector3 left = Vector3.Cross(collisionDirection, Vector3.up).normalized;
+        Vector3 right = Vector3.Cross(collisionDirection, Vector3.down).normalized;
+
+
+
+        Debug.Log("Asteroid hit: " + collider2D.gameObject.name);
+        DespawnAsteroid(asteroid, asteroidPack);
+        if(size == 3)
+        {
+            // size calculation is (size/6)
+            SpawnAsteroid(2, asteroidPosition + left * 5*(size / 6f), asteroidVelocity + left * 2);
+            SpawnAsteroid(2, asteroidPosition + right * 5*(size / 6f), asteroidVelocity + right * 2);
+        }
     }
 
+    void DespawnAsteroid(Asteroid asteroid, List<GameObject> asteroidPack)
+    {
+
+        if (asteroidSets.Contains(asteroidPack))
+        {
+            foreach (GameObject asteroidObject in asteroidPack)
+            {
+                if (asteroids.Contains(asteroidObject))
+                {
+                    SimplePool.Despawn(asteroidObject);
+                    asteroids.Remove(asteroidObject);
+                }
+            }
+            asteroidSets.Remove(asteroidPack);
+        }
+        else
+        {
+            Debug.LogError("This asteroid object set is not present in the list");
+        }
+    }
 
     void SpawnAsteroid(int size, Vector3 position, Vector3 velocity)
     {

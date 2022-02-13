@@ -12,6 +12,7 @@ public class Projectile : MonoBehaviour
     Vector2 worldSize;
     float projectileSpeed = 11;
     List<GameObject> objectPack;
+    bool leftPlayerCollider = false;
     void Start()
     {
         
@@ -25,6 +26,7 @@ public class Projectile : MonoBehaviour
         this.screenCenter = screenCenter;
         timeFired = Time.time;
         worldSize = Reference.worldController.worldSize;
+        leftPlayerCollider = false;
     }
     // Update is called once per frame
     void Update()
@@ -35,7 +37,19 @@ public class Projectile : MonoBehaviour
             DestroySelf();
         }
     }
-
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("Collision! - Projectile");
+        if (leftPlayerCollider)
+        {
+            DestroySelf();
+        }
+    }
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        Debug.Log("Successfully fired");
+        leftPlayerCollider = true;
+    }
     void UpdateMotion()
     {
         go.transform.position += Quaternion.Euler(0, 0, -90) * transform.up * projectileSpeed * Time.deltaTime; 

@@ -73,10 +73,9 @@ public class ProjectileController : MonoBehaviour
         /// 
         ///   If desired, you can preload the pool with a number of instances:
         ///       SimplePool.Preload(somePrefab, 20);
-        
-
-
     }
+    
+
     public void DespawnProjectile(GameObject go, List<GameObject> objectPack) // called by the projectile itself
     {
         //go is the object that actually triggered the destruction

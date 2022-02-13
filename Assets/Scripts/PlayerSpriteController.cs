@@ -40,6 +40,10 @@ public class PlayerSpriteController : MonoBehaviour
     }
 
 
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("Collision! - Player");
+    }
     void UpdatePlayerShooting()
     {
         if (playerInputController.spaceBar)
