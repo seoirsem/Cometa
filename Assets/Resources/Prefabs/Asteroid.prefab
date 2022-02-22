@@ -170,6 +170,8 @@ MonoBehaviour:
   meshTriangles: 
   meshIndices: 
   rotationRate: 0
+  velocity: {x: 0, y: 0, z: 0}
+  size: 0
 --- !u!33 &5638308464161157284
 MeshFilter:
   m_ObjectHideFlags: 0

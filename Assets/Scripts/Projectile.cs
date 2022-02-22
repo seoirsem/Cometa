@@ -39,15 +39,15 @@ public class Projectile : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Collision! - Projectile");
         if (leftPlayerCollider)
         {
+            Debug.Log("Collision! - Projectile");
             DestroySelf();
         }
     }
     void OnTriggerExit2D(Collider2D collision)
     {
-        Debug.Log("Successfully fired");
+        //Debug.Log("Successfully fired");
         leftPlayerCollider = true;
     }
     void UpdateMotion()

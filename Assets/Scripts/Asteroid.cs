@@ -224,10 +224,18 @@ public class Asteroid : MonoBehaviour
     {
         //if (this.gameObject == mainAsteroid)
         //{
-            if (collision.gameObject.GetComponent<Asteroid>() is null)
-            {
-                asteroidController.AsteroidHit(this, collision, asteroidPack);
-            }
+        if (collision.gameObject.GetComponent<Asteroid>() is null)
+        {
+            asteroidController.AsteroidHit(this, collision, asteroidPack);
+        }
+        else
+        {//if you have collided with another asteroid
+//            Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
+ //           Vector3 positionVector = 
+
+
+
+        }
         //}
     }
 
