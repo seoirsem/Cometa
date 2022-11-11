@@ -5,15 +5,13 @@ using UnityEngine;
 public class PlayerEdgeVisualsController : MonoBehaviour
 {
     string side;
-    PlayerSpriteController playerSpriteController;
     GameObject playergo;
     GameObject go;
     Vector2 mapSize;
     void Start()
     {
-        playerSpriteController = Reference.playerSpriteController;
         go = this.gameObject;
-        playergo = playerSpriteController.gameObject;
+        playergo = Reference.playerSpriteController.gameObject;
         mapSize = Reference.worldController.worldSize;
     }
 
@@ -22,7 +20,6 @@ public class PlayerEdgeVisualsController : MonoBehaviour
         this.side = side;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(side == "up")

@@ -5,7 +5,6 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     Vector2 screenCenter;// (0,-1,1 in each of x and y to determine which of the 5 screens it is on)
-    ProjectileController projectileController;
     GameObject go;
     float timeFired;
     float lifespan = 2;//s
@@ -20,7 +19,6 @@ public class Projectile : MonoBehaviour
 
     public void OnFired(Vector2 screenCenter, List<GameObject> objectPack)
     {
-        projectileController = Reference.projectileController;
         go = this.gameObject;
         this.objectPack = objectPack;
         this.screenCenter = screenCenter;
@@ -75,6 +73,6 @@ public class Projectile : MonoBehaviour
 
     void DestroySelf()
     {
-        projectileController.DespawnProjectile(go,objectPack);
+        Reference.projectileController.DespawnProjectile(go,objectPack);
     }
 }
