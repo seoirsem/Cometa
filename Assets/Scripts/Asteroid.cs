@@ -32,6 +32,10 @@ public class Asteroid : MonoBehaviour
 
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector3 velocity)
     {
+        this.mass = Mathf.Pow(size,2);
+        // Update this in future to calculate based on the area of the shape formed by the mesh
+        //Debug.Log(this.mass);
+
         this.size = size;
         asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
         asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
@@ -230,11 +234,12 @@ public class Asteroid : MonoBehaviour
         }
         else
         {//if you have collided with another asteroid
-//            Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
- //           Vector3 positionVector = 
-
-
-
+           Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
+           //Vector3 positionVector = collision.conta
+            // //foreach (ContactPoint contact in collision.GetContacts)
+            // {
+            //     Debug.DrawRay(contact.point, contact.normal, Color.white);
+            // }
         }
         //}
     }
