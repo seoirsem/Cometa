@@ -6,7 +6,6 @@ public class PlayerSpriteController : MonoBehaviour
 {
     Player player;
     GameObject playergo;
-    PlayerInputController playerInputController;
     float rotationRate = 400; //degree/s
     float engineForce = 6; 
     Reference reference;
@@ -21,7 +20,6 @@ public class PlayerSpriteController : MonoBehaviour
 
     void Start()
     {
-        playerInputController = Reference.playerInputController;
         playergo = Reference.playergo;
 
         playergo.transform.position = new Vector2(0, 0);
@@ -46,7 +44,7 @@ public class PlayerSpriteController : MonoBehaviour
     }
     void UpdatePlayerShooting()
     {
-        if (playerInputController.spaceBar)
+        if (Reference.playerInputController.spaceBar)
         {
             if (Time.time - shootingCooldownTimer > cooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
@@ -85,11 +83,11 @@ public class PlayerSpriteController : MonoBehaviour
     {
 
         float playerInputRotation = 0;
-        if (playerInputController.leftKey)
+        if (Reference.playerInputController.leftKey)
         {
             playerInputRotation += 1;
         }
-        if (playerInputController.rightKey)
+        if (Reference.playerInputController.rightKey)
         {
             playerInputRotation -= 1;
         }
@@ -102,11 +100,11 @@ public class PlayerSpriteController : MonoBehaviour
     void UpdatePlayerMotion()
     {
         float playerInputImpulse = 0;
-        if (playerInputController.upKey)
+        if (Reference.playerInputController.upKey)
         {
             playerInputImpulse += 1;
         }
-        if (playerInputController.downKey)
+        if (Reference.playerInputController.downKey)
         {
             playerInputImpulse -= 1;
         }

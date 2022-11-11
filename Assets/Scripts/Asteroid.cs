@@ -8,7 +8,6 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     GameObject asteroidOutlines;
-    // Start is called before the first frame update
     Mesh mesh;
     Mesh colliderMesh;
     public Vector3[] meshVertices;
@@ -24,7 +23,6 @@ public class Asteroid : MonoBehaviour
     List<GameObject> asteroidPack;
     PolygonCollider2D polygonCollider;
     Rigidbody2D rigid_body;
-    AsteroidController asteroidController;
     public int size;
     GameObject mainAsteroid;
 
@@ -33,11 +31,10 @@ public class Asteroid : MonoBehaviour
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector3 velocity)
     {
         this.size = size;
-        asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
-        asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
-        rigid_body = this.GetComponent<Rigidbody2D>();
+        this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
+        this.rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
-        asteroidgo = this.gameObject;
+        this.asteroidgo = this.gameObject;
         this.velocity = velocity;
         this.worldSize = Reference.worldController.worldSize;
         this.location = location;
@@ -226,7 +223,7 @@ public class Asteroid : MonoBehaviour
         //{
         if (collision.gameObject.GetComponent<Asteroid>() is null)
         {
-            asteroidController.AsteroidHit(this, collision, asteroidPack);
+            Reference.asteroidController.AsteroidHit(this, collision, asteroidPack);
         }
         else
         {//if you have collided with another asteroid

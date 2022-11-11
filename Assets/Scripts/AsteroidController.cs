@@ -37,8 +37,6 @@ public class AsteroidController : MonoBehaviour
         Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
         Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
-        //        Debug.Log(left);
-        //        Debug.Log(right);
 
         DespawnAsteroid(asteroid, asteroidPack);
         if (size == 3)
@@ -71,7 +69,7 @@ public class AsteroidController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("This asteroid object set is not present in the list");
+            // Debug.LogError("This asteroid object set is not present in the list");
         }
     }
 
@@ -113,7 +111,5 @@ public class AsteroidController : MonoBehaviour
         asteroids.Add(asteroidgo4);
 
         asteroidSets.Add(asteroidPack);
-
-
     }
 }

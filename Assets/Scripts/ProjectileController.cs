@@ -93,7 +93,7 @@ public class ProjectileController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("This projectile object set is not present in the list");
+            // Debug.LogError("This projectile object set is not present in the list");
         }
 
 
