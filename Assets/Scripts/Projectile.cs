@@ -27,6 +27,7 @@ public class Projectile : MonoBehaviour
         timeFired = Time.time;
         worldSize = Reference.worldController.worldSize;
         leftPlayerCollider = false;
+        this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
     }
     // Update is called once per frame
     void Update()
@@ -37,7 +38,7 @@ public class Projectile : MonoBehaviour
             DestroySelf();
         }
     }
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnCollisionEnter2D(Collider2D collision)
     {
         if (leftPlayerCollider)
         {
@@ -45,10 +46,12 @@ public class Projectile : MonoBehaviour
             DestroySelf();
         }
     }
-    void OnTriggerExit2D(Collider2D collision)
+    void OnCollisonExit2D(Collider2D collision)
     {
         //Debug.Log("Successfully fired");
         leftPlayerCollider = true;
+        //capsuleCollider2D.enabled = true;
+
     }
     void UpdateMotion()
     {

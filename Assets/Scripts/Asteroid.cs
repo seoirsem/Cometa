@@ -46,6 +46,7 @@ public class Asteroid : MonoBehaviour
         this.rigid_body.velocity = velocity;
         this.worldSize = Reference.worldController.worldSize;
         this.location = location;
+        rigid_body.centerOfMass = new Vector2(0,0);
 
         //creates the mesh, or clones the mesh if this is not the first one spawned
         if (this.gameObject == mainAsteroid)
@@ -230,7 +231,7 @@ public class Asteroid : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        Debug.Log("OnCollisionEnter2D - asteroid");
         if (collision.gameObject.GetComponent<Projectile>() != null) 
         {
             Projectile projectile = collision.gameObject.GetComponent<Projectile>();
