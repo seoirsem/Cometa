@@ -13,6 +13,7 @@ public class Projectile : MonoBehaviour
     public List<GameObject> objectPack;
     public bool mainProjectile;
     bool leftPlayerCollider = false;
+    
     void Start()
     {
         
