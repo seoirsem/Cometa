@@ -40,22 +40,27 @@ public class ProjectileController : MonoBehaviour
         projectilePack.Add(projectilego3);
         projectilePack.Add(projectilego4);
 
+        projectilego.GetComponent<Projectile>().mainProjectile = true;
         projectilego.transform.SetParent(this.gameObject.transform);
         projectilego.GetComponent<Projectile>().OnFired(new Vector2(0, 0),projectilePack);
         projectileList.Add(projectilego);
 
+        projectilego1.GetComponent<Projectile>().mainProjectile = false;
         projectilego1.transform.SetParent(this.gameObject.transform);
         projectilego1.GetComponent<Projectile>().OnFired(new Vector2(0, -1), projectilePack);
         projectileList.Add(projectilego1);
 
+        projectilego2.GetComponent<Projectile>().mainProjectile = false;
         projectilego2.transform.SetParent(this.gameObject.transform);
         projectilego2.GetComponent<Projectile>().OnFired(new Vector2(0, 1), projectilePack);
         projectileList.Add(projectilego2);
 
+        projectilego3.GetComponent<Projectile>().mainProjectile = false;
         projectilego3.transform.SetParent(this.gameObject.transform);
         projectilego3.GetComponent<Projectile>().OnFired(new Vector2(-1, 0), projectilePack);
         projectileList.Add(projectilego3);
 
+        projectilego4.GetComponent<Projectile>().mainProjectile = false;
         projectilego4.transform.SetParent(this.gameObject.transform);
         projectilego4.GetComponent<Projectile>().OnFired(new Vector2(1, 0), projectilePack);
         projectileList.Add(projectilego4);

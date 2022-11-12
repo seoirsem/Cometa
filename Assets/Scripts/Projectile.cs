@@ -10,7 +10,8 @@ public class Projectile : MonoBehaviour
     float lifespan = 2;//s
     Vector2 worldSize;
     float projectileSpeed = 11;
-    List<GameObject> objectPack;
+    public List<GameObject> objectPack;
+    public bool mainProjectile;
     bool leftPlayerCollider = false;
     void Start()
     {
@@ -39,7 +40,7 @@ public class Projectile : MonoBehaviour
     {
         if (leftPlayerCollider)
         {
-            Debug.Log("Collision! - Projectile");
+            // Debug.Log("Collision! - Projectile");
             DestroySelf();
         }
     }

@@ -14,7 +14,7 @@ public class AsteroidController : MonoBehaviour
     {
         asteroidPrefab = Resources.Load("Prefabs/Asteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
-        SpawnAsteroid(3, new Vector3(2, 0, 0), new Vector3(1,1,0));
+        SpawnAsteroid(3, new Vector3(0, 2, 0), new Vector3(0,0,0));
     }
 
 
@@ -29,7 +29,7 @@ public class AsteroidController : MonoBehaviour
     }
     public void AsteroidHit(Asteroid asteroid, Collider2D collider2D, List<GameObject> asteroidPack)
     {
-
+        Debug.Log("Hit");
         int size = asteroid.size;
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
@@ -39,15 +39,18 @@ public class AsteroidController : MonoBehaviour
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
         DespawnAsteroid(asteroid, asteroidPack);
+        GameObject projectile_go = collider2D.transform.gameObject; 
+        // Reference.projectileController.DespawnProjectile(projectile_go, projectile_go.GetComponent<Projectile>().objectPack);
+        float debugDontMove = 1f;
         if (size == 3)
         {
-            SpawnAsteroid(2, asteroidPosition + left * (3 / 6f), asteroidVelocity + left * 1f);
-            SpawnAsteroid(2, asteroidPosition + right * (3 / 6f), asteroidVelocity + right * 1f);
+            SpawnAsteroid(2, asteroidPosition + left * (20f / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
+            SpawnAsteroid(2, asteroidPosition + right * (20f / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
         }
         else if(size == 2)
         {
-            SpawnAsteroid(1, asteroidPosition + left * (2 / 6f), asteroidVelocity + left * 1f);
-            SpawnAsteroid(1, asteroidPosition + right * (2 / 6f), asteroidVelocity + right * 1f);
+            SpawnAsteroid(1, asteroidPosition + left * (20f / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
+            SpawnAsteroid(1, asteroidPosition + right * (20f / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
         }
 
     }
