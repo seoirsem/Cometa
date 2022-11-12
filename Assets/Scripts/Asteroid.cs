@@ -8,6 +8,7 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     GameObject asteroidOutlines;
+    // Start is called before the first frame update
     Mesh mesh;
     Mesh colliderMesh;
     public Vector3[] meshVertices;
@@ -23,23 +24,26 @@ public class Asteroid : MonoBehaviour
     List<GameObject> asteroidPack;
     PolygonCollider2D polygonCollider;
     Rigidbody2D rigid_body;
+    AsteroidController asteroidController;
     public int size;
     GameObject mainAsteroid;
 
 
 
-    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector3 velocity)
+    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
         this.mass = Mathf.Pow(size,2);
         // Update this in future to calculate based on the area of the shape formed by the mesh
         //Debug.Log(this.mass);
 
         this.size = size;
-        this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
-        this.rigid_body = this.GetComponent<Rigidbody2D>();
+        asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
+        asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
+        rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
-        this.asteroidgo = this.gameObject;
+        asteroidgo = this.gameObject;
         this.velocity = velocity;
+        this.rigid_body.velocity = velocity;
         this.worldSize = Reference.worldController.worldSize;
         this.location = location;
 
@@ -48,11 +52,13 @@ public class Asteroid : MonoBehaviour
         {
             //in Unity trianges are drawn clockwise
             this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 250;//random rotation rate
+            this.rigid_body.angularVelocity = rotationRate;
             DrawAsteroid(size);
         }
         else
         {
             this.rotationRate = mainAsteroid.GetComponent<Asteroid>().rotationRate;
+            this.rigid_body.angularVelocity = rotationRate;
             CloneAsteroid(mainAsteroid);
         }
 
@@ -192,12 +198,13 @@ public class Asteroid : MonoBehaviour
 
     void UpdateAsteroidPosition()
     {
-        this.asteroidgo.transform.position += velocity * Time.deltaTime;
+        //Vector2 velocity2d = new Vector2(velocity.x, velocity.y);
+        //this.rigid_body.position += velocity2d * Time.deltaTime;
         //Debug.Log(velocity.magnitude);
 
         if (asteroidgo.transform.position.x - location.x * worldSize.x > worldSize.x / 2)
         {
-            asteroidgo.transform.position = new Vector3(asteroidgo.transform.position.x - worldSize.x, asteroidgo.transform.position.y, asteroidgo.transform.position.z);
+            this.rigid_body.position = new Vector2(asteroidgo.transform.position.x - worldSize.x, asteroidgo.transform.position.y);// asteroidgo.transform.position.z);
         }
         if (asteroidgo.transform.position.x - location.x * worldSize.x < -worldSize.x / 2)
         {
@@ -214,31 +221,27 @@ public class Asteroid : MonoBehaviour
     }
     void UpdateAsteroidRotation()
     {
-        float frameRotation = Time.deltaTime * rotationRate;
-        rigid_body.rotation += frameRotation;
+        //float frameRotation = Time.deltaTime * rotationRate;
+        //rigid_body.rotation += frameRotation;
         //this.gameObject.transform.Rotate(new Vector3(0, 0, frameRotation));
     }
 
 
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         //if (this.gameObject == mainAsteroid)
         //{
         if (collision.gameObject.GetComponent<Asteroid>() is null)
         {
-            Reference.asteroidController.AsteroidHit(this, collision, asteroidPack);
+            asteroidController.AsteroidHit(this, collision, asteroidPack);
         }
         else
-        {//if you have collided with another asteroid
-           Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
-           //Vector3 positionVector = collision.conta
-            // //foreach (ContactPoint contact in collision.GetContacts)
-            // {
-            //     Debug.DrawRay(contact.point, contact.normal, Color.white);
-            // }
+        {
+            asteroidController.AsteroidAstroidCollision(this, collision, asteroidPack);
         }
         //}
+        Debug.Log("here");
     }
 
 }

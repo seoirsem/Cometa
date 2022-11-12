@@ -27,13 +27,13 @@ public class AsteroidController : MonoBehaviour
             SpawnAsteroid(3, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
         }
     }
-    public void AsteroidHit(Asteroid asteroid, Collider2D collider2D, List<GameObject> asteroidPack)
+    public void AsteroidHit(Asteroid asteroid, Collision2D collision2D, List<GameObject> asteroidPack)
     {
 
         int size = asteroid.size;
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
-        Vector3 collisionPoint = collider2D.transform.position;
+        Vector3 collisionPoint = collision2D.transform.position;
         Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
         Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
@@ -50,6 +50,22 @@ public class AsteroidController : MonoBehaviour
             SpawnAsteroid(1, asteroidPosition + right * (2 / 6f), asteroidVelocity + right * 1f);
         }
 
+    }
+    public void AsteroidAstroidCollision(Asteroid asteroid, Collision2D collision2D, List<GameObject> asteroidPack)
+    {
+        Vector3 asteroidPosition = asteroid.gameObject.transform.position;
+        Vector3 asteroidVelocity = asteroid.velocity;
+        Vector3 collisionPoint = collision2D.transform.position;
+        Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
+
+
+        Vector3[] verticesReduced = new Vector3[asteroid.meshVertices.Length - 1];
+        for (int i = 0; i < asteroid.meshVertices.Length - 1; i++)
+        {
+            verticesReduced[i] = asteroid.meshVertices[i];
+        }    
+        Debug.Log("Asteroid hit asteroid");
+        
     }
 
     void DespawnAsteroid(Asteroid asteroid, List<GameObject> asteroidPack)
