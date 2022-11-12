@@ -241,7 +241,7 @@ public class Asteroid : MonoBehaviour
                 Reference.asteroidController.AsteroidHit(this, collision, asteroidPack);
             }
         }
-        else if (collision.gameObject.GetComponent<Player>() != null)
+        else if (collision.gameObject.GetComponent<PlayerSpriteController>() != null)
         {
             Debug.Log("Asteroid hit player");
         }

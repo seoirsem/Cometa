@@ -10,12 +10,13 @@ public class PlayerSpriteController : MonoBehaviour
     float engineForce = 6; 
     Reference reference;
     float rotation = 0;
-    Vector3 velocity = new Vector3(0, 0, 0);
+    public Vector3 velocity = new Vector3(0, 0, 0);
     Vector2 worldEdges;
     float maxSpeed = 10;
     List<GameObject> visualClones;
     float shootingCooldownTimer;
     float cooldown = 0.75f;//s
+    Rigidbody2D rigid_body;
     
 
     void Start()
@@ -25,6 +26,7 @@ public class PlayerSpriteController : MonoBehaviour
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
+        rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         SpawnVisualClones();
     }
 
@@ -81,7 +83,7 @@ public class PlayerSpriteController : MonoBehaviour
     }
     void UpdatePlayerRotation()
     {
-
+        rigid_body.angularVelocity = 0;
         float playerInputRotation = 0;
         if (Reference.playerInputController.leftKey)
         {
@@ -122,6 +124,7 @@ public class PlayerSpriteController : MonoBehaviour
             velocity = velocity.normalized * maxSpeed;
         }
         playergo.transform.position += velocity * Time.deltaTime;
+        //rigid_body.velocity = new Vector2()
         //Debug.Log(velocity.magnitude);
 
 

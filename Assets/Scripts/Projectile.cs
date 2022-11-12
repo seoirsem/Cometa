@@ -10,10 +10,14 @@ public class Projectile : MonoBehaviour
     float lifespan = 2;//s
     Vector2 worldSize;
     float projectileSpeed = 11;
+    float thrust = 1f;
     public List<GameObject> objectPack;
     public bool mainProjectile;
     bool leftPlayerCollider = false;
     CapsuleCollider2D capsuleCollider2D;
+    Rigidbody2D rigid_body;
+    float rotationalPosition;
+
     void Start()
     {
         
@@ -27,18 +31,37 @@ public class Projectile : MonoBehaviour
         timeFired = Time.time;
         worldSize = Reference.worldController.worldSize;
         leftPlayerCollider = false;
+        rigid_body = go.GetComponent<Rigidbody2D>();
         this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
+        capsuleCollider2D.enabled = false;
+        rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
+        rigid_body.rotation = rotationalPosition - 90f;
+
+        Vector3 playerVelocity = Reference.playerSpriteController.velocity;
+        rigid_body.velocity = new Vector2(playerVelocity.x, playerVelocity.y);//Reference.playergo.GetComponent<Rigidbody2D>().velocity;
+        //rigid_body.velocity += new Vector2(gameObject.transform.forward.x, gameObject.transform.forward.y) * projectileSpeed;
+        
     }
     // Update is called once per frame
     void Update()
     {
+
         UpdateMotion();
         if(Time.time - timeFired > lifespan)
         {
             DestroySelf();
         }
+        if(Time.time - timeFired > 0.1f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
+        {
+            capsuleCollider2D.enabled = true;
+        }
     }
-    void OnCollisionEnter2D(Collider2D collision)
+    void FixedUpdate()
+    {
+        rigid_body.AddForce(transform.right*thrust);
+
+    }
+    void OnCollisionEnter2D(Collision2D collision)
     {
         if (leftPlayerCollider)
         {
@@ -46,7 +69,7 @@ public class Projectile : MonoBehaviour
             DestroySelf();
         }
     }
-    void OnCollisonExit2D(Collider2D collision)
+    void OnCollisonExit2D(Collision2D collision)
     {
         //Debug.Log("Successfully fired");
         leftPlayerCollider = true;
@@ -55,23 +78,24 @@ public class Projectile : MonoBehaviour
     }
     void UpdateMotion()
     {
-        go.transform.position += Quaternion.Euler(0, 0, -90) * transform.up * projectileSpeed * Time.deltaTime; 
 
-        if(go.transform.position.x - screenCenter.x * worldSize.x > worldSize.x/2)
+        //go.transform.position += Quaternion.Euler(0, 0, -90) * transform.up * projectileSpeed * Time.deltaTime; 
+
+        if(rigid_body.position.x - screenCenter.x * worldSize.x > worldSize.x/2)
         {
-            go.transform.position = new Vector3(go.transform.position.x - worldSize.x, go.transform.position.y, go.transform.position.z);
+            rigid_body.position = new Vector2(rigid_body.position.x - worldSize.x, rigid_body.position.y);
         }
-        if(go.transform.position.x - screenCenter.x * worldSize.x < -worldSize.x/2)
+        if(rigid_body.position.x - screenCenter.x * worldSize.x < -worldSize.x/2)
         {
-            go.transform.position = new Vector3(go.transform.position.x + worldSize.x, go.transform.position.y, go.transform.position.z);
+            rigid_body.position = new Vector2(rigid_body.position.x + worldSize.x, rigid_body.position.y);
         }
-        if(go.transform.position.y - screenCenter.y * worldSize.y > worldSize.y/2)
+        if(rigid_body.position.y - screenCenter.y * worldSize.y > worldSize.y/2)
         {
-            go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - worldSize.y, go.transform.position.z);
+            rigid_body.position = new Vector2(rigid_body.position.x, rigid_body.position.y - worldSize.y);
         }
-        if(go.transform.position.y - screenCenter.y * worldSize.y < -worldSize.y/2)
+        if(rigid_body.position.y - screenCenter.y * worldSize.y < -worldSize.y/2)
         {
-            go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y + worldSize.y, go.transform.position.z);
+            rigid_body.position = new Vector2(rigid_body.position.x, rigid_body.position.y + worldSize.y);
         }
 
     }
