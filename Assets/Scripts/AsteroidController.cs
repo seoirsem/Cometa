@@ -59,9 +59,11 @@ public class AsteroidController : MonoBehaviour
     {
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
-        Vector3 collisionPoint = collision2D.transform.position;
+        Vector2 contact = collision2D.contacts[0].point;
+        Vector3 collisionPoint = new Vector3(contact.x,contact.y,0);//transform.position;
         Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
-
+        Reference.animationController.SpawnDustCloudAnimation(collisionPoint);
+        //asteroid.ApplyImpulse(collisionDirection,1f);
 
         Vector3[] verticesReduced = new Vector3[asteroid.meshVertices.Length - 1];
         for (int i = 0; i < asteroid.meshVertices.Length - 1; i++)

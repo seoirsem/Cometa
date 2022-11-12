@@ -227,6 +227,11 @@ public class Asteroid : MonoBehaviour
         //this.gameObject.transform.Rotate(new Vector3(0, 0, frameRotation));
     }
 
+    public void ApplyImpulse(Vector3 direction, float magnitude)
+    {
+        rigid_body.AddForce(magnitude*direction,ForceMode2D.Impulse);
+    }
+
 
 
     void OnCollisionEnter2D(Collision2D collision)
