@@ -40,7 +40,6 @@ public class AsteroidController : MonoBehaviour
 
         DespawnAsteroid(asteroid, asteroidPack);
         GameObject projectile_go = collider2D.transform.gameObject; 
-        // Reference.projectileController.DespawnProjectile(projectile_go, projectile_go.GetComponent<Projectile>().objectPack);
         float debugDontMove = 1f;
         if (size == 3)
         {
