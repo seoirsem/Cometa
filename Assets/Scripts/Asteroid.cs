@@ -230,18 +230,31 @@ public class Asteroid : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (this.gameObject == mainAsteroid)
-        //{
-        if (collision.gameObject.GetComponent<Asteroid>() is null)
+        
+        if (collision.gameObject.GetComponent<Projectile>() != null)
         {
-            asteroidController.AsteroidHit(this, collision, asteroidPack);
+            Projectile projectile = collision.gameObject.GetComponent<Projectile>();
+            if (projectile.mainProjectile == true)
+            {
+                Reference.scoreController.IncrementScore((float)size);
+                Reference.asteroidController.AsteroidHit(this, collision, asteroidPack);
+            }
+        }
+        else
+        {//if you have collided with another asteroid
+            Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
+            asteroidController.AsteroidAstroidCollision(this, collision, asteroidPack);
+
+           //Vector3 positionVector = collision.conta
+            // //foreach (ContactPoint contact in collision.GetContacts)
+            // {
+            //     Debug.DrawRay(contact.point, contact.normal, Color.white);
+            // }
         }
         else
         {
-            asteroidController.AsteroidAstroidCollision(this, collision, asteroidPack);
+            Debug.Log("Asteroid collided with somethign other than a projectile or another asteroid");
         }
-        //}
-        Debug.Log("here");
     }
 
 }

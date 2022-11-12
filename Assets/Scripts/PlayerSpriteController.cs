@@ -21,7 +21,6 @@ public class PlayerSpriteController : MonoBehaviour
     void Start()
     {
         playergo = Reference.playergo;
-
         playergo.transform.position = new Vector2(0, 0);
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
@@ -40,7 +39,7 @@ public class PlayerSpriteController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Collision! - Player");
+        // Debug.Log("Collision! - Player");
     }
     void UpdatePlayerShooting()
     {
@@ -49,6 +48,7 @@ public class PlayerSpriteController : MonoBehaviour
             if (Time.time - shootingCooldownTimer > cooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 shootingCooldownTimer = Time.time;
+
                 Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90));
             }
         }

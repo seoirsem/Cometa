@@ -11,15 +11,19 @@ public class WorldController : MonoBehaviour
 
     void Awake()
     {
+
         Reference.CreateReferences();
-        playergo = Reference.playergo;
-        player = new Player(playergo);
         windowing = GameObject.Find("Windowing");
 
         //worldSize = new Vector2(Screen.width)
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
 
+    }
+
+    void Start() {
+        playergo = Reference.playergo;
+        player = new Player(playergo);
     }
 
     // Update is called once per frame
