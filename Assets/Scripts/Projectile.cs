@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour
     Rigidbody2D rigid_body;
     float rotationalPosition;
 
-    
+
     void Start()
     {
         
@@ -64,11 +64,11 @@ public class Projectile : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (leftPlayerCollider)
-        {
+        //if (leftPlayerCollider)
+        //{
             // Debug.Log("Collision! - Projectile");
             DestroySelf();
-        }
+        //}
     }
     void OnCollisonExit2D(Collision2D collision)
     {
