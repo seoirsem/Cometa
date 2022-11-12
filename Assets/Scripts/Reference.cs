@@ -9,6 +9,7 @@ public class Reference
     public static GameObject hud;
 
     public static AsteroidController asteroidController;
+    public static AnimationController animationController;
     public static HUDController hudcontroller;
     // public static PlayerEdgeVisualsController playerEdgeVisualsController;
     public static PlayerInputController playerInputController;
@@ -27,6 +28,7 @@ public class Reference
         hud = GameObject.Find("HUD");
 
         asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
+        animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
         hudcontroller = GameObject.Find("HUDController").GetComponent<HUDController>();
         // playerEdgeVisualsController = GameObject.Find("PlayerInputController").GetComponent<PlayerEdgeVisualsController>();
         playerInputController = GameObject.Find("PlayerInputController").GetComponent<PlayerInputController>();

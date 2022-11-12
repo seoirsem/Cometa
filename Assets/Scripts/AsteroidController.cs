@@ -38,6 +38,7 @@ public class AsteroidController : MonoBehaviour
         Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
+        Reference.animationController.SpawnExplosionAnimation(collisionPoint);
         DespawnAsteroid(asteroid, asteroidPack);
         GameObject projectile_go = collision2D.transform.gameObject; 
         // Reference.projectileController.DespawnProjectile(projectile_go, projectile_go.GetComponent<Projectile>().objectPack);
