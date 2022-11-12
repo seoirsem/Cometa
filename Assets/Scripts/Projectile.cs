@@ -18,6 +18,7 @@ public class Projectile : MonoBehaviour
     Rigidbody2D rigid_body;
     float rotationalPosition;
 
+    
     void Start()
     {
         

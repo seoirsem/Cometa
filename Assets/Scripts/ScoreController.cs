@@ -20,6 +20,6 @@ public class ScoreController : MonoBehaviour
     public void IncrementScore(float increment)
     {
         this.totalScore += increment;
-        Debug.Log(totalScore);
+        Reference.hudcontroller.UpdateOnScreenScore(this.totalScore);
     }
 }
