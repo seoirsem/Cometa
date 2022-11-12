@@ -44,13 +44,13 @@ public class AsteroidController : MonoBehaviour
         float debugDontMove = 1f;
         if (size == 3)
         {
-            SpawnAsteroid(2, asteroidPosition + left * (20f / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
-            SpawnAsteroid(2, asteroidPosition + right * (20f / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
+            SpawnAsteroid(2, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
+            SpawnAsteroid(2, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
         }
         else if(size == 2)
         {
-            SpawnAsteroid(1, asteroidPosition + left * (20f / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
-            SpawnAsteroid(1, asteroidPosition + right * (20f / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
+            SpawnAsteroid(1, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
+            SpawnAsteroid(1, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
         }
 
     }
