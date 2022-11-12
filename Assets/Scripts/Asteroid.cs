@@ -202,21 +202,21 @@ public class Asteroid : MonoBehaviour
         //this.rigid_body.position += velocity2d * Time.deltaTime;
         //Debug.Log(velocity.magnitude);
 
-        if (asteroidgo.transform.position.x - location.x * worldSize.x > worldSize.x / 2)
+        if (rigid_body.position.x - location.x * worldSize.x > worldSize.x / 2)
         {
-            this.rigid_body.position = new Vector2(asteroidgo.transform.position.x - worldSize.x, asteroidgo.transform.position.y);// asteroidgo.transform.position.z);
+            this.rigid_body.position = new Vector2(rigid_body.position.x - worldSize.x, rigid_body.position.y);// asteroidgo.transform.position.z);
         }
-        if (asteroidgo.transform.position.x - location.x * worldSize.x < -worldSize.x / 2)
+        if (rigid_body.position.x - location.x * worldSize.x < -worldSize.x / 2)
         {
-            asteroidgo.transform.position = new Vector3(asteroidgo.transform.position.x + worldSize.x, asteroidgo.transform.position.y, asteroidgo.transform.position.z);
+            this.rigid_body.position  = new Vector2(rigid_body.position.x + worldSize.x, rigid_body.position.y);
         }
-        if (asteroidgo.transform.position.y - location.y * worldSize.y > worldSize.y / 2)
+        if (rigid_body.position.y - location.y * worldSize.y > worldSize.y / 2)
         {
-            asteroidgo.transform.position = new Vector3(asteroidgo.transform.position.x, asteroidgo.transform.position.y - worldSize.y, asteroidgo.transform.position.z);
+            this.rigid_body.position  = new Vector2(rigid_body.position.x, rigid_body.position.y - worldSize.y);
         }
-        if (asteroidgo.transform.position.y - location.y * worldSize.y < -worldSize.y / 2)
+        if (rigid_body.position.y - location.y * worldSize.y < -worldSize.y / 2)
         {
-            asteroidgo.transform.position = new Vector3(asteroidgo.transform.position.x, asteroidgo.transform.position.y + worldSize.y, asteroidgo.transform.position.z);
+            this.rigid_body.position  = new Vector2(rigid_body.position.x, rigid_body.position.y + worldSize.y);
         }
     }
     void UpdateAsteroidRotation()
@@ -231,7 +231,7 @@ public class Asteroid : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         
-        if (collision.gameObject.GetComponent<Projectile>() != null)
+        if (collision.gameObject.GetComponent<Projectile>() != null) 
         {
             Projectile projectile = collision.gameObject.GetComponent<Projectile>();
             if (projectile.mainProjectile == true)
@@ -240,20 +240,16 @@ public class Asteroid : MonoBehaviour
                 Reference.asteroidController.AsteroidHit(this, collision, asteroidPack);
             }
         }
+        else if (collision.gameObject.GetComponent<Player>() != null)
+        {
+            Debug.Log("Asteroid hit player");
+        }
         else
         {//if you have collided with another asteroid
             Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
             asteroidController.AsteroidAstroidCollision(this, collision, asteroidPack);
+            Debug.Log("Asteroid hit other asteroid");
 
-           //Vector3 positionVector = collision.conta
-            // //foreach (ContactPoint contact in collision.GetContacts)
-            // {
-            //     Debug.DrawRay(contact.point, contact.normal, Color.white);
-            // }
-        }
-        else
-        {
-            Debug.Log("Asteroid collided with somethign other than a projectile or another asteroid");
         }
     }
 

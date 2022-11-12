@@ -39,7 +39,7 @@ public class AsteroidController : MonoBehaviour
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
         DespawnAsteroid(asteroid, asteroidPack);
-        GameObject projectile_go = collider2D.transform.gameObject; 
+        GameObject projectile_go = collision2D.transform.gameObject; 
         // Reference.projectileController.DespawnProjectile(projectile_go, projectile_go.GetComponent<Projectile>().objectPack);
         float debugDontMove = 1f;
         if (size == 3)
