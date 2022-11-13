@@ -106,5 +106,6 @@ public class Projectile : MonoBehaviour
     void DestroySelf()
     {
         Reference.projectileController.DespawnProjectile(go,objectPack);
+
     }
 }
