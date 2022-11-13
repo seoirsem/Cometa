@@ -79,25 +79,53 @@ public class MainAsteroid : Asteroid
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("OnCollisionEnter2D - asteroid");
-        if (collision.gameObject.GetComponent<Projectile>() != null) 
+        ResolveCollision(collision.gameObject, collision, null, new Vector2(0,0));
+    }
+
+    public void DerivedAsteroidCollision(Collider2D collidee, GameObject collidingAsteroid, Vector2 offset)
+    {
+        //Debug.Log("derived collision");
+        if (collidee.gameObject.GetComponent<Projectile>() != null)
         {
-            Projectile projectile = collision.gameObject.GetComponent<Projectile>();
+            // Debug.Log("derived projectile collision");
+
+            ResolveCollision(collidee.gameObject, null, collidee, offset);
+        }
+    }
+
+
+    void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
+    {
+        Vector2 collisionLocation;
+
+        if(collision == null)
+        {
+            collisionLocation = collider.ClosestPoint(otherObject.transform.position);// - offset;
+        }
+        else
+        {
+            collisionLocation = collision.contacts[0].point;
+        }
+
+
+        if (otherObject.GetComponent<Projectile>() != null) 
+        {
+            Projectile projectile = otherObject.GetComponent<Projectile>();
             if (projectile.mainProjectile == true)
             {
                 Reference.scoreController.IncrementScore((float)size);
-                Reference.asteroidController.AsteroidHit(this, collision, asteroidPack);
+                Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack);
             }
         }
-        else if (collision.gameObject.GetComponent<PlayerSpriteController>() != null)
+        else if (otherObject.GetComponent<PlayerSpriteController>() != null)
         {
-            Debug.Log("Asteroid hit player");
+            //Debug.Log("Asteroid hit player");
         }
         else
         {//if you have collided with another asteroid
-            Asteroid otherAsteroid = collision.gameObject.GetComponent<Asteroid>();
-            asteroidController.AsteroidAstroidCollision(this, collision, asteroidPack);
-            Debug.Log("Asteroid hit other asteroid");
+            Asteroid otherAsteroid = otherObject.GetComponent<Asteroid>();
+            asteroidController.AsteroidAstroidCollision(this, collisionLocation, asteroidPack);
+            //Debug.Log("Asteroid hit other asteroid");
 
         }
     }

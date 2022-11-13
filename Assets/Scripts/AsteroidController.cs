@@ -16,8 +16,8 @@ public class AsteroidController : MonoBehaviour
         mainAsteroidPrefab = Resources.Load("Prefabs/MainAsteroid") as GameObject;
         derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
-        SpawnAsteroid(3, new Vector3(0, 2, 0), new Vector3(0,0,0));
-        SpawnAsteroid(3, new Vector3(0, Reference.worldController.worldSize.y/2 - 0.1f, 0), new Vector3(0,0,0));
+        //SpawnAsteroid(3, new Vector3(0, 2, 0), new Vector3(0,0,0));
+        SpawnAsteroid(3, new Vector3(0, -Reference.worldController.worldSize.y/2 + 0.1f, 0), new Vector3(0,0,0));
 
     }
 
@@ -31,20 +31,19 @@ public class AsteroidController : MonoBehaviour
             SpawnAsteroid(3, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
         }
     }
-    public void AsteroidHit(Asteroid asteroid, Collision2D collision2D, List<GameObject> asteroidPack)
+    public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack)
     {
-        Debug.Log("Hit");
+        //Debug.Log("Hit");
         int size = asteroid.size;
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
-        Vector3 collisionPoint = collision2D.transform.position;
+        Vector3 collisionPoint = new Vector3(contact.x, contact.y, 0);
         Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
         Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
-        Reference.animationController.SpawnExplosionAnimation(collisionPoint);
         DespawnAsteroid(asteroid, asteroidPack);
-        GameObject projectile_go = collision2D.transform.gameObject; 
+        GameObject projectile_go = otherObject; 
         // Reference.projectileController.DespawnProjectile(projectile_go, projectile_go.GetComponent<Projectile>().objectPack);
         float debugDontMove = 1f;
         if (size == 3)
@@ -59,23 +58,21 @@ public class AsteroidController : MonoBehaviour
         }
 
     }
-    public void AsteroidAstroidCollision(Asteroid asteroid, Collision2D collision2D, List<GameObject> asteroidPack)
+    public void AsteroidAstroidCollision(Asteroid asteroid, Vector2 contact, List<GameObject> asteroidPack)
     {
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
-        Vector2 contact = collision2D.contacts[0].point;
         Vector3 collisionPoint = new Vector3(contact.x,contact.y,0);//transform.position;
         Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
-        Reference.animationController.SpawnDustCloudAnimation(collisionPoint);
-        //asteroid.ApplyImpulse(collisionDirection,1f);
 
-        Vector3[] verticesReduced = new Vector3[asteroid.meshVertices.Length - 1];
-        for (int i = 0; i < asteroid.meshVertices.Length - 1; i++)
+        // this is a fixed reference direction for deciding which asteroid triggers the impact
+        Vector3 referenceDirection = new Vector3(Reference.worldController.worldSize.x, Reference.worldController.worldSize.y, 0);
+
+        if (Vector3.Dot(collisionDirection,referenceDirection) > 0)//only one of the asteroids triggers a dust cloud
         {
-            verticesReduced[i] = asteroid.meshVertices[i];
-        }    
-        Debug.Log("Asteroid hit asteroid");
-        
+            Reference.animationController.SpawnDustCloudAnimation(collisionPoint);
+        }
+        //asteroid.ApplyImpulse(collisionDirection,1f);
     }
 
     void DespawnAsteroid(Asteroid asteroid, List<GameObject> asteroidPack)

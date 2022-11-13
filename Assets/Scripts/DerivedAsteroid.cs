@@ -5,7 +5,6 @@ using UnityEngine;
 public class DerivedAsteroid : Asteroid
 {
 
-
     Vector2 offset;
     GameObject mainAsteroid;
     MainAsteroid mainAsteroidClass;
@@ -28,14 +27,8 @@ public class DerivedAsteroid : Asteroid
         this.location = location;
         rigid_body.centerOfMass = new Vector2(0,0);
         PolygonCollider2D polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
-
         offset = new Vector2(location.x * worldSize.x, location.y * worldSize.y);
-
         CloneAsteroid(mainAsteroid);
-
-
-
-
     }
 
     // Update is called once per frame
@@ -61,5 +54,13 @@ public class DerivedAsteroid : Asteroid
         DrawMesh(meshVertices, meshTriangles, meshIndices);
         DrawCollider(meshVertices, meshTriangles);
         
+    }
+
+    private void OnTriggerEnter2D(Collider2D otherObject)
+    {
+        Debug.Log("ontriggerenter");
+        // This passes note of any collisions straight to the main asteroid
+        mainAsteroidClass.DerivedAsteroidCollision(otherObject, this.gameObject, offset);
+
     }
 }

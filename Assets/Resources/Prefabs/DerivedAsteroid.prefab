@@ -200,7 +200,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8063166369634232517}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -225,3 +225,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d5f4883939d466448a83aa5654b4596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asteroidOutlines: {fileID: 0}
+  mesh: {fileID: 0}
+  colliderMesh: {fileID: 0}
+  meshVertices: []
+  meshTriangles: 
+  meshIndices: 
+  mass: 1
+  rotation: {x: 0, y: 0, z: 0}
+  rotationRate: 0
+  asteroidgo: {fileID: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  worldSize: {x: 0, y: 0}
+  location: {x: 0, y: 0}
+  asteroidPack: []
+  polygonCollider: {fileID: 0}
+  rigid_body: {fileID: 0}
+  asteroidController: {fileID: 0}
+  size: 0

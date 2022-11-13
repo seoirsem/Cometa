@@ -49,7 +49,7 @@ public class Projectile : MonoBehaviour
         UpdateMotion();
         if(Time.time - timeFired > lifespan)
         {
-            Debug.Log("Projectile Timed Out");
+            //Debug.Log("Projectile Timed Out");
             DestroySelf();
         }
         if(Time.time - timeFired > 0.1f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
@@ -66,11 +66,17 @@ public class Projectile : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (leftPlayerCollider)
-        //{
             Debug.Log("Collision! - Projectile");
             DestroySelf();
-        //}
+
+    }
+    void OnTriggerEnter2D(Collider2D collider)//you need both so you can collide with triggering and non triggering objects
+    {
+        if(Time.time - timeFired > 0.4f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
+        {
+            Debug.Log("Collisdsion! - Projectile");
+            DestroySelf();
+        }
     }
     void OnCollisonExit2D(Collision2D collision)
     {
@@ -105,6 +111,8 @@ public class Projectile : MonoBehaviour
 
     void DestroySelf()
     {
+        Reference.animationController.SpawnExplosionAnimation(this.transform.position);
+
         Reference.projectileController.DespawnProjectile(go,objectPack);
 
     }
