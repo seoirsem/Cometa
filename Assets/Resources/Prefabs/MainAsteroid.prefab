@@ -89,12 +89,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6705681520816806409}
   - component: {fileID: 6705681520816806408}
-  - component: {fileID: 6705681520816806407}
   - component: {fileID: 5638308464161157284}
   - component: {fileID: 7843135950236640931}
   - component: {fileID: 8516184068674574184}
+  - component: {fileID: 784641321851166302}
   m_Layer: 0
-  m_Name: Asteroid
+  m_Name: MainAsteroid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,24 +154,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &6705681520816806407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6705681520816806410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e723dc89b60020948aa712bc2d99ae5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshVertices: []
-  meshTriangles: 
-  meshIndices: 
-  rotationRate: 0
-  velocity: {x: 0, y: 0, z: 0}
-  size: 0
 --- !u!33 &5638308464161157284
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -231,3 +213,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &784641321851166302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6705681520816806410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8da5424c7403964f9d760bdab644322, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour
     Rigidbody2D rigid_body;
     float rotationalPosition;
 
-    
+
     void Start()
     {
         
@@ -36,12 +36,11 @@ public class Projectile : MonoBehaviour
         this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
         capsuleCollider2D.enabled = false;
         rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
-        rigid_body.rotation = rotationalPosition - 90f;
+        rigid_body.rotation = rotationalPosition + 90f;
 
         Vector3 playerVelocity = Reference.playerSpriteController.velocity;
         rigid_body.velocity = new Vector2(playerVelocity.x, playerVelocity.y);//Reference.playergo.GetComponent<Rigidbody2D>().velocity;
-        //rigid_body.velocity += new Vector2(gameObject.transform.forward.x, gameObject.transform.forward.y) * projectileSpeed;
-        
+        rigid_body.AddForce(0.1f*transform.right,ForceMode2D.Impulse);
     }
     // Update is called once per frame
     void Update()
@@ -50,6 +49,7 @@ public class Projectile : MonoBehaviour
         UpdateMotion();
         if(Time.time - timeFired > lifespan)
         {
+            //Debug.Log("Projectile Timed Out");
             DestroySelf();
         }
         if(Time.time - timeFired > 0.1f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
@@ -59,14 +59,22 @@ public class Projectile : MonoBehaviour
     }
     void FixedUpdate()
     {
-        rigid_body.AddForce(transform.right*thrust);
-
+        if(Time.time - timeFired > 0.5f)
+        {
+            rigid_body.AddForce(transform.right*thrust);
+        }
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (leftPlayerCollider)
+            Debug.Log("Collision! - Projectile");
+            DestroySelf();
+
+    }
+    void OnTriggerEnter2D(Collider2D collider)//you need both so you can collide with triggering and non triggering objects
+    {
+        if(Time.time - timeFired > 0.4f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
-            // Debug.Log("Collision! - Projectile");
+            Debug.Log("Collisdsion! - Projectile");
             DestroySelf();
         }
     }
@@ -103,6 +111,9 @@ public class Projectile : MonoBehaviour
 
     void DestroySelf()
     {
+        Reference.animationController.SpawnExplosionAnimation(this.transform.position);
+
         Reference.projectileController.DespawnProjectile(go,objectPack);
+
     }
 }
