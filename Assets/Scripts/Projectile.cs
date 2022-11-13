@@ -18,6 +18,8 @@ public class Projectile : MonoBehaviour
     Rigidbody2D rigid_body;
     float rotationalPosition;
 
+    bool animationStarted = false;
+    GameObject blueFlameAnimation;
 
     void Start()
     {
@@ -32,6 +34,8 @@ public class Projectile : MonoBehaviour
         timeFired = Time.time;
         worldSize = Reference.worldController.worldSize;
         leftPlayerCollider = false;
+        animationStarted = false;
+
         rigid_body = go.GetComponent<Rigidbody2D>();
         this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
         capsuleCollider2D.enabled = false;
@@ -62,11 +66,22 @@ public class Projectile : MonoBehaviour
         if(Time.time - timeFired > 0.5f)
         {
             rigid_body.AddForce(transform.right*thrust);
+
         }
+        if (Time.time - timeFired > 0.5f && !animationStarted)
+        {
+            Vector3 tailLocation = this.gameObject.transform.position -0.15f*this.gameObject.transform.right + 0.01f*this.gameObject.transform.up;
+            blueFlameAnimation = Reference.animationController.SpawnBlueFlameAnimation(tailLocation, this.gameObject);
+            /// this does nothing yet but may do in the future
+            /// blueFlameAnimation.GetComponent<BlueFlameFunction>().TransitionToFullJet();
+            animationStarted = true;
+
+        }
+
+
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-            Debug.Log("Collision! - Projectile");
             DestroySelf();
 
     }
@@ -74,7 +89,6 @@ public class Projectile : MonoBehaviour
     {
         if(Time.time - timeFired > 0.4f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
-            Debug.Log("Collisdsion! - Projectile");
             DestroySelf();
         }
     }
@@ -112,7 +126,11 @@ public class Projectile : MonoBehaviour
     void DestroySelf()
     {
         Reference.animationController.SpawnExplosionAnimation(this.transform.position);
-
+        
+        if(blueFlameAnimation != null)
+        {
+            blueFlameAnimation.GetComponent<BlueFlameFunction>().DestroyAnimationGO();
+        }
         Reference.projectileController.DespawnProjectile(go,objectPack);
 
     }
