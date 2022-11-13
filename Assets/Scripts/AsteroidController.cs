@@ -29,7 +29,6 @@ public class AsteroidController : MonoBehaviour
     }
     public void AsteroidHit(Asteroid asteroid, Collision2D collision2D, List<GameObject> asteroidPack)
     {
-        Debug.Log("Hit");
         int size = asteroid.size;
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
