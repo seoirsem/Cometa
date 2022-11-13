@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class AsteroidController : MonoBehaviour
 {
-    GameObject asteroidPrefab;
+    GameObject mainAsteroidPrefab;
+    GameObject derivedAsteroidPrefab;
     List<GameObject> asteroids = new List<GameObject>();
     List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
     Vector2 worldSize;
@@ -12,9 +13,12 @@ public class AsteroidController : MonoBehaviour
 
     void Start()
     {
-        asteroidPrefab = Resources.Load("Prefabs/Asteroid") as GameObject;
+        mainAsteroidPrefab = Resources.Load("Prefabs/MainAsteroid") as GameObject;
+        derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
         SpawnAsteroid(3, new Vector3(0, 2, 0), new Vector3(0,0,0));
+        SpawnAsteroid(3, new Vector3(0, Reference.worldController.worldSize.y/2 - 0.1f, 0), new Vector3(0,0,0));
+
     }
 
 
@@ -99,12 +103,12 @@ public class AsteroidController : MonoBehaviour
     {
         List<GameObject> asteroidPack = new List<GameObject>();
 
-        GameObject asteroidgo = SimplePool.Spawn(asteroidPrefab, position, new Quaternion(0,0,0,0));//spawns the first asteroid
+        GameObject asteroidgo = SimplePool.Spawn(mainAsteroidPrefab, position, new Quaternion(0,0,0,0));//spawns the first asteroid
 
-        GameObject asteroidgo1 = SimplePool.Spawn(asteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo2 = SimplePool.Spawn(asteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo3 = SimplePool.Spawn(asteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo4 = SimplePool.Spawn(asteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo1 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo2 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo3 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo4 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
 
         asteroidPack.Add(asteroidgo);
         asteroidPack.Add(asteroidgo1);
@@ -113,23 +117,23 @@ public class AsteroidController : MonoBehaviour
         asteroidPack.Add(asteroidgo4);
 
         asteroidgo.transform.SetParent(this.gameObject.transform);
-        asteroidgo.GetComponent<Asteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity);
+        asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo);
 
         asteroidgo1.transform.SetParent(this.gameObject.transform);
-        asteroidgo1.GetComponent<Asteroid>().OnSpawn(size, new Vector2(1, 0), asteroidPack, asteroidgo, velocity);
+        asteroidgo1.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo1);
 
         asteroidgo2.transform.SetParent(this.gameObject.transform);
-        asteroidgo2.GetComponent<Asteroid>().OnSpawn(size, new Vector2(-1, 0), asteroidPack, asteroidgo, velocity);
+        asteroidgo2.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo2);
 
         asteroidgo3.transform.SetParent(this.gameObject.transform);
-        asteroidgo3.GetComponent<Asteroid>().OnSpawn(size, new Vector2(0, 1), asteroidPack, asteroidgo, velocity);
+        asteroidgo3.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo3);
 
         asteroidgo4.transform.SetParent(this.gameObject.transform);
-        asteroidgo4.GetComponent<Asteroid>().OnSpawn(size, new Vector2(0, -1), asteroidPack, asteroidgo, velocity);
+        asteroidgo4.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, -1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo4);
 
         asteroidSets.Add(asteroidPack);
