@@ -27,10 +27,10 @@ public class AnimationController : MonoBehaviour
         explosionAnimationGo.transform.SetParent(this.gameObject.transform);
     }
 
-    public void SpawnDustCloudAnimation(Vector3 collisionPoint)
+    public void SpawnDustCloudAnimation(Vector3 collisionPoint, GameObject asteroidgo)
     {
         GameObject dustCloudAnimationGo = SimplePool.Spawn(dustCloudAnimationPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
-        dustCloudAnimationGo.transform.SetParent(this.gameObject.transform);
+        dustCloudAnimationGo.transform.SetParent(asteroidgo.transform);
     }
 
     public GameObject SpawnBlueFlameAnimation(Vector3 collisionPoint, GameObject rocketgo)

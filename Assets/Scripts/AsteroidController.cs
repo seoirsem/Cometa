@@ -70,7 +70,7 @@ public class AsteroidController : MonoBehaviour
 
         if (Vector3.Dot(collisionDirection,referenceDirection) > 0)//only one of the asteroids triggers a dust cloud
         {
-            Reference.animationController.SpawnDustCloudAnimation(collisionPoint);
+            Reference.animationController.SpawnDustCloudAnimation(collisionPoint, asteroid.gameObject);
         }
         //asteroid.ApplyImpulse(collisionDirection,1f);
     }

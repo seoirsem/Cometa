@@ -58,9 +58,14 @@ public class DerivedAsteroid : Asteroid
 
     private void OnTriggerEnter2D(Collider2D otherObject)
     {
-        Debug.Log("ontriggerenter");
+        //Debug.Log("ontriggerenter");
         // This passes note of any collisions straight to the main asteroid
         mainAsteroidClass.DerivedAsteroidCollision(otherObject, this.gameObject, offset);
 
+    }
+
+    public void ApplyExplosionImpulse(Vector3 direction, float explosionSize)
+    {// any nearby explosions are simply handed up to the parent
+        mainAsteroidClass.ApplyExplosionImpulse(direction, explosionSize);
     }
 }

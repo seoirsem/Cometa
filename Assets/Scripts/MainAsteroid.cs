@@ -8,6 +8,7 @@ public class MainAsteroid : Asteroid
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
         this.mass = Mathf.Pow(size,2);
+
         // Update this in future to calculate based on the area of the shape formed by the mesh
         //Debug.Log(this.mass);
 
@@ -23,11 +24,11 @@ public class MainAsteroid : Asteroid
         this.location = location;
         rigid_body.centerOfMass = new Vector2(0,0);
 
-
         //in Unity trianges are drawn clockwise
         this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 250;//random rotation rate
         this.rigid_body.angularVelocity = rotationRate;
         DrawAsteroid(size);
+        rigid_body.mass = mass;
 
 
     }
@@ -128,6 +129,10 @@ public class MainAsteroid : Asteroid
             //Debug.Log("Asteroid hit other asteroid");
 
         }
+    }
+    public void ApplyExplosionImpulse(Vector3 direction, float explosionImpulse)
+    {
+        ApplyImpulse(direction, explosionImpulse);
     }
 
 }
