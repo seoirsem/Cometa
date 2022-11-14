@@ -6,7 +6,7 @@ public class ProjectileController : MonoBehaviour
 {
 
     float time;
-    float cooldown = 1.2f;//s
+    float cooldown = 0.2f;//s
     GameObject projectilePrefab;
     List<GameObject> projectileList = new List<GameObject>();
     List<List<GameObject>> projectilePacks = new List<List<GameObject>>();

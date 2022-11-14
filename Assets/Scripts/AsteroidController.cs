@@ -10,6 +10,9 @@ public class AsteroidController : MonoBehaviour
     List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
     Vector2 worldSize;
 
+    Vector3 dummy1 = new Vector3(1,1,1);
+    Vector3[] dummy2 = new Vector3[1];
+
 
     void Start()
     {
@@ -17,18 +20,17 @@ public class AsteroidController : MonoBehaviour
         derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
         //SpawnAsteroid(3, new Vector3(0, 2, 0), new Vector3(0,0,0));
-        SpawnAsteroid(3, new Vector3(0, -Reference.worldController.worldSize.y/2 + 0.1f, 0), new Vector3(0,0,0));
+        // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0));
 
     }
-
-
 
     void Update()
     {
         if (Reference.playerInputController.mouseClicked)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            SpawnAsteroid(3, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
+            // SpawnAsteroid(6, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(0, 0, 0)); 
+            SpawnAsteroid(6, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
         }
     }
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack)
@@ -41,22 +43,33 @@ public class AsteroidController : MonoBehaviour
         Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
-        DespawnAsteroid(asteroid, asteroidPack);
-        GameObject projectile_go = otherObject; 
-        // Reference.projectileController.DespawnProjectile(projectile_go, projectile_go.GetComponent<Projectile>().objectPack);
-        float debugDontMove = 1f;
-        if (size == 3)
-        {
-            SpawnAsteroid(2, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
-            SpawnAsteroid(2, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
-        }
-        else if(size == 2)
-        {
-            SpawnAsteroid(1, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
-            SpawnAsteroid(1, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
-        }
+        Asteroid[] splitAsteroidData = asteroid.SplitAsteroid(asteroid.meshVertices, collisionPoint - asteroidPosition, collisionDirection);
 
+        DespawnAsteroid(asteroid, asteroidPack);
+        
+        // Asteroid[] splitAsteroidData = new Asteroid[2];
+        
+        float debugDontMove = 1f;
+
+        // Oooo-kayyyy... So in Logs below, first evaluates to null, both the second has a well defined value.
+        // God is dead.
+        // Debug.Log(splitAsteroidData[0] == null);
+        // Debug.Log(splitAsteroidData[0]);
+        // Debug.Log(splitAsteroidData[0].meshVertices[0]);
+
+        if (splitAsteroidData[0] != null)
+        {
+            SpawnSplitAsteroid(2, asteroidPosition + left * (size / 1f)*0f, (asteroidVelocity + left * 1f)*debugDontMove, splitAsteroidData[0]);
+        }
+        // Debug.Log(splitAsteroidData[1]);
+        // Debug.Log(splitAsteroidData[1].meshVertices);
+        // Debug.Log(splitAsteroidData[1].meshVertices.Length);
+        if (splitAsteroidData[1] != null)
+        {
+            SpawnSplitAsteroid(2, asteroidPosition + left * (size / 6f)*0f, (asteroidVelocity + right * 1f)*debugDontMove, splitAsteroidData[1]);
+        }
     }
+    
     public void AsteroidAstroidCollision(Asteroid asteroid, Vector2 contact, List<GameObject> asteroidPack)
     {
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
@@ -95,6 +108,8 @@ public class AsteroidController : MonoBehaviour
         }
     }
 
+
+
     void SpawnAsteroid(int size, Vector3 position, Vector3 velocity)
     {
         List<GameObject> asteroidPack = new List<GameObject>();
@@ -114,6 +129,46 @@ public class AsteroidController : MonoBehaviour
 
         asteroidgo.transform.SetParent(this.gameObject.transform);
         asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity);
+        asteroids.Add(asteroidgo);
+
+        asteroidgo1.transform.SetParent(this.gameObject.transform);
+        asteroidgo1.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, 0), asteroidPack, asteroidgo, velocity);
+        asteroids.Add(asteroidgo1);
+
+        asteroidgo2.transform.SetParent(this.gameObject.transform);
+        asteroidgo2.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, 0), asteroidPack, asteroidgo, velocity);
+        asteroids.Add(asteroidgo2);
+
+        asteroidgo3.transform.SetParent(this.gameObject.transform);
+        asteroidgo3.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, 1), asteroidPack, asteroidgo, velocity);
+        asteroids.Add(asteroidgo3);
+
+        asteroidgo4.transform.SetParent(this.gameObject.transform);
+        asteroidgo4.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, -1), asteroidPack, asteroidgo, velocity);
+        asteroids.Add(asteroidgo4);
+
+        asteroidSets.Add(asteroidPack);
+    }
+
+    void SpawnSplitAsteroid(int size, Vector3 position, Vector3 velocity, Asteroid asteroidData)
+    {
+        List<GameObject> asteroidPack = new List<GameObject>();
+
+        GameObject asteroidgo = SimplePool.Spawn(mainAsteroidPrefab, position, new Quaternion(0,0,0,0));//spawns the first asteroid
+
+        GameObject asteroidgo1 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo2 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo3 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo4 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+
+        asteroidPack.Add(asteroidgo);
+        asteroidPack.Add(asteroidgo1);
+        asteroidPack.Add(asteroidgo2);
+        asteroidPack.Add(asteroidgo3);
+        asteroidPack.Add(asteroidgo4);
+
+        asteroidgo.transform.SetParent(this.gameObject.transform);
+        asteroidgo.GetComponent<MainAsteroid>().OnSpawnSplitAsteroid(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, asteroidData);
         asteroids.Add(asteroidgo);
 
         asteroidgo1.transform.SetParent(this.gameObject.transform);

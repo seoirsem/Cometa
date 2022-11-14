@@ -27,11 +27,67 @@ public class Asteroid : MonoBehaviour
     public AsteroidController asteroidController;
     public int size;
 
+    public Asteroid[] SplitAsteroid(Vector3[] meshVs, Vector3 collisionPoint, Vector3 collisionDirection)
+    {
+        Asteroid[] asteroidMeshData = new Asteroid[2];
+        asteroidMeshData[0] = new Asteroid();
+        asteroidMeshData[1] = new Asteroid();
+
+        List<Vector3> vList1 = new List<Vector3>();
+        
+        List<Vector3> vList2 = new List<Vector3>();
+        for (int i = 0; i < meshVs.Length; i++)
+        {
+            if (Vector3.Cross(meshVs[i], collisionDirection).z > 0f)
+            {
+                vList1.Add(meshVs[i]);
+            }
+            else
+            {
+                vList2.Add(meshVs[i]);
+            }
+        }
+        // vList1.Add(meshVs[vList1.Count-1]);
+        // vList2.Add(meshVs[vList2.Count-1]);
+        // vList1.Add(new Vector3((vList1[vList1.Count-1].x + vList2[0].x)/2f, (vList1[vList1.Count-1].y + vList2[0].y)/2f, 0f));
+        // vList1.Add(collisionPoint);
+
+        Vector3[] meshVertices1 = vList1.ToArray();
+        Vector3[] meshVertices2 = vList2.ToArray();
+
+        if (meshVertices1.Length >= 5)
+        {
+            int[] meshTriangles1 = GetTriangles(meshVertices1.Length - 1);
+            int[] meshIndices1 = GetIndices(meshVertices1.Length - 1);
+            asteroidMeshData[0].meshVertices = meshVertices1;
+            asteroidMeshData[0].meshTriangles = meshTriangles1;
+            asteroidMeshData[0].meshIndices = meshIndices1;
+        }
+        else
+        {
+            asteroidMeshData[0] = null;
+        }
+
+        if (meshVertices2.Length >= 5)
+        {
+            int[] meshTriangles2 = GetTriangles(meshVertices2.Length - 1);
+            int[] meshIndices2 = GetIndices(meshVertices2.Length - 1);
+            asteroidMeshData[1].meshVertices = meshVertices2;
+            asteroidMeshData[1].meshTriangles = meshTriangles2;
+            asteroidMeshData[1].meshIndices = meshIndices2;
+        }
+        else
+        {
+            asteroidMeshData[1] = null;
+        }
+
+        return asteroidMeshData;
+    }
 
     public void DrawAsteroid(int size)
     {
         //random int including the starting number, excluding the finishing number
-        int numberOfSides = Random.Range(5, 13);
+        int numberOfSides = Random.Range(10, 13);
 
         float radius = size / 6f;
 
@@ -51,30 +107,9 @@ public class Asteroid : MonoBehaviour
         
         }
         meshVertices[numberOfSides] = new Vector3(0, 0, 0); // the centre of the object is the last vertex in the list
-
-
-        meshTriangles = new int[3*numberOfSides];
-        for (int i = 0; i < numberOfSides - 1; i++)
-        {
-            meshTriangles[3*i] = i;
-            meshTriangles[3*i+1] = i+1;
-            meshTriangles[3*i+2] = numberOfSides;
-        }
-        meshTriangles[3 * (numberOfSides - 1)] = numberOfSides - 1;
-        meshTriangles[3 * (numberOfSides - 1) + 1] = 0;
-        meshTriangles[3 * (numberOfSides - 1) + 2] = numberOfSides;
-
-        meshIndices = new int[2 * numberOfSides];
-        for (int i = 0; i < numberOfSides - 1; i++)
-        {
-            meshIndices[2 * i] = i;
-            meshIndices[2 * i + 1] = i + 1;
-        }
-        meshIndices[2 * (numberOfSides - 1) - 1] = numberOfSides - 1;
-        meshIndices[2 * (numberOfSides - 1)] = 0;
-
-
-
+        
+        int[] meshTriangles = GetTriangles(numberOfSides);
+        int[] meshIndices = GetIndices(numberOfSides);
 
         //Notes on drawing lines
         //https://docs.unity3d.com/ScriptReference/MeshTopology.html
@@ -99,6 +134,34 @@ public class Asteroid : MonoBehaviour
         DrawMesh(meshVertices, meshTriangles, meshIndices);
         DrawCollider(meshVertices, meshTriangles);
 
+    }
+
+    private static int[] GetIndices(int numberOfSides)
+    {
+        int[] meshIs = new int[2 * numberOfSides];
+        for (int i = 0; i < numberOfSides - 1; i++)
+        {
+            meshIs[2 * i] = i;
+            meshIs[2 * i + 1] = i + 1;
+        }
+        meshIs[2 * (numberOfSides - 1) - 1] = numberOfSides - 1;
+        meshIs[2 * (numberOfSides - 1)] = 0;
+        return meshIs;
+    }
+
+    private static int[] GetTriangles(int numberOfSides)
+    {
+        int[] meshTs = new int[3*numberOfSides];
+        for (int i = 0; i < numberOfSides - 1; i++)
+        {
+            meshTs[3*i] = i;
+            meshTs[3*i+1] = i+1;
+            meshTs[3*i+2] = numberOfSides;
+        }
+        meshTs[3 * (numberOfSides - 1)] = numberOfSides - 1;
+        meshTs[3 * (numberOfSides - 1) + 1] = 0;
+        meshTs[3 * (numberOfSides - 1) + 2] = numberOfSides;
+        return meshTs;
     }
 
 
@@ -142,5 +205,43 @@ public class Asteroid : MonoBehaviour
         polygonCollider.points = xyPoints; 
 
     }
+
+    public static bool operator == (Asteroid d1, Asteroid d2)
+     {
+        // If both are null, or both are same instance, return true.
+        if (System.Object.ReferenceEquals(d1, d2))
+        {
+            return true;
+        }
+
+        // If one is null, but not both, return false.
+        if (((object)d1 == null) || ((object)d2 == null))
+        {
+            return false;
+        }
+
+        // Return true if the fields match:
+        return d1.asteroidOutlines == d2.asteroidOutlines && d1.location == d2.location && d1.asteroidgo == d2.asteroidgo;
+     }
+
+    public override bool Equals(System.Object obj)
+     {
+        // If parameter cannot be cast to ThreeDPoint return false:
+        Asteroid d = obj as Asteroid;
+        if ((object)d == null)
+        {
+            return false;
+        }
+        
+        // Return true if the fields match:
+        return asteroidOutlines == d.asteroidOutlines && location == d.location && asteroidgo == d.asteroidgo;
+     }
+
+    public static bool operator !=(Asteroid d1, Asteroid d2)
+    {
+        return !(d1 == d2);
+    }
+
+
 
 }

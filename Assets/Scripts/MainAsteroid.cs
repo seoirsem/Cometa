@@ -4,32 +4,50 @@ using UnityEngine;
 
 public class MainAsteroid : Asteroid
 {
-    // Start is called before the first frame update
-    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
-    {
-        this.mass = Mathf.Pow(size,2);
-        // Update this in future to calculate based on the area of the shape formed by the mesh
-        //Debug.Log(this.mass);
 
+    public void OnSpawnSplitAsteroid(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, Asteroid asteroidData)
+    {
+
+        this.mass = Mathf.Pow(size,2);
         this.size = size;
-        asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
-        asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
-        rigid_body = this.GetComponent<Rigidbody2D>();
+        this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
+        this.rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
-        asteroidgo = this.gameObject;
+        this.asteroidgo = this.gameObject;
         this.velocity = velocity;
         this.rigid_body.velocity = velocity;
         this.worldSize = Reference.worldController.worldSize;
         this.location = location;
-        rigid_body.centerOfMass = new Vector2(0,0);
-
-
-        //in Unity trianges are drawn clockwise
-        this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 250;//random rotation rate
+        this.rigid_body.centerOfMass = new Vector2(0,0);
+        this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 0;//random rotation rate
         this.rigid_body.angularVelocity = rotationRate;
+
+        this.meshVertices = asteroidData.meshVertices;
+        this.meshTriangles = asteroidData.meshTriangles;
+        this.meshIndices = asteroidData.meshIndices;
+
+        DrawMesh(meshVertices, meshTriangles, meshIndices);
+        DrawCollider(meshVertices, meshTriangles);
+    }
+
+    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
+    {
+        this.mass = Mathf.Pow(size,2);
+        this.size = size;
+        this.asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
+        this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
+        this.rigid_body = this.GetComponent<Rigidbody2D>();
+        this.asteroidPack = asteroidPack;
+        this.asteroidgo = this.gameObject;
+        this.velocity = velocity;
+        this.rigid_body.velocity = velocity;
+        this.worldSize = Reference.worldController.worldSize;
+        this.location = location;
+        this.rigid_body.centerOfMass = new Vector2(0,0);
+        this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 0;//random rotation rate
+        this.rigid_body.angularVelocity = rotationRate;
+ 
         DrawAsteroid(size);
-
-
     }
 
 
@@ -124,7 +142,7 @@ public class MainAsteroid : Asteroid
         else
         {//if you have collided with another asteroid
             Asteroid otherAsteroid = otherObject.GetComponent<Asteroid>();
-            asteroidController.AsteroidAstroidCollision(this, collisionLocation, asteroidPack);
+            Reference.asteroidController.AsteroidAstroidCollision(this, collisionLocation, asteroidPack);
             //Debug.Log("Asteroid hit other asteroid");
 
         }
