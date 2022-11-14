@@ -49,8 +49,11 @@ public class Projectile : MonoBehaviour
         rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
         rigid_body.rotation = rotationalPosition + 90f;
 
-        Vector3 playerVelocity = Reference.playerSpriteController.velocity;
-        rigid_body.velocity = new Vector2(playerVelocity.x, playerVelocity.y);//Reference.playergo.GetComponent<Rigidbody2D>().velocity;
+        Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), true);
+
+
+//        Vector3 playerVelocity = Reference.playerSpriteController.velocity;
+        rigid_body.velocity = Reference.playerSpriteController.rigid_body.velocity;
         rigid_body.AddForce(0.1f*transform.right,ForceMode2D.Impulse);
     }
     // Update is called once per frame
@@ -63,7 +66,7 @@ public class Projectile : MonoBehaviour
             //Debug.Log("Projectile Timed Out");
             DestroySelf();
         }
-        if(Time.time - timeFired > 0.1f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
+        if(Time.time - timeFired > 0.25f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
             capsuleCollider2D.enabled = true;
         }
@@ -84,6 +87,8 @@ public class Projectile : MonoBehaviour
             /// this does nothing yet but may do in the future
             /// blueFlameAnimation.GetComponent<BlueFlameFunction>().TransitionToFullJet();
             animationStarted = true;
+            Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), false);
+
 
         }
 
@@ -138,16 +143,13 @@ public class Projectile : MonoBehaviour
 
         foreach (Collider2D hitCollider in explosionRadius.TriggerList)
         {
+            Vector3 direction = hitCollider.gameObject.transform.position - this.transform.position;
+            float distance = direction.magnitude;            
+            if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
+            float explosionImpulse = explosionSize / distance * distance;
+            
             if (hitCollider.gameObject.GetComponent<Asteroid>() != null)
             {
-                Vector3 direction = hitCollider.gameObject.transform.position - this.transform.position;
-                float distance = direction.magnitude;
-
-                Debug.Log(distance);
-
-                if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
-                float explosionImpulse = explosionSize / distance * distance;
-
                 // this is janky repeating code which can probably be fixed by using derived classes better oh well
                 // we will also want to damage nearby asteroids in the radius too
                 if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
@@ -161,6 +163,10 @@ public class Projectile : MonoBehaviour
                     DerivedAsteroid asteroid = hitCollider.gameObject.GetComponent<DerivedAsteroid>();
                     asteroid.ApplyExplosionImpulse(direction, explosionImpulse);
                 }
+            }
+            else if (hitCollider.gameObject.GetComponent<PlayerSpriteController>() != null)
+            {
+                hitCollider.gameObject.GetComponent<PlayerSpriteController>().ApplyExplosionImpulse(direction,explosionImpulse);
             }
 
         }
