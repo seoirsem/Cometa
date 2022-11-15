@@ -46,7 +46,8 @@ public class MainAsteroid : Asteroid
         this.rigid_body.centerOfMass = new Vector2(0,0);
         this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 0;//random rotation rate
         this.rigid_body.angularVelocity = rotationRate;
- 
+        this.rigid_body.mass = mass;
+
         DrawAsteroid(size);
     }
 
@@ -146,6 +147,10 @@ public class MainAsteroid : Asteroid
             //Debug.Log("Asteroid hit other asteroid");
 
         }
+    }
+    public void ApplyExplosionImpulse(Vector3 direction, float explosionImpulse)
+    {
+        ApplyImpulse(direction, explosionImpulse);
     }
 
 }

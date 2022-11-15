@@ -10,6 +10,8 @@ public class Projectile : MonoBehaviour
     float lifespan = 2;//s
     Vector2 worldSize;
     float projectileSpeed = 11;
+    float explosionSize = 2f; // to modulate how much explosion thrust is applied to surrounding objects
+    float minExplosionRadius = 0.25f; //to avoid huge impulses near the explosion 
     float thrust = 1f;
     public List<GameObject> objectPack;
     public bool mainProjectile;
@@ -17,7 +19,12 @@ public class Projectile : MonoBehaviour
     CapsuleCollider2D capsuleCollider2D;
     Rigidbody2D rigid_body;
     float rotationalPosition;
+    GameObject explosionRadiusGO;
+    ExplosionRadius explosionRadius;
 
+
+    bool animationStarted = false;
+    GameObject blueFlameAnimation;
 
     void Start()
     {
@@ -27,19 +34,26 @@ public class Projectile : MonoBehaviour
     public void OnFired(Vector2 screenCenter, List<GameObject> objectPack)
     {
         go = this.gameObject;
+        explosionRadiusGO = go.transform.Find("ExplosionRadius").gameObject;
+        explosionRadius = explosionRadiusGO.GetComponent<ExplosionRadius>();
         this.objectPack = objectPack;
         this.screenCenter = screenCenter;
         timeFired = Time.time;
         worldSize = Reference.worldController.worldSize;
         leftPlayerCollider = false;
+        animationStarted = false;
+
         rigid_body = go.GetComponent<Rigidbody2D>();
         this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
         capsuleCollider2D.enabled = false;
         rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
         rigid_body.rotation = rotationalPosition + 90f;
 
-        Vector3 playerVelocity = Reference.playerSpriteController.velocity;
-        rigid_body.velocity = new Vector2(playerVelocity.x, playerVelocity.y);//Reference.playergo.GetComponent<Rigidbody2D>().velocity;
+        Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), true);
+
+
+//        Vector3 playerVelocity = Reference.playerSpriteController.velocity;
+        rigid_body.velocity = Reference.playerSpriteController.rigid_body.velocity;
         rigid_body.AddForce(0.1f*transform.right,ForceMode2D.Impulse);
     }
     // Update is called once per frame
@@ -52,21 +66,36 @@ public class Projectile : MonoBehaviour
             //Debug.Log("Projectile Timed Out");
             DestroySelf();
         }
-        if(Time.time - timeFired > 0.1f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
+        if(Time.time - timeFired > 0.25f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
             capsuleCollider2D.enabled = true;
         }
     }
     void FixedUpdate()
     {
+        explosionRadius.GetComponent<Rigidbody2D>().position = rigid_body.position;
+        
         if(Time.time - timeFired > 0.5f)
         {
             rigid_body.AddForce(transform.right*thrust);
+
         }
+        if (Time.time - timeFired > 0.5f && !animationStarted)
+        {
+            Vector3 tailLocation = this.gameObject.transform.position -0.15f*this.gameObject.transform.right + 0.01f*this.gameObject.transform.up;
+            blueFlameAnimation = Reference.animationController.SpawnBlueFlameAnimation(tailLocation, this.gameObject);
+            /// this does nothing yet but may do in the future
+            /// blueFlameAnimation.GetComponent<BlueFlameFunction>().TransitionToFullJet();
+            animationStarted = true;
+            Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), false);
+
+
+        }
+
+
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-            Debug.Log("Collision! - Projectile");
             DestroySelf();
 
     }
@@ -74,7 +103,6 @@ public class Projectile : MonoBehaviour
     {
         if(Time.time - timeFired > 0.4f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
-            Debug.Log("Collisdsion! - Projectile");
             DestroySelf();
         }
     }
@@ -110,9 +138,49 @@ public class Projectile : MonoBehaviour
     }
 
     void DestroySelf()
-    {
-        Reference.animationController.SpawnExplosionAnimation(this.transform.position);
+    {   /// add thrust to nearby objects due to explosion
+        // a helpful note: the prefab for the projectile has a disabled sprite renderer. This shows the radius of explosion
 
+        foreach (Collider2D hitCollider in explosionRadius.TriggerList)
+        {
+            Vector3 direction = hitCollider.gameObject.transform.position - this.transform.position;
+            float distance = direction.magnitude;            
+            if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
+            float explosionImpulse = explosionSize / distance * distance;
+            
+            if (hitCollider.gameObject.GetComponent<Asteroid>() != null)
+            {
+                // this is janky repeating code which can probably be fixed by using derived classes better oh well
+                // we will also want to damage nearby asteroids in the radius too
+                if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
+                {
+                    MainAsteroid asteroid = hitCollider.gameObject.GetComponent<MainAsteroid>();
+                    asteroid.ApplyExplosionImpulse(direction, explosionImpulse);
+
+                }
+                else
+                {
+                    DerivedAsteroid asteroid = hitCollider.gameObject.GetComponent<DerivedAsteroid>();
+                    asteroid.ApplyExplosionImpulse(direction, explosionImpulse);
+                }
+            }
+            else if (hitCollider.gameObject.GetComponent<PlayerSpriteController>() != null)
+            {
+                hitCollider.gameObject.GetComponent<PlayerSpriteController>().ApplyExplosionImpulse(direction,explosionImpulse);
+            }
+
+        }
+        
+
+
+
+        /// perform animations etc
+        Reference.animationController.SpawnExplosionAnimation(this.transform.position);
+        
+        if(blueFlameAnimation != null)
+        {
+            blueFlameAnimation.GetComponent<BlueFlameFunction>().DestroyAnimationGO();
+        }
         Reference.projectileController.DespawnProjectile(go,objectPack);
 
     }

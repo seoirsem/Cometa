@@ -63,4 +63,9 @@ public class DerivedAsteroid : Asteroid
         mainAsteroidClass.DerivedAsteroidCollision(otherObject, this.gameObject, offset);
 
     }
+
+    public void ApplyExplosionImpulse(Vector3 direction, float explosionSize)
+    {// any nearby explosions are simply handed up to the parent
+        mainAsteroidClass.ApplyExplosionImpulse(direction, explosionSize);
+    }
 }

@@ -6,8 +6,9 @@ public class PlayerSpriteController : MonoBehaviour
 {
     Player player;
     GameObject playergo;
-    float rotationRate = 400; //degree/s
-    float engineForce = 6; 
+    float rotationRate = 500; 
+    float engineForce = 8; 
+    float mass = 1;
     Reference reference;
     float rotation = 0;
     public Vector3 velocity = new Vector3(0, 0, 0);
@@ -16,7 +17,7 @@ public class PlayerSpriteController : MonoBehaviour
     List<GameObject> visualClones;
     float shootingCooldownTimer;
     float cooldown = 0.75f;//s
-    Rigidbody2D rigid_body;
+    public Rigidbody2D rigid_body;
     
 
     void Start()
@@ -27,11 +28,12 @@ public class PlayerSpriteController : MonoBehaviour
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
+        rigid_body.mass = mass;
         SpawnVisualClones();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         UpdatePlayerRotation();
         UpdatePlayerMotion();
@@ -93,9 +95,12 @@ public class PlayerSpriteController : MonoBehaviour
         {
             playerInputRotation -= 1;
         }
-        float frameRotation = Time.deltaTime *playerInputRotation*rotationRate;
-
-        playergo.transform.Rotate(new Vector3( 0, 0,frameRotation));
+//        float frameRotation = Time.deltaTime *playerInputRotation*rotationRate;
+        //float torque = Time.deltaTime *playerInputRotation*rotationRate;
+        //rigid_body.AddTorque(torque, ForceMode2D.Impulse);
+        float rotation = rigid_body.rotation;
+        rigid_body.MoveRotation(rotation + Time.fixedDeltaTime *playerInputRotation*rotationRate);
+        //playergo.transform.Rotate(new Vector3( 0, 0,frameRotation));
         //Debug.Log(frameRotation);
     }
 
@@ -110,22 +115,18 @@ public class PlayerSpriteController : MonoBehaviour
         {
             playerInputImpulse -= 1;
         }
-        //float rotation = playergo.transform.eulerAngles.z/(2* Mathf.PI);
-        //Debug.Log(rotation);
-        //Debug.Log(Mathf.Cos(rotation));
 
-        //Debug.Log("Cos "+ Mathf.Cos(rotation) + "Sin " +  Mathf.Sin(rotation));
         
-        Vector3 impulse = transform.up * playerInputImpulse * engineForce / player.mass;
-        //Debug.Log(impulse);
-        velocity += Time.deltaTime*impulse;
-        if(velocity.magnitude > maxSpeed)
-        {
-            velocity = velocity.normalized * maxSpeed;
-        }
-        playergo.transform.position += velocity * Time.deltaTime;
-        //rigid_body.velocity = new Vector2()
-        //Debug.Log(velocity.magnitude);
+        //Vector3 impulse = transform.up * playerInputImpulse * engineForce / player.mass;
+        //velocity += Time.deltaTime*impulse;
+        //if(velocity.magnitude > maxSpeed)
+        //{
+        //    velocity = velocity.normalized * maxSpeed;
+        //}
+        //playergo.transform.position += velocity * Time.deltaTime;
+        Vector2 direction = new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y);
+        Vector2 impulse = direction * playerInputImpulse * engineForce;
+        rigid_body.AddForce(impulse);
 
 
 
@@ -150,6 +151,12 @@ public class PlayerSpriteController : MonoBehaviour
 
     }
 
+    public void ApplyExplosionImpulse(Vector3 direction, float magnitude)
+    {
 
+    }
+
+
+//ToDo animations when rockets are firing for main and side jets
 
 }
