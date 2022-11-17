@@ -1,0 +1,141 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ShipShields : MonoBehaviour
+{
+    // Start is called before the first frame update
+    float maxShieldStrength = 100f;
+    float shieldStrength;
+    Rigidbody2D playerRigidBody;
+    GameObject playerGameObject;
+    Rigidbody2D rigid_body;
+    Collider2D collider;
+    public List<Collider2D> TriggerList;
+    float lastHit;
+    SpriteRenderer spriteRenderer;
+
+    float shieldRechargeRate = 2f; //per second
+    float shieldChargeDelay = 1f; //seconds
+    float shieldForceRatio = 5f;
+
+    void Start()
+    {
+        shieldStrength = 100f;
+        playerRigidBody = Reference.playergo.GetComponent<Rigidbody2D>();
+        TriggerList  = new List<Collider2D>();
+        playerGameObject = Reference.playergo;
+        rigid_body = gameObject.GetComponent<Rigidbody2D>();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        lastHit = Time.time;
+
+    }
+
+
+    
+    // Update is called once per frame
+    void Update()
+    {
+        TrackPlayer();
+        UpdateCollisions();
+        UpdateCharge(Time.deltaTime);
+
+    }
+
+    void TrackPlayer()
+    {
+        rigid_body.position = playerRigidBody.position;
+        rigid_body.rotation = playerRigidBody.rotation;
+    }
+
+    void UpdateCollisions()
+    {
+        foreach (Collider2D hitCollider in TriggerList)
+        {
+
+            float projectileLife = 2f;
+            if(hitCollider.gameObject.GetComponent<Projectile>() != null)
+            {
+                projectileLife = Time.time - hitCollider.gameObject.GetComponent<Projectile>().timeFired;
+            }
+
+            if(hitCollider.gameObject.GetComponent<PlayerSpriteController>() == null && shieldStrength > 0 &&
+               projectileLife>=0.7f && hitCollider.isTrigger == false && hitCollider.gameObject.active)
+            {//exclude the player itself!
+
+                Rigidbody2D hitRigidBody = hitCollider.gameObject.GetComponent<Rigidbody2D>();
+                Rigidbody2D playerRigidBody = playerGameObject.GetComponent<Rigidbody2D>();
+
+                Vector2 relativeVelocity = hitRigidBody.velocity - playerRigidBody.velocity;
+                Vector2 relativePosition = hitRigidBody.position - playerRigidBody.position;
+
+                Vector3 closestPoint = hitCollider.ClosestPoint(playerGameObject.transform.position);
+                float distance =  (closestPoint - playerGameObject.transform.position).magnitude;
+                if (distance < 0.2f){distance = 0.2f;} // this stops the applied force getting too high
+
+                float mass = hitCollider.gameObject.GetComponent<Rigidbody2D>().mass;
+                //float playerMass = playergo.GetComponent<Rigidbody2D>().mass;
+
+                float shieldAppliedForce = (1/distance) * (1/distance) * relativeVelocity.magnitude * Time.deltaTime;
+                if(shieldAppliedForce > 50){shieldAppliedForce = 50f;}
+
+                Vector2 shieldForceVector = shieldAppliedForce * relativePosition;
+
+                playerRigidBody.AddForce(-1 * shieldForceVector, ForceMode2D.Impulse);
+                hitRigidBody.AddForce(shieldForceVector, ForceMode2D.Impulse);
+                Debug.Log(hitCollider.gameObject.name);
+                OnHit(shieldAppliedForce);
+
+                //Debug.Log(shieldAppliedForce);
+             }
+        }
+    }
+    
+    void UpdateCharge(float dt)
+    {   
+        if(Time.time - lastHit > shieldChargeDelay)
+        {
+            shieldStrength += shieldRechargeRate*dt;
+            if(shieldStrength > maxShieldStrength){shieldStrength = maxShieldStrength;}
+        }
+        //Debug.Log(shieldStrength);
+        
+        Color tmp = spriteRenderer.color;
+        tmp.a = shieldStrength/maxShieldStrength;
+        spriteRenderer.color = tmp;
+    }
+    void OnHit(float shieldForce)
+    {
+        //Debug.Log(shieldForce);
+        lastHit = Time.time;
+        shieldStrength -= shieldForceRatio*shieldForce;
+        if(shieldStrength < 0){shieldStrength = 0;}
+        
+
+
+    }
+
+
+    //called when something enters the trigger
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+
+        //if the object is not already in the list
+        if(!TriggerList.Contains(collider))
+        {
+            //add the object to the list
+            TriggerList.Add(collider);
+        }
+    }
+    
+    //called when something exits the trigger
+    void OnTriggerExit2D(Collider2D collider)
+    {
+        //if the object is in the list
+        if(TriggerList.Contains(collider))
+        {
+            //remove it from the list
+            TriggerList.Remove(collider);
+        }
+    }
+}

@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour
 {
     Vector2 screenCenter;// (0,-1,1 in each of x and y to determine which of the 5 screens it is on)
     GameObject go;
-    float timeFired;
+    public float timeFired;
     float lifespan = 2;//s
     Vector2 worldSize;
     float projectileSpeed = 11;
