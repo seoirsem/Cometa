@@ -13,6 +13,8 @@ public class ShipShields : MonoBehaviour
     Collider2D collider;
     public List<Collider2D> TriggerList;
     float lastHit;
+    float lastPulse;
+    float pulseCooldown = 1.5f;
     SpriteRenderer spriteRenderer;
 
     float shieldRechargeRate = 2f; //per second
@@ -28,6 +30,7 @@ public class ShipShields : MonoBehaviour
         rigid_body = gameObject.GetComponent<Rigidbody2D>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         lastHit = Time.time;
+        lastPulse = Time.time;
 
     }
 
@@ -83,7 +86,7 @@ public class ShipShields : MonoBehaviour
 
                 playerRigidBody.AddForce(-1 * shieldForceVector, ForceMode2D.Impulse);
                 hitRigidBody.AddForce(shieldForceVector, ForceMode2D.Impulse);
-                Debug.Log(hitCollider.gameObject.name);
+                // Debug.Log(hitCollider.gameObject.name);
                 OnHit(shieldAppliedForce);
 
                 //Debug.Log(shieldAppliedForce);
@@ -98,11 +101,47 @@ public class ShipShields : MonoBehaviour
             shieldStrength += shieldRechargeRate*dt;
             if(shieldStrength > maxShieldStrength){shieldStrength = maxShieldStrength;}
         }
-        //Debug.Log(shieldStrength);
-        
+        // Debug.Log(Time.time - lastShimmer);
+        // Debug.Log(Time.time);
+        float strengthRange = 1f;
         Color tmp = spriteRenderer.color;
-        tmp.a = shieldStrength/maxShieldStrength;
-        spriteRenderer.color = tmp;
+        tmp.a = strengthRange;
+        if (Time.time - lastPulse > pulseCooldown)
+        {
+            this.spriteRenderer.color = tmp;
+            float stregnthFraction = shieldStrength/maxShieldStrength;
+            Debug.Log(stregnthFraction);
+            lastPulse = Time.time;
+            float scale = 1.15f;
+
+            LeanTween.scaleX(this.gameObject, 1f/scale, pulseCooldown/2f);
+            LeanTween.scaleX(this.gameObject, scale, pulseCooldown/2f).setDelay(pulseCooldown/2f);
+            LeanTween.scaleY(this.gameObject, scale, pulseCooldown/2f).setDelay(pulseCooldown*1f/4f);
+            LeanTween.scaleY(this.gameObject, 1f/scale, pulseCooldown/2f).setDelay(pulseCooldown*3f/4f);
+            LeanTween.rotate(this.gameObject, new Vector3(0f,0f,180f), pulseCooldown/2f);
+            LeanTween.rotate(this.gameObject, new Vector3(0f,0f,360f), pulseCooldown/2f).setDelay(pulseCooldown/2f);
+
+            if (stregnthFraction < 0.5f)
+            {
+                if (stregnthFraction < 0.25f){strengthRange = 0.25f;}
+                else{strengthRange = 0.5f;}
+                tmp.a = strengthRange;
+                this.spriteRenderer.color = tmp;
+                float part = 12f;
+                float randFrac = (float)Random.Range(1,(int)part);
+                if (Random.Range(0f, 0.5f) > stregnthFraction)
+                {
+                    LeanTween.alpha(this.gameObject, stregnthFraction, pulseCooldown/part);
+                    LeanTween.alpha(this.gameObject, strengthRange, pulseCooldown/part).setDelay(pulseCooldown/part);
+                    LeanTween.alpha(this.gameObject, stregnthFraction, pulseCooldown/part).setDelay(pulseCooldown*randFrac/part);
+                    LeanTween.alpha(this.gameObject, strengthRange, pulseCooldown/part).setDelay(pulseCooldown*(1+randFrac)/part);
+                }
+            }
+        }
+        
+        // Color tmp = spriteRenderer.color;
+        // tmp.a = shieldStrength/maxShieldStrength;
+        // spriteRenderer.color = tmp;
     }
     void OnHit(float shieldForce)
     {
