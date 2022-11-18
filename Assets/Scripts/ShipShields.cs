@@ -15,6 +15,7 @@ public class ShipShields : MonoBehaviour
     float lastHit;
     float lastPulse;
     float pulseCooldown = 1.5f;
+    
     SpriteRenderer spriteRenderer;
 
     float shieldRechargeRate = 2f; //per second
@@ -108,6 +109,7 @@ public class ShipShields : MonoBehaviour
         }
         // Debug.Log(Time.time - lastShimmer);
         // Debug.Log(Time.time);
+
         float strengthRange = 1f;
         Color tmp = spriteRenderer.color;
         tmp.a = strengthRange;
@@ -143,10 +145,6 @@ public class ShipShields : MonoBehaviour
                 }
             }
         }
-        
-        // Color tmp = spriteRenderer.color;
-        // tmp.a = shieldStrength/maxShieldStrength;
-        // spriteRenderer.color = tmp;
     }
     void OnHit(float shieldForce)
     {

@@ -18,6 +18,7 @@ public class Reference
     public static ScoreController scoreController;
     public static WorldController worldController;
     public static ShipShields shipShields;
+    // public static ShipShieldVisuals;
     
     
     // Start is called before the first frame update
