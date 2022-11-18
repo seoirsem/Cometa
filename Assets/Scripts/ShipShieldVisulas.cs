@@ -12,7 +12,6 @@ public class ShipShieldVisulas : MonoBehaviour
     SpriteRenderer spriteRenderer;
     public List<Collider2D> TriggerList;
 
-
     void Start()
     {
         shipShields = Reference.shipShields;
@@ -24,7 +23,6 @@ public class ShipShieldVisulas : MonoBehaviour
         TriggerList  = new List<Collider2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         UpdateFromPlayerShields();
@@ -32,14 +30,9 @@ public class ShipShieldVisulas : MonoBehaviour
         UpdateCollider();
     }
 
-
-
     void UpdateVisuals()
     {   
         CopyTransformFields(Reference.shipShields.gameObject);
-        // Color tmp = spriteRenderer.color;
-        // tmp.a = shieldStrength/maxShieldStrength;
-        // spriteRenderer.color = tmp;
     }
 
     void CopyTransformFields(GameObject from)

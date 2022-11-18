@@ -117,7 +117,6 @@ public class ShipShields : MonoBehaviour
         {
             this.spriteRenderer.color = tmp;
             float stregnthFraction = shieldStrength/maxShieldStrength;
-            Debug.Log(stregnthFraction);
             lastPulse = Time.time;
             float scale = 1.15f;
 

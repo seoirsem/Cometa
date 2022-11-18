@@ -26,7 +26,7 @@ public class MainAsteroid : Asteroid
         this.meshTriangles = asteroidData.meshTriangles;
         this.meshIndices = asteroidData.meshIndices;
 
-        DrawMesh(meshVertices, meshTriangles, meshIndices);
+        DrawMesh(meshVertices, meshTriangles);
         DrawCollider(meshVertices, meshTriangles);
     }
 

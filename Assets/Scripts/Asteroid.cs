@@ -87,7 +87,7 @@ public class Asteroid : MonoBehaviour
     public void DrawAsteroid(int size)
     {
         //random int including the starting number, excluding the finishing number
-        int numberOfSides = Random.Range(10, 13);
+        int numberOfSides = Random.Range(6, 12);
 
         float radius = size / 6f;
 
@@ -131,7 +131,7 @@ public class Asteroid : MonoBehaviour
         //};
 
 
-        DrawMesh(meshVertices, meshTriangles, meshIndices);
+        DrawMesh(meshVertices, meshTriangles);
         DrawCollider(meshVertices, meshTriangles);
 
     }
@@ -165,7 +165,7 @@ public class Asteroid : MonoBehaviour
     }
 
 
-    public void DrawMesh(Vector3[] vertices, int[] triangles, int[] meshIndices)
+    public void DrawMesh(Vector3[] vertices, int[] triangles)
     {
         mesh = new Mesh();
         this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
@@ -176,20 +176,23 @@ public class Asteroid : MonoBehaviour
         MeshFilter outlineFilter = asteroidOutlines.GetComponent<MeshFilter>();
         Mesh mesh2 = new Mesh();
         outlineFilter.mesh = mesh2;
-        Vector3[] verticesReduced = new Vector3[vertices.Length - 1];
+        Vector3[] verticesReduced = new Vector3[vertices.Length-1];
         for (int i = 0; i < vertices.Length - 1; i++)
         {
             verticesReduced[i] = vertices[i];
         }
-        //foreach (Vector2 item in verticesReduced)
-        //{
-        //    Debug.Log(item.x + " " + item.y);
-        //}
+
         mesh2.vertices = verticesReduced;
+        int[] meshIndices = new int[verticesReduced.Length*2];
+
+        for (int i = 0; i < verticesReduced.Length; i++)
+        {
+            meshIndices[2*i] = i;
+            meshIndices[2*i+1] = i+1;
+        }
+        meshIndices[verticesReduced.Length*2-1] = 0;
+
         mesh2.SetIndices(meshIndices, MeshTopology.Lines, 0);
-
-
-
     }
 
     public void DrawCollider(Vector3[] vertices, int[] triangles)
