@@ -30,7 +30,7 @@ public class AsteroidController : MonoBehaviour
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // SpawnAsteroid(6, new Vector3(0f,3f,0), new Vector3(0, 0, 0)); 
-            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
+            // SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
         }
     }
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack)
@@ -67,12 +67,14 @@ public class AsteroidController : MonoBehaviour
         //////////////
         if (splitAsteroidData[0] != null)
         {
+            Debug.Log(splitAsteroidData[0].meshVertices.Length);
             SpawnSplitAsteroid(2, asteroidPosition + left * (size / 1f)*0f, (asteroidVelocity + left * 1f)*debugDontMove, splitAsteroidData[0]);
         
         }
 
         if (splitAsteroidData[1] != null)
         {
+            Debug.Log(splitAsteroidData[1].meshVertices.Length);
             SpawnSplitAsteroid(2, asteroidPosition + left * (size / 6f)*0f, (asteroidVelocity + right * 1f)*debugDontMove, splitAsteroidData[1]);
         }
     }
