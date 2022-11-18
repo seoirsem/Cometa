@@ -17,6 +17,7 @@ public class Reference
     public static ProjectileController projectileController;
     public static ScoreController scoreController;
     public static WorldController worldController;
+    public static ShipShields shipShields;
     
     
     // Start is called before the first frame update
@@ -36,6 +37,8 @@ public class Reference
         projectileController = GameObject.Find("ProjectileController").GetComponent<ProjectileController>();
         scoreController = GameObject.Find("ScoreController").GetComponent<ScoreController>();
         worldController = GameObject.Find("WorldController").GetComponent<WorldController>();
+        shipShields = GameObject.Find("ShipShields").GetComponent<ShipShields>();
+
     }
 
 

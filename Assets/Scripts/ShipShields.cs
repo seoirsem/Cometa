@@ -5,8 +5,8 @@ using UnityEngine;
 public class ShipShields : MonoBehaviour
 {
     // Start is called before the first frame update
-    float maxShieldStrength = 100f;
-    float shieldStrength;
+    public float maxShieldStrength = 100f;
+    public float shieldStrength;
     Rigidbody2D playerRigidBody;
     GameObject playerGameObject;
     Rigidbody2D rigid_body;
@@ -52,44 +52,49 @@ public class ShipShields : MonoBehaviour
     {
         foreach (Collider2D hitCollider in TriggerList)
         {
+        float projectileLife = 2f;
+        if(hitCollider.gameObject.GetComponent<Projectile>() != null)
+        {
+            projectileLife = Time.time - hitCollider.gameObject.GetComponent<Projectile>().timeFired;
+        }
 
-            float projectileLife = 2f;
-            if(hitCollider.gameObject.GetComponent<Projectile>() != null)
-            {
-                projectileLife = Time.time - hitCollider.gameObject.GetComponent<Projectile>().timeFired;
+        if(hitCollider.gameObject.GetComponent<PlayerSpriteController>() == null && shieldStrength > 0 &&
+            projectileLife>=1f && hitCollider.isTrigger == false && hitCollider.gameObject.active)
+        {//exclude the player itself!
+
+            Rigidbody2D hitRigidBody = hitCollider.gameObject.GetComponent<Rigidbody2D>();
+            //Rigidbody2D playerRigidBody = playerGameObject.GetComponent<Rigidbody2D>();
+
+            Vector2 relativeVelocity = hitRigidBody.velocity - playerRigidBody.velocity;
+            Vector2 relativePosition = hitRigidBody.position - playerRigidBody.position;
+
+            Vector3 closestPoint = hitCollider.ClosestPoint(playerGameObject.transform.position);
+            float distance =  (closestPoint - playerGameObject.transform.position).magnitude;
+            if (distance < 0.2f){distance = 0.2f;} // this stops the applied force getting too high
+
+            //float mass = hitCollider.gameObject.GetComponent<Rigidbody2D>().mass;
+            //float playerMass = playergo.GetComponent<Rigidbody2D>().mass;
+           
+            CollisionCalculation(distance, relativeVelocity, relativePosition, hitRigidBody);
+            
             }
-
-            if(hitCollider.gameObject.GetComponent<PlayerSpriteController>() == null && shieldStrength > 0 &&
-               projectileLife>=0.7f && hitCollider.isTrigger == false && hitCollider.gameObject.active)
-            {//exclude the player itself!
-
-                Rigidbody2D hitRigidBody = hitCollider.gameObject.GetComponent<Rigidbody2D>();
-                Rigidbody2D playerRigidBody = playerGameObject.GetComponent<Rigidbody2D>();
-
-                Vector2 relativeVelocity = hitRigidBody.velocity - playerRigidBody.velocity;
-                Vector2 relativePosition = hitRigidBody.position - playerRigidBody.position;
-
-                Vector3 closestPoint = hitCollider.ClosestPoint(playerGameObject.transform.position);
-                float distance =  (closestPoint - playerGameObject.transform.position).magnitude;
-                if (distance < 0.2f){distance = 0.2f;} // this stops the applied force getting too high
-
-                float mass = hitCollider.gameObject.GetComponent<Rigidbody2D>().mass;
-                //float playerMass = playergo.GetComponent<Rigidbody2D>().mass;
-
-                float shieldAppliedForce = (1/distance) * (1/distance) * relativeVelocity.magnitude * Time.deltaTime;
-                if(shieldAppliedForce > 50){shieldAppliedForce = 50f;}
-
-                Vector2 shieldForceVector = shieldAppliedForce * relativePosition;
-
-                playerRigidBody.AddForce(-1 * shieldForceVector, ForceMode2D.Impulse);
-                hitRigidBody.AddForce(shieldForceVector, ForceMode2D.Impulse);
-                Debug.Log(hitCollider.gameObject.name);
-                OnHit(shieldAppliedForce);
-
-                //Debug.Log(shieldAppliedForce);
-             }
         }
     }
+
+
+    public void CollisionCalculation(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Rigidbody2D hitRigidBody)
+    {
+        float shieldAppliedForce = (1/distance) * (1/distance) * relativeVelocity.magnitude * Time.deltaTime;
+        if(shieldAppliedForce > 50){shieldAppliedForce = 50f;}
+
+        Vector2 shieldForceVector = shieldAppliedForce * relativePosition;
+
+        playerRigidBody.AddForce(-1 * shieldForceVector, ForceMode2D.Impulse);
+        hitRigidBody.AddForce(shieldForceVector, ForceMode2D.Impulse);
+        OnHit(shieldAppliedForce);
+        
+    }
+
     
     void UpdateCharge(float dt)
     {   

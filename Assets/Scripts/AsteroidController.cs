@@ -19,7 +19,7 @@ public class AsteroidController : MonoBehaviour
         mainAsteroidPrefab = Resources.Load("Prefabs/MainAsteroid") as GameObject;
         derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
-        //SpawnAsteroid(3, new Vector3(0, 2, 0), new Vector3(0,0,0));
+        SpawnAsteroid(4, new Vector3(0, 4.5f, 0), new Vector3(0,0,0));
         // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0));
 
     }
