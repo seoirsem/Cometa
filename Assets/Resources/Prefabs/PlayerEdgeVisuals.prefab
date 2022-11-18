@@ -107,14 +107,14 @@ GameObject:
   - component: {fileID: 4528183961424486826}
   - component: {fileID: 4528183961424486827}
   - component: {fileID: 4528183961424486824}
-  - component: {fileID: 4528183961424486825}
+  - component: {fileID: 7350215091248362208}
   m_Layer: 0
   m_Name: shipShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4528183961424486822
 Transform:
   m_ObjectHideFlags: 0
@@ -216,7 +216,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &4528183961424486825
+--- !u!114 &7350215091248362208
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -225,7 +225,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 4528183961424486823}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51ca80e5c44d9124686067279a5cb436, type: 3}
+  m_Script: {fileID: 11500000, guid: d3f57db0360f7cd4e84e02fbc8feb743, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TriggerList: []
