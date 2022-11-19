@@ -50,40 +50,52 @@ public class Asteroid : MonoBehaviour
                 vList2.Add(meshVs[i]);
             }
         }
-        
-        vReorderedList1.Add(vList1[0]);
-        vReorderedList1.Add(vList1[1]);
-        vList1.RemoveAt(0);
-        vList1.RemoveAt(0);
-        bool flag1 = false;
-        for (int i = 0; i < vList1.Count; i++)
-        {
-            float angleToCollisionPoint = Mathf.Abs( Vector3.Cross( (vReorderedList1[i+1] - vReorderedList1[i]).normalized, collisionPoint - vReorderedList1[i+1] ).z );
-            float angleToNextVertex = Mathf.Abs( Vector3.Cross( (vReorderedList1[i+1] - vReorderedList1[i]).normalized, collisionPoint - vReorderedList1[i+1] ).z );
-            if (angleToCollisionPoint < angleToNextVertex){vReorderedList1.Add(collisionPoint); flag1 = true;}
-            if(flag1 == true){break;}
-            else{vReorderedList1.Add(vList1[0]); vList1.RemoveAt(0);}
-        }
-        if (vList1.Count > 0){vReorderedList1.AddRange(vList1);}
-        if (flag1 == false){vReorderedList1.Add(collisionPoint);}
 
-        vReorderedList2.Add(vList2[0]);
-        vReorderedList2.Add(vList2[1]);
-        vList2.RemoveAt(0);
-        vList2.RemoveAt(0);
-        bool flag2 = false;
-        for (int i = 0; i < vList2.Count; i++)
+        vReorderedList1.Add(meshVs[meshVs.Length-1]);
+        vReorderedList1.Add(collisionPoint);
+        int loopIterations = vList1.Count;
+        float minAngle = 999f;
+        int minIndex = -1;
+        Vector3 CoM = meshVs[meshVs.Length-1];
+        Vector3 fromCoMtoCP = collisionPoint - CoM;
+        for (int i = 0; i < loopIterations; i++)
         {
-            float angleToCollisionPoint = Mathf.Abs( Vector3.Cross( (vReorderedList2[i+1] - vReorderedList2[i]).normalized, collisionPoint - vReorderedList2[i+1] ).z );
-            float angleToNextVertex = Mathf.Abs( Vector3.Cross( (vReorderedList2[i+1] - vReorderedList2[i]).normalized, collisionPoint - vReorderedList2[i+1] ).z );
-            if (angleToCollisionPoint < angleToNextVertex){vReorderedList2.Add(collisionPoint); flag2 = true;}
-            if(flag2 == true){break;}
-            else{vReorderedList2.Add(vList2[0]); vList2.RemoveAt(0);}
+            for (int j = 0; j < vList1.Count; j++)
+            {
+                float newAngle = Vector3.SignedAngle( fromCoMtoCP, (vList1[j] - CoM), Vector3.back );
+                if ( newAngle < minAngle )
+                {
+                    minAngle = newAngle;
+                    minIndex = j;
+                }
+            }
+            vReorderedList1.Add(vList1[minIndex]);
+            vList1.RemoveAt(minIndex);
+            minAngle = 999f;
         }
-        if (vList2.Count > 0){vReorderedList2.AddRange(vList2);}
-        if (flag2 == false){vReorderedList2.Add(collisionPoint);}
 
-        
+        vReorderedList2.Add(meshVs[meshVs.Length-1]);
+        vReorderedList2.Add(collisionPoint);
+        loopIterations = vList2.Count;
+        minAngle = 999f;
+        minIndex = -1;
+        CoM = meshVs[meshVs.Length-1];
+        fromCoMtoCP = collisionPoint - CoM;
+        for (int i = 0; i < loopIterations; i++)
+        {
+            for (int j = 0; j < vList2.Count; j++)
+            {
+                float newAngle = Vector3.SignedAngle( fromCoMtoCP, (vList2[j] - CoM), Vector3.forward );
+                if ( newAngle < minAngle )
+                {
+                    minAngle = newAngle;
+                    minIndex = j;
+                }
+            }
+            vReorderedList2.Add(vList2[minIndex]);
+            vList2.RemoveAt(minIndex);
+            minAngle = 999f;
+        }
 
         Vector3[] meshVertices1 = vReorderedList1.ToArray();
         Vector3[] meshVertices2 = vReorderedList2.ToArray();
@@ -95,10 +107,6 @@ public class Asteroid : MonoBehaviour
             asteroidMeshData[0].meshVertices = meshVertices1;
             asteroidMeshData[0].meshTriangles = meshTriangles1;
             asteroidMeshData[0].meshIndices = meshIndices1;
-            for (int i = 0; i < meshVertices1.Length; i++)
-            {
-                Debug.Log(meshVertices1[i]);
-            }
         }
         else
         {

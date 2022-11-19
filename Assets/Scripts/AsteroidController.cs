@@ -21,7 +21,11 @@ public class AsteroidController : MonoBehaviour
         worldSize = Reference.worldController.worldSize;
         SpawnAsteroid(4, new Vector3(0, 10f, 0), new Vector3(0,0,0));
         // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0));
-
+        Vector3 a = new Vector3(1,0,0);
+        Vector3 b = new Vector3(0,-1,0);
+        Debug.Log(Vector3.SignedAngle(a,b,Vector3.forward));
+        // Debug.Log(Vector3.forward);
+        // Debug.Log(Vector3.Cross(b,a));
     }
 
     void Update()
@@ -67,14 +71,14 @@ public class AsteroidController : MonoBehaviour
         //////////////
         if (splitAsteroidData[0] != null)
         {
-            Debug.Log(splitAsteroidData[0].meshVertices.Length);
+            // Debug.Log(splitAsteroidData[0].meshVertices.Length);
             SpawnSplitAsteroid(2, asteroidPosition + left * (size / 1f)*0f, (asteroidVelocity + left * 1f)*debugDontMove, splitAsteroidData[0]);
         
         }
 
         if (splitAsteroidData[1] != null)
         {
-            Debug.Log(splitAsteroidData[1].meshVertices.Length);
+            // Debug.Log(splitAsteroidData[1].meshVertices.Length);
             SpawnSplitAsteroid(2, asteroidPosition + left * (size / 6f)*0f, (asteroidVelocity + right * 1f)*debugDontMove, splitAsteroidData[1]);
         }
     }
