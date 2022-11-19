@@ -25,8 +25,9 @@ public class MainAsteroid : Asteroid
         this.meshVertices = asteroidData.meshVertices;
         this.meshTriangles = asteroidData.meshTriangles;
         this.meshIndices = asteroidData.meshIndices;
-
-        DrawMesh(meshVertices, meshTriangles, meshIndices);
+        Debug.Log("from splitting");
+        Debug.Log(meshVertices.Length);
+        DrawMesh(meshVertices, meshTriangles, true);
         DrawCollider(meshVertices, meshTriangles);
     }
 

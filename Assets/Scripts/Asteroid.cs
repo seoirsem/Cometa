@@ -34,9 +34,12 @@ public class Asteroid : MonoBehaviour
         asteroidMeshData[1] = new Asteroid();
 
         List<Vector3> vList1 = new List<Vector3>();
-        
         List<Vector3> vList2 = new List<Vector3>();
-        for (int i = 0; i < meshVs.Length; i++)
+        List<Vector3> vReorderedList1 = new List<Vector3>();
+        List<Vector3> vReorderedList2 = new List<Vector3>();
+
+
+        for (int i = 0; i < meshVs.Length-1; i++)
         {
             if (Vector3.Cross(meshVs[i], collisionDirection).z > 0f)
             {
@@ -47,28 +50,62 @@ public class Asteroid : MonoBehaviour
                 vList2.Add(meshVs[i]);
             }
         }
-        // vList1.Add(meshVs[vList1.Count-1]);
-        // vList2.Add(meshVs[vList2.Count-1]);
-        // vList1.Add(new Vector3((vList1[vList1.Count-1].x + vList2[0].x)/2f, (vList1[vList1.Count-1].y + vList2[0].y)/2f, 0f));
-        // vList1.Add(collisionPoint);
+        
+        vReorderedList1.Add(vList1[0]);
+        vReorderedList1.Add(vList1[1]);
+        vList1.RemoveAt(0);
+        vList1.RemoveAt(0);
+        bool flag1 = false;
+        for (int i = 0; i < vList1.Count; i++)
+        {
+            float angleToCollisionPoint = Mathf.Abs( Vector3.Cross( (vReorderedList1[i+1] - vReorderedList1[i]).normalized, collisionPoint - vReorderedList1[i+1] ).z );
+            float angleToNextVertex = Mathf.Abs( Vector3.Cross( (vReorderedList1[i+1] - vReorderedList1[i]).normalized, collisionPoint - vReorderedList1[i+1] ).z );
+            if (angleToCollisionPoint < angleToNextVertex){vReorderedList1.Add(collisionPoint); flag1 = true;}
+            if(flag1 == true){break;}
+            else{vReorderedList1.Add(vList1[0]); vList1.RemoveAt(0);}
+        }
+        if (vList1.Count > 0){vReorderedList1.AddRange(vList1);}
+        if (flag1 == false){vReorderedList1.Add(collisionPoint);}
 
-        Vector3[] meshVertices1 = vList1.ToArray();
-        Vector3[] meshVertices2 = vList2.ToArray();
+        vReorderedList2.Add(vList2[0]);
+        vReorderedList2.Add(vList2[1]);
+        vList2.RemoveAt(0);
+        vList2.RemoveAt(0);
+        bool flag2 = false;
+        for (int i = 0; i < vList2.Count; i++)
+        {
+            float angleToCollisionPoint = Mathf.Abs( Vector3.Cross( (vReorderedList2[i+1] - vReorderedList2[i]).normalized, collisionPoint - vReorderedList2[i+1] ).z );
+            float angleToNextVertex = Mathf.Abs( Vector3.Cross( (vReorderedList2[i+1] - vReorderedList2[i]).normalized, collisionPoint - vReorderedList2[i+1] ).z );
+            if (angleToCollisionPoint < angleToNextVertex){vReorderedList2.Add(collisionPoint); flag2 = true;}
+            if(flag2 == true){break;}
+            else{vReorderedList2.Add(vList2[0]); vList2.RemoveAt(0);}
+        }
+        if (vList2.Count > 0){vReorderedList2.AddRange(vList2);}
+        if (flag2 == false){vReorderedList2.Add(collisionPoint);}
 
-        if (meshVertices1.Length >= 5)
+        
+
+        Vector3[] meshVertices1 = vReorderedList1.ToArray();
+        Vector3[] meshVertices2 = vReorderedList2.ToArray();
+
+        if (meshVertices1.Length >= 3)
         {
             int[] meshTriangles1 = GetTriangles(meshVertices1.Length - 1);
             int[] meshIndices1 = GetIndices(meshVertices1.Length - 1);
             asteroidMeshData[0].meshVertices = meshVertices1;
             asteroidMeshData[0].meshTriangles = meshTriangles1;
             asteroidMeshData[0].meshIndices = meshIndices1;
+            for (int i = 0; i < meshVertices1.Length; i++)
+            {
+                Debug.Log(meshVertices1[i]);
+            }
         }
         else
         {
             asteroidMeshData[0] = null;
         }
 
-        if (meshVertices2.Length >= 5)
+        if (meshVertices2.Length >= 3)
         {
             int[] meshTriangles2 = GetTriangles(meshVertices2.Length - 1);
             int[] meshIndices2 = GetIndices(meshVertices2.Length - 1);
@@ -87,7 +124,7 @@ public class Asteroid : MonoBehaviour
     public void DrawAsteroid(int size)
     {
         //random int including the starting number, excluding the finishing number
-        int numberOfSides = Random.Range(10, 13);
+        int numberOfSides = Random.Range(10, 10);
 
         float radius = size / 6f;
 
@@ -131,7 +168,7 @@ public class Asteroid : MonoBehaviour
         //};
 
 
-        DrawMesh(meshVertices, meshTriangles, meshIndices);
+        DrawMesh(meshVertices, meshTriangles);
         DrawCollider(meshVertices, meshTriangles);
 
     }
@@ -165,31 +202,59 @@ public class Asteroid : MonoBehaviour
     }
 
 
-    public void DrawMesh(Vector3[] vertices, int[] triangles, int[] meshIndices)
+    public void DrawMesh(Vector3[] vertices, int[] triangles, bool fromSplit = false)
     {
-        mesh = new Mesh();
-        this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
+        // mesh = new Mesh();
+        // this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
+        // mesh.Clear();
+        // mesh.vertices = vertices;
+        // mesh.triangles = triangles;
+
+        // Debug.Log(vertices.Length);
 
         MeshFilter outlineFilter = asteroidOutlines.GetComponent<MeshFilter>();
         Mesh mesh2 = new Mesh();
         outlineFilter.mesh = mesh2;
-        Vector3[] verticesReduced = new Vector3[vertices.Length - 1];
+        List<Vector3> verticesReducedList = new List<Vector3>();
         for (int i = 0; i < vertices.Length - 1; i++)
         {
-            verticesReduced[i] = vertices[i];
+            verticesReducedList.Add(vertices[i]);
         }
-        //foreach (Vector2 item in verticesReduced)
-        //{
-        //    Debug.Log(item.x + " " + item.y);
-        //}
+        Vector3[] verticesReduced;
+        if (fromSplit == true)
+        {
+            verticesReduced = new Vector3[vertices.Length];
+            verticesReduced = vertices;
+        }
+        else
+        {
+            verticesReduced = new Vector3[vertices.Length-1];
+            verticesReduced = verticesReducedList.ToArray();
+        }
+        // Debug.Log(verticesReduced.Length);
         mesh2.vertices = verticesReduced;
+        
+        int[] meshIndices = new int[verticesReduced.Length*2];
+
+        for (int i = 0; i < verticesReduced.Length; i++)
+        {
+            meshIndices[2*i] = i;
+            meshIndices[2*i+1] = i+1;
+        }
+        meshIndices[verticesReduced.Length*2-1] = 0;
+        
+        // Debug.Log("vertices:");
+        // for (int i = 0; i < verticesReduced.Length; i++)
+        // {
+        //     Debug.Log(verticesReduced[i]);
+        // }
+        // Debug.Log("indices:");
+        // for (int i = 0; i < meshIndices.Length; i++)
+        // {
+        //     Debug.Log(meshIndices[i]);
+        // }
+
         mesh2.SetIndices(meshIndices, MeshTopology.Lines, 0);
-
-
-
     }
 
     public void DrawCollider(Vector3[] vertices, int[] triangles)

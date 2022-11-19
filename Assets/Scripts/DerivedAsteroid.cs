@@ -51,7 +51,7 @@ public class DerivedAsteroid : Asteroid
         meshVertices = mainAst.meshVertices;
         meshTriangles = mainAst.meshTriangles;
         meshIndices = mainAst.meshIndices;
-        DrawMesh(meshVertices, meshTriangles, meshIndices);
+        DrawMesh(meshVertices, meshTriangles);
         DrawCollider(meshVertices, meshTriangles);
         
     }

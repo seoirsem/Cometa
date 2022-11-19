@@ -12,7 +12,6 @@ public class ShipShieldVisulas : MonoBehaviour
     SpriteRenderer spriteRenderer;
     public List<Collider2D> TriggerList;
 
-
     void Start()
     {
         shipShields = Reference.shipShields;
@@ -22,10 +21,8 @@ public class ShipShieldVisulas : MonoBehaviour
         rigid_body = gameObject.GetComponent<Rigidbody2D>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         TriggerList  = new List<Collider2D>();
-
     }
 
-    // Update is called once per frame
     void Update()
     {
         UpdateFromPlayerShields();
@@ -33,13 +30,16 @@ public class ShipShieldVisulas : MonoBehaviour
         UpdateCollider();
     }
 
-
-
     void UpdateVisuals()
     {   
-        Color tmp = spriteRenderer.color;
-        tmp.a = shieldStrength/maxShieldStrength;
-        spriteRenderer.color = tmp;
+        CopyTransformFields(Reference.shipShields.gameObject);
+    }
+
+    void CopyTransformFields(GameObject from)
+    {
+        this.gameObject.transform.rotation = from.transform.rotation;
+        this.gameObject.transform.localScale = from.transform.localScale;
+        this.spriteRenderer.color = from.GetComponent<SpriteRenderer>().color;
     }
 
     void UpdateFromPlayerShields()
