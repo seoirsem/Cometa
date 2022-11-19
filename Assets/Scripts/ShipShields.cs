@@ -84,6 +84,7 @@ public class ShipShields : MonoBehaviour
 
     public void CollisionCalculation(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Rigidbody2D hitRigidBody)
     {
+        Debug.Log(hitRigidBody.gameObject.name);
         float shieldAppliedForce = (1/distance) * (1/distance) * relativeVelocity.magnitude * Time.deltaTime;
         if(shieldAppliedForce > 50){shieldAppliedForce = 50f;}
 

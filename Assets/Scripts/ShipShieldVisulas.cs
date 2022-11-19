@@ -55,6 +55,7 @@ public class ShipShieldVisulas : MonoBehaviour
         {
             if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null || hitCollider.gameObject.GetComponent<Projectile>() != null)
             {
+
                 float projectileLife = 2f;
                 if(hitCollider.gameObject.GetComponent<Projectile>() != null)
                 {
@@ -63,6 +64,7 @@ public class ShipShieldVisulas : MonoBehaviour
 
                 if(shieldStrength > 0 && projectileLife>=1f && hitCollider.isTrigger == false && hitCollider.gameObject.active)
                 {//exclude the player itself!
+
 
                     Rigidbody2D hitRigidBody = hitCollider.gameObject.GetComponent<Rigidbody2D>();
                     //Rigidbody2D playerRigidBody = playerGameObject.GetComponent<Rigidbody2D>();
@@ -73,7 +75,10 @@ public class ShipShieldVisulas : MonoBehaviour
                     Vector3 closestPoint = hitCollider.ClosestPoint(gameObject.transform.position);
                     float distance =  (closestPoint - gameObject.transform.position).magnitude;
                     if (distance < 0.2f){distance = 0.2f;} // this stops the applied force getting too high
-
+                    Debug.Log(distance);
+                    Debug.Log(relativeVelocity.magnitude);
+                    Debug.Log(relativePosition.magnitude);
+                    Debug.Log(hitRigidBody.gameObject.name);
                     //float mass = hitCollider.gameObject.GetComponent<Rigidbody2D>().mass;
                     //float playerMass = playergo.GetComponent<Rigidbody2D>().mass;
                 
