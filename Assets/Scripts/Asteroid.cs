@@ -73,7 +73,7 @@ public class Asteroid : MonoBehaviour
             vList1.RemoveAt(minIndex);
             minAngle = 999f;
         }
-
+        
         vReorderedList2.Add(meshVs[meshVs.Length-1]);
         vReorderedList2.Add(collisionPoint);
         loopIterations = vList2.Count;
@@ -96,7 +96,11 @@ public class Asteroid : MonoBehaviour
             vList2.RemoveAt(minIndex);
             minAngle = 999f;
         }
-
+        
+        Vector3 exitPoint = vReorderedList2[vReorderedList2.Count-1] + (vReorderedList1[vReorderedList1.Count-1] - vReorderedList2[vReorderedList2.Count-1])*Random.Range(0.2f,0.8f);
+        vReorderedList2.Add(exitPoint);
+        vReorderedList1.Add(exitPoint);
+        
         Vector3[] meshVertices1 = vReorderedList1.ToArray();
         Vector3[] meshVertices2 = vReorderedList2.ToArray();
 
@@ -132,7 +136,7 @@ public class Asteroid : MonoBehaviour
     public void DrawAsteroid(int size)
     {
         //random int including the starting number, excluding the finishing number
-        int numberOfSides = Random.Range(10, 10);
+        int numberOfSides = Random.Range(4, 4);
 
         float radius = size / 6f;
 

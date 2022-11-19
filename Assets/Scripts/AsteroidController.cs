@@ -23,7 +23,7 @@ public class AsteroidController : MonoBehaviour
         // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0));
         Vector3 a = new Vector3(1,0,0);
         Vector3 b = new Vector3(0,-1,0);
-        Debug.Log(Vector3.SignedAngle(a,b,Vector3.forward));
+        // Debug.Log(Vector3.SignedAngle(a,b,Vector3.forward));
         // Debug.Log(Vector3.forward);
         // Debug.Log(Vector3.Cross(b,a));
     }
@@ -53,7 +53,7 @@ public class AsteroidController : MonoBehaviour
         
         // Asteroid[] splitAsteroidData = new Asteroid[2];
         
-        float debugDontMove = 0f;
+        float debugDontMove = 1f;
 
         // Oooo-kayyyy... So in Logs below, first evaluates to null, both the second has a well defined value.
         // God is dead.
