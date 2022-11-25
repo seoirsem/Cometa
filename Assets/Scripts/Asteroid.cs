@@ -25,7 +25,7 @@ public class Asteroid : MonoBehaviour
     public PolygonCollider2D polygonCollider;
     public Rigidbody2D rigid_body;
     public AsteroidController asteroidController;
-    public int size;
+    public float size;
 
     public Asteroid[] SplitAsteroid(Vector3[] meshVs, Vector3 collisionPoint, Vector3 collisionDirection)
     {
@@ -100,17 +100,23 @@ public class Asteroid : MonoBehaviour
         Vector3 exitPoint = vReorderedList2[vReorderedList2.Count-1] + (vReorderedList1[vReorderedList1.Count-1] - vReorderedList2[vReorderedList2.Count-1])*Random.Range(0.2f,0.8f);
         vReorderedList2.Add(exitPoint);
         vReorderedList1.Add(exitPoint);
-        
+
+        vReorderedList1 = CalculateCOM(vReorderedList1);
+        vReorderedList2 = CalculateCOM(vReorderedList2);
+
+        asteroidMeshData[0].size = GetPolygonArea(vReorderedList1);
+        asteroidMeshData[1].size = GetPolygonArea(vReorderedList2);
+
         Vector3[] meshVertices1 = vReorderedList1.ToArray();
         Vector3[] meshVertices2 = vReorderedList2.ToArray();
 
         if (meshVertices1.Length >= 3)
         {
             int[] meshTriangles1 = GetTriangles(meshVertices1.Length - 1);
-            int[] meshIndices1 = GetIndices(meshVertices1.Length - 1);
+            // int[] meshIndices1 = GetIndices(meshVertices1.Length - 1);
             asteroidMeshData[0].meshVertices = meshVertices1;
             asteroidMeshData[0].meshTriangles = meshTriangles1;
-            asteroidMeshData[0].meshIndices = meshIndices1;
+            // asteroidMeshData[0].meshIndices = meshIndices1;
         }
         else
         {
@@ -120,23 +126,59 @@ public class Asteroid : MonoBehaviour
         if (meshVertices2.Length >= 3)
         {
             int[] meshTriangles2 = GetTriangles(meshVertices2.Length - 1);
-            int[] meshIndices2 = GetIndices(meshVertices2.Length - 1);
+            // int[] meshIndices2 = GetIndices(meshVertices2.Length - 1);
             asteroidMeshData[1].meshVertices = meshVertices2;
             asteroidMeshData[1].meshTriangles = meshTriangles2;
-            asteroidMeshData[1].meshIndices = meshIndices2;
+            // asteroidMeshData[1].meshIndices = meshIndices2;
         }
         else
         {
             asteroidMeshData[1] = null;
         }
-
+        
         return asteroidMeshData;
     }
 
-    public void DrawAsteroid(int size)
+    List<Vector3> CalculateCOM(List<Vector3> vertices)
+    {
+        vertices.Add(vertices[0]);
+        float A = 0f;
+        float Cx = 0f;
+        float Cy = 0f;
+
+        A = GetPolygonArea(vertices);
+
+        for (int i = 0; i < vertices.Count-1; i++)
+        {
+            Cx += 1f/(6f*A) * (vertices[i].x + vertices[i+1].x) * (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+        }
+        for (int i = 0; i < vertices.Count-1; i++)
+        {
+            Cy += 1f/(6f*A) * (vertices[i].y + vertices[i+1].y) * (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+        }
+        vertices.RemoveAt(vertices.Count-1);    
+        vertices.Add(new Vector3(Cx, Cy, 0f));
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            vertices[i] -= vertices[vertices.Count-1];
+        }
+        return vertices;
+    }
+
+    public float GetPolygonArea(List<Vector3> vertices)
+    {
+        float A = 0f;
+        for (int i = 0; i < vertices.Count-1; i++)
+        {
+            A += 0.5f * (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+        }
+        return Mathf.Abs(A);
+    }
+
+    public void DrawAsteroid(float size)
     {
         //random int including the starting number, excluding the finishing number
-        int numberOfSides = Random.Range(4, 4);
+        int numberOfSides = Random.Range(8, 12);
 
         float radius = size / 6f;
 
@@ -214,7 +256,7 @@ public class Asteroid : MonoBehaviour
     }
 
 
-    public void DrawMesh(Vector3[] vertices, int[] triangles, bool fromSplit = false)
+    public void DrawMesh(Vector3[] vertices, int[] triangles)
     {
         // mesh = new Mesh();
         // this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
@@ -233,17 +275,10 @@ public class Asteroid : MonoBehaviour
             verticesReducedList.Add(vertices[i]);
         }
         Vector3[] verticesReduced;
-        if (fromSplit == true)
-        {
-            verticesReduced = new Vector3[vertices.Length];
-            verticesReduced = vertices;
-        }
-        else
-        {
-            verticesReduced = new Vector3[vertices.Length-1];
-            verticesReduced = verticesReducedList.ToArray();
-        }
-        // Debug.Log(verticesReduced.Length);
+ 
+        verticesReduced = new Vector3[vertices.Length-1];
+        verticesReduced = verticesReducedList.ToArray();
+
         mesh2.vertices = verticesReduced;
         
         int[] meshIndices = new int[verticesReduced.Length*2];
@@ -253,18 +288,14 @@ public class Asteroid : MonoBehaviour
             meshIndices[2*i] = i;
             meshIndices[2*i+1] = i+1;
         }
-        meshIndices[verticesReduced.Length*2-1] = 0;
-        
-        // Debug.Log("vertices:");
-        // for (int i = 0; i < verticesReduced.Length; i++)
-        // {
-        //     Debug.Log(verticesReduced[i]);
-        // }
-        // Debug.Log("indices:");
-        // for (int i = 0; i < meshIndices.Length; i++)
-        // {
-        //     Debug.Log(meshIndices[i]);
-        // }
+        Debug.Log(verticesReduced.Length);
+        // Debug.Log((verticesReduced.Length-1)*2);
+        meshIndices[(verticesReduced.Length)*2-1] = 0;
+
+        foreach(int i in meshIndices)
+        {
+            Debug.Log(i);
+        }
 
         mesh2.SetIndices(meshIndices, MeshTopology.Lines, 0);
     }

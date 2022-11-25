@@ -9,7 +9,8 @@ public class MainAsteroid : Asteroid
     {
 
         this.mass = Mathf.Pow(size,2);
-        this.size = size;
+        this.size = asteroidData.size;
+        Debug.Log(asteroidData.size);
         this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
         this.rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
@@ -25,14 +26,14 @@ public class MainAsteroid : Asteroid
         this.meshVertices = asteroidData.meshVertices;
         this.meshTriangles = asteroidData.meshTriangles;
         this.meshIndices = asteroidData.meshIndices;
-        DrawMesh(meshVertices, meshTriangles, true);
+        DrawMesh(meshVertices, meshTriangles);
         DrawCollider(meshVertices, meshTriangles);
     }
 
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
         this.mass = Mathf.Pow(size,2);
-        this.size = size;
+        // this.size = size;
         this.asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
         this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
         this.rigid_body = this.GetComponent<Rigidbody2D>();
@@ -47,7 +48,9 @@ public class MainAsteroid : Asteroid
         this.rigid_body.angularVelocity = rotationRate;
         this.rigid_body.mass = mass;
 
-        DrawAsteroid(size);
+        DrawAsteroid(8f);
+
+        this.size = GetPolygonArea(new List<Vector3>(this.meshVertices));
     }
 
 

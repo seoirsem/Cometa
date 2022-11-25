@@ -34,12 +34,12 @@ public class AsteroidController : MonoBehaviour
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // SpawnAsteroid(6, new Vector3(0f,3f,0), new Vector3(0, 0, 0)); 
-            // SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
+            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
         }
     }
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack)
     {
-        int size = asteroid.size;
+        float size = asteroid.size;
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
         Vector3 collisionPoint = new Vector3(contact.x, contact.y, 0);
@@ -48,12 +48,12 @@ public class AsteroidController : MonoBehaviour
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
         Asteroid[] splitAsteroidData = asteroid.SplitAsteroid(asteroid.meshVertices, collisionPoint - asteroidPosition, collisionDirection);
-
+        
         DespawnAsteroid(asteroid, asteroidPack);
         
         // Asteroid[] splitAsteroidData = new Asteroid[2];
         
-        float debugDontMove = 1f;
+        float debugDontMove = 0f;
 
         // Oooo-kayyyy... So in Logs below, first evaluates to null, both the second has a well defined value.
         // God is dead.
@@ -71,15 +71,18 @@ public class AsteroidController : MonoBehaviour
         //////////////
         if (splitAsteroidData[0] != null)
         {
-            // Debug.Log(splitAsteroidData[0].meshVertices.Length);
-            SpawnSplitAsteroid(2, asteroidPosition + left * (size / 1f)*0f, (asteroidVelocity + left * 1f)*debugDontMove, splitAsteroidData[0]);
-        
+            if (splitAsteroidData[0].size > 0.4)
+            {
+                SpawnSplitAsteroid(2, asteroidPosition + left * (size / 1f)*0f, (asteroidVelocity + left * 1f)*debugDontMove, splitAsteroidData[0]);
+            }
         }
 
         if (splitAsteroidData[1] != null)
         {
-            // Debug.Log(splitAsteroidData[1].meshVertices.Length);
-            SpawnSplitAsteroid(2, asteroidPosition + left * (size / 6f)*0f, (asteroidVelocity + right * 1f)*debugDontMove, splitAsteroidData[1]);
+            if ( splitAsteroidData[1].size > 0.4)
+            {
+                SpawnSplitAsteroid(2, asteroidPosition + right * (size / 6f)*0f, (asteroidVelocity + right * 1f)*debugDontMove, splitAsteroidData[1]);
+            }
         }
     }
     
