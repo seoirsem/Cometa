@@ -92,6 +92,7 @@ public class ProjectileController : MonoBehaviour
                 if (projectileList.Contains(projectileObject))
                 {
                     Reference.animationController.SpawnExplosionAnimation(projectileObject.transform.position);
+                    Reference.SoundController.playExplosionSound();
                     SimplePool.Despawn(projectileObject);
                     projectileList.Remove(projectileObject);
                 }
