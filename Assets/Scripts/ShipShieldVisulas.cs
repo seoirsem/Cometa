@@ -75,10 +75,6 @@ public class ShipShieldVisulas : MonoBehaviour
                     Vector3 closestPoint = hitCollider.ClosestPoint(gameObject.transform.position);
                     float distance =  (closestPoint - gameObject.transform.position).magnitude;
                     if (distance < 0.2f){distance = 0.2f;} // this stops the applied force getting too high
-                    Debug.Log(distance);
-                    Debug.Log(relativeVelocity.magnitude);
-                    Debug.Log(relativePosition.magnitude);
-                    Debug.Log(hitRigidBody.gameObject.name);
                     //float mass = hitCollider.gameObject.GetComponent<Rigidbody2D>().mass;
                     //float playerMass = playergo.GetComponent<Rigidbody2D>().mass;
                 

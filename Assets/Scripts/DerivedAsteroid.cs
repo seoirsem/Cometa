@@ -6,14 +6,18 @@ public class DerivedAsteroid : Asteroid
 {
 
     Vector2 offset;
+    public Vector2 location;
     GameObject mainAsteroid;
     MainAsteroid mainAsteroidClass;
+
+    Vector3 thisStepMainPosition;
+    float thisStepMainRotation;
 
     public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
         this.mass = Mathf.Pow(size,2);
         // Update this in future to calculate based on the area of the shape formed by the mesh
-
+        this.location = location;
         this.size = size;
         asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
         asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
@@ -29,6 +33,10 @@ public class DerivedAsteroid : Asteroid
         PolygonCollider2D polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
         offset = new Vector2(location.x * worldSize.x, location.y * worldSize.y);
         CloneAsteroid(mainAsteroid);
+        gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, -1);
+        thisStepMainPosition = mainAsteroidClass.rigid_body.position;
+        thisStepMainRotation = mainAsteroidClass.rigid_body.rotation;
+
     }
 
     // Update is called once per frame
@@ -38,9 +46,12 @@ public class DerivedAsteroid : Asteroid
     }
 
     void UpdateAsteroidPosition()
-    {
-        rigid_body.position = mainAsteroidClass.rigid_body.position + offset;
-        rigid_body.rotation = mainAsteroidClass.rigid_body.rotation;
+    { //always one step behind main
+
+        rigid_body.position = thisStepMainPosition;
+        thisStepMainPosition = mainAsteroidClass.rigid_body.position + offset;
+        rigid_body.rotation = thisStepMainRotation;
+        thisStepMainRotation = mainAsteroidClass.rigid_body.rotation;
     }
 
 

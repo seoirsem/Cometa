@@ -12,6 +12,9 @@ public class PlayerInputController : MonoBehaviour
     public bool mouseClicked = false;
     public bool spaceBar = false;
     public bool b = false;
+
+    public bool p = false;
+    public bool o = false;
     
     void Start()
     {
@@ -86,6 +89,22 @@ public class PlayerInputController : MonoBehaviour
         else
         {
             b = false;
+        }
+        if (Input.GetKey("o"))
+        {
+            o = true;
+        }
+        else
+        {
+            o = false;
+        }
+        if (Input.GetKey("p"))
+        {
+            p = true;
+        }
+        else
+        {
+            p = false;
         }
     }
 }

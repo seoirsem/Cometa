@@ -9,7 +9,7 @@ public class WorldController : MonoBehaviour
     public Vector2 worldSize;
     GameObject windowing;
 
-    float asteroidSpawnInterval = 10f;
+    float asteroidSpawnInterval = 100f;
     float time;
 
     void Awake()
