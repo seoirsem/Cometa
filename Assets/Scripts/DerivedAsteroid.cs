@@ -9,7 +9,7 @@ public class DerivedAsteroid : Asteroid
     GameObject mainAsteroid;
     MainAsteroid mainAsteroidClass;
 
-    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
+    public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
         this.mass = Mathf.Pow(size,2);
         // Update this in future to calculate based on the area of the shape formed by the mesh
@@ -56,8 +56,9 @@ public class DerivedAsteroid : Asteroid
         
     }
 
-    private void OnTriggerEnter2D(Collider2D otherObject)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
+        Collider2D otherObject = collision.collider;
         // Debug.Log("ontriggerenter");
         // This passes note of any collisions straight to the main asteroid
         mainAsteroidClass.DerivedAsteroidCollision(otherObject, this.gameObject, offset);

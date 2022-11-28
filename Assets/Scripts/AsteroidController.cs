@@ -19,7 +19,7 @@ public class AsteroidController : MonoBehaviour
         mainAsteroidPrefab = Resources.Load("Prefabs/MainAsteroid") as GameObject;
         derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         // worldSize = Reference.worldController.worldSize;
-        // SpawnAsteroid(4, new Vector3(0, 10f, 0), new Vector3(0,0,0));
+        SpawnAsteroid(4, new Vector3(0, 15f, 0), new Vector3(0,0,0));
         // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0));
         Vector3 a = new Vector3(1f,0f,0f);
         Vector3 b = new Vector3(-1f,-0.5f,0f);
@@ -65,12 +65,12 @@ public class AsteroidController : MonoBehaviour
         //////////////// return to split asteroids
         
         
-         if(size != 1)
-         {
-             SpawnAsteroid(size - 1, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
-             SpawnAsteroid(size - 1, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
-         }
-         return;
+         //if(size > 1f)
+         //{
+          //   SpawnAsteroid(size - 1f, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
+         //    SpawnAsteroid(size - 1f, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
+         //}
+         //return;
 
         //////////////
         if (splitAsteroidData[0] != null)
@@ -130,7 +130,7 @@ public class AsteroidController : MonoBehaviour
 
 
 
-    void SpawnAsteroid(int size, Vector3 position, Vector3 velocity)
+    void SpawnAsteroid(float size, Vector3 position, Vector3 velocity)
     {
         List<GameObject> asteroidPack = new List<GameObject>();
 
