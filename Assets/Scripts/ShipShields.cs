@@ -63,7 +63,7 @@ public class ShipShields : MonoBehaviour
         }
 
         if(hitCollider.gameObject.GetComponent<PlayerSpriteController>() == null && shieldStrength > 0 &&
-            projectileLife>=1f && hitCollider.isTrigger == false && hitCollider.gameObject.active)
+            projectileLife>=1f && hitCollider.isTrigger == false && hitCollider.gameObject.active && hitCollider.gameObject.layer != LayerMask.NameToLayer("SpawningAsteroid"))
         {//exclude the player itself!
 
             Rigidbody2D hitRigidBody = hitCollider.gameObject.GetComponent<Rigidbody2D>();
