@@ -22,7 +22,7 @@ public class AsteroidController : MonoBehaviour
         derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
         // SpawnAsteroid(4, new Vector3(0, 15f, 0), new Vector3(0,0,0));
-        SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0),false);
+        // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0),false);
         Vector3 a = new Vector3(1f,0f,0f);
         Vector3 b = new Vector3(-1f,-0.5f,0f);
         // float angle = Vector3.SignedAngle(a,b,Vector3.forward);
@@ -38,7 +38,7 @@ public class AsteroidController : MonoBehaviour
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // SpawnAsteroid(6, new Vector3(0f,3f,0), new Vector3(0, 0, 0)); 
-            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0),false);    
+            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(0f, 0f, 0f),false);    
 
         }
 

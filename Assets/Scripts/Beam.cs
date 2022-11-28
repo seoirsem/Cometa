@@ -5,7 +5,6 @@ using UnityEngine;
 public class Beam : MonoBehaviour
 {
     Ray beamRay;
-    RaycastHit2D hit;
     LineRenderer lineRenderer;
     float maxRayCastDistance;
     float rayCastDistance;
@@ -38,7 +37,16 @@ public class Beam : MonoBehaviour
         if ( beamAngle < 0 ){ beamAngle = (360f + beamAngle); } // Convert from -180:180 to 0:360 convention
         beamAngle = 2f*Mathf.PI*beamAngle/(360f); // Convert to radians for Mathf. trig functions
 
-        if ( Reference.playerInputController.b == false && rayCastDistance >= rayCastRetractSpeed) { rayCastDistance -= rayCastRetractSpeed; }
+        if ( Reference.playerInputController.b == false && rayCastDistance >= rayCastRetractSpeed) 
+        { 
+            rayCastDistance -= rayCastRetractSpeed; 
+            if ( lineRenderer.positionCount > 2 ) 
+            { 
+                Vector3 direction = lineRenderer.GetPosition(2) - lineRenderer.GetPosition(3);
+                lineRenderer.SetPosition(3, lineRenderer.GetPosition(3) + direction.normalized*rayCastRetractSpeed);
+                if ( direction.magnitude < rayCastRetractSpeed ) { lineRenderer.positionCount = 2; }
+            }
+        }
         if ( Reference.playerInputController.b == true && rayCastDistance < maxRayCastDistance ) { rayCastDistance += rayCastAdvanceSpeed; }
           
         Vector3 beamDirection = new Vector3(-Mathf.Sin(beamAngle)*rayCastDistance, Mathf.Cos(beamAngle)*rayCastDistance, 0f);   
@@ -46,22 +54,71 @@ public class Beam : MonoBehaviour
         lineRenderer.SetPosition(1, Reference.playergo.transform.position + beamDirection);
         if ( Reference.playerInputController.b == true )
         {
-            hit = Physics2D.Raycast(Reference.playergo.transform.position, beamDirection, rayCastDistance);
+            DoRaycast(Reference.playergo.transform.position, beamDirection, rayCastDistance, 1);
+        }   
+    }
+
+    void DoRaycast(Vector3 from, Vector3 direction, float distance, int depth)
+    {
+        RaycastHit2D hit;
+        bool crossScreenBeam = false;
+        if ( distance > 0f )
+        {
+            hit = Physics2D.Raycast(from, direction, distance);
             if (hit.collider != null)
             {
-                if ( hit.collider.gameObject.name.Contains("MainAsteroid") )
-                {
-                    Asteroid asteroid = hit.collider.gameObject.GetComponent<Asteroid>();
-                    ShrinkVertex(asteroid, hit.point - (Vector2)asteroid.gameObject.transform.position);
+                Debug.Log(crossScreenBeam);
+                Debug.Log(depth);
+                if ( hit.collider.gameObject.name.Contains("EdgeCollider") ) 
+                { 
+                    crossScreenBeam = true;
+                    if ( lineRenderer.positionCount < 4) { lineRenderer.positionCount += 2;}
+                    float leftoverDisatnce = distance - ((Vector2)from - hit.point).magnitude;
+                    Vector2 worldSize = Reference.worldController.worldSize;
+                    if ( hit.collider.gameObject.name.Contains("Right") ) 
+                    { 
+                        DoRaycast(hit.point - new Vector2(worldSize.x*0.999f, 0f), direction, leftoverDisatnce, depth+1); 
+                        lineRenderer.SetPosition(2, hit.point - new Vector2(worldSize.x*0.999f, 0f));
+                        lineRenderer.SetPosition(3, hit.point - new Vector2(worldSize.x*0.999f, 0f) + (Vector2)direction.normalized*leftoverDisatnce);
+                    }
+                    if ( hit.collider.gameObject.name.Contains("Left") ) 
+                    { 
+                        DoRaycast(hit.point + new Vector2(worldSize.x*0.999f, 0f), direction, leftoverDisatnce, depth+1); 
+                        lineRenderer.SetPosition(2, hit.point + new Vector2(worldSize.x*0.999f, 0f));
+                        lineRenderer.SetPosition(3, hit.point + new Vector2(worldSize.x*0.999f, 0f) + (Vector2)direction.normalized*leftoverDisatnce);
+                    }
+                    if ( hit.collider.gameObject.name.Contains("Top") ) 
+                    { 
+                        DoRaycast(hit.point - new Vector2(0f, worldSize.y*0.999f), direction, leftoverDisatnce, depth+1);
+                        Debug.Log(hit.point); 
+                        lineRenderer.SetPosition(2, hit.point - new Vector2(0f, worldSize.y*0.999f));
+                        lineRenderer.SetPosition(3, hit.point - new Vector2(0f, worldSize.y*0.999f) + (Vector2)direction.normalized*leftoverDisatnce);
+                    }
+                    if ( hit.collider.gameObject.name.Contains("Bottom") ) 
+                    { 
+                        DoRaycast(hit.point + new Vector2(0f, worldSize.y*0.999f), direction, leftoverDisatnce, depth+1); 
+                        lineRenderer.SetPosition(2, hit.point + new Vector2(0f, worldSize.y*0.999f));
+                        lineRenderer.SetPosition(3, hit.point + new Vector2(0f, worldSize.y*0.999f) + (Vector2)direction.normalized*leftoverDisatnce);
+                    }
                 }
+                else{ ResolveRayhits(hit); } 
             }
-            else
-            {
-                // Debug.Log("Didn't hit anything!");;
-            }
+            if (crossScreenBeam == false && depth == 1) { lineRenderer.positionCount = 2; }
         }
-        
-        
+    }
+
+    void ResolveRayhits(RaycastHit2D hit)
+    {
+        if ( hit.collider.gameObject.name.Contains("MainAsteroid") )
+        {
+            Asteroid asteroid = hit.collider.gameObject.GetComponent<Asteroid>();
+            ShrinkVertex(asteroid, hit.point - (Vector2)asteroid.gameObject.transform.position);
+        }
+        else 
+        {
+            Debug.Log("Raycast hit object:");
+            Debug.Log(hit.collider.gameObject.name);
+        }
     }
 
     void ShrinkVertex(Asteroid asteroid, Vector2 hitPoint)
