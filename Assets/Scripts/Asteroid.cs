@@ -27,6 +27,7 @@ public class Asteroid : MonoBehaviour
     public Vector3 CoMShift;
     public AsteroidController asteroidController;
     public float size;
+    public float[] vertexHealth;
 
     public Asteroid[] SplitAsteroid(Vector3[] meshVs, Vector3 collisionPoint, Vector3 collisionDirection)
     {
@@ -156,7 +157,7 @@ public class Asteroid : MonoBehaviour
         return asteroidMeshData;
     }
 
-    List<Vector3> CalculateCOM(List<Vector3> vertices, float sign = 1f)
+    public List<Vector3> CalculateCOM(List<Vector3> vertices, float sign = 1f)
     {
         vertices.Add(vertices[0]);
         float A = 0f;
@@ -203,6 +204,11 @@ public class Asteroid : MonoBehaviour
         return Mathf.Abs(A);
     }
 
+    public float[] ComputeVertexHealth()
+    {
+        // this.vertexHealth = new float[this.]
+    }
+
     public void DrawAsteroid(float size)
     {
         //random int including the starting number, excluding the finishing number
@@ -229,6 +235,8 @@ public class Asteroid : MonoBehaviour
         
         int[] meshTriangles = GetTriangles(numberOfSides);
         int[] meshIndices = GetIndices(numberOfSides);
+        this.meshTriangles = meshTriangles;
+        this.meshIndices = meshIndices;
 
         //Notes on drawing lines
         //https://docs.unity3d.com/ScriptReference/MeshTopology.html
@@ -309,21 +317,15 @@ public class Asteroid : MonoBehaviour
 
         mesh2.vertices = verticesReduced;
         
-        int[] meshIndices = new int[verticesReduced.Length*2];
+        this.meshIndices = new int[verticesReduced.Length*2];
 
         for (int i = 0; i < verticesReduced.Length; i++)
         {
-            meshIndices[2*i] = i;
-            meshIndices[2*i+1] = i+1;
+            this.meshIndices[2*i] = i;
+            this.meshIndices[2*i+1] = i+1;
         }
-        // Debug.Log(verticesReduced.Length);
-        // Debug.Log((verticesReduced.Length-1)*2);
-        meshIndices[(verticesReduced.Length)*2-1] = 0;
 
-        foreach(int i in meshIndices)
-        {
-            // Debug.Log(i);
-        }
+        this.meshIndices[(verticesReduced.Length)*2-1] = 0;
 
         mesh2.SetIndices(meshIndices, MeshTopology.Lines, 0);
     }
