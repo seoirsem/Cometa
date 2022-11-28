@@ -24,8 +24,9 @@ public class Asteroid : MonoBehaviour
     public List<GameObject> asteroidPack;
     public PolygonCollider2D polygonCollider;
     public Rigidbody2D rigid_body;
+    public Vector3 CoMShift;
     public AsteroidController asteroidController;
-    public int size;
+    public float size;
 
     public Asteroid[] SplitAsteroid(Vector3[] meshVs, Vector3 collisionPoint, Vector3 collisionDirection)
     {
@@ -38,7 +39,8 @@ public class Asteroid : MonoBehaviour
         List<Vector3> vReorderedList1 = new List<Vector3>();
         List<Vector3> vReorderedList2 = new List<Vector3>();
 
-
+        // Sort vertices into two list, either side of the collision direction (direction of incoming missile)
+        // Note: last element (CoM of old asteroid) is omitted
         for (int i = 0; i < meshVs.Length-1; i++)
         {
             if (Vector3.Cross(meshVs[i], collisionDirection).z > 0f)
@@ -50,55 +52,91 @@ public class Asteroid : MonoBehaviour
                 vList2.Add(meshVs[i]);
             }
         }
-        
-        vReorderedList1.Add(vList1[0]);
-        vReorderedList1.Add(vList1[1]);
-        vList1.RemoveAt(0);
-        vList1.RemoveAt(0);
-        bool flag1 = false;
-        for (int i = 0; i < vList1.Count; i++)
-        {
-            float angleToCollisionPoint = Mathf.Abs( Vector3.Cross( (vReorderedList1[i+1] - vReorderedList1[i]).normalized, collisionPoint - vReorderedList1[i+1] ).z );
-            float angleToNextVertex = Mathf.Abs( Vector3.Cross( (vReorderedList1[i+1] - vReorderedList1[i]).normalized, collisionPoint - vReorderedList1[i+1] ).z );
-            if (angleToCollisionPoint < angleToNextVertex){vReorderedList1.Add(collisionPoint); flag1 = true;}
-            if(flag1 == true){break;}
-            else{vReorderedList1.Add(vList1[0]); vList1.RemoveAt(0);}
-        }
-        if (vList1.Count > 0){vReorderedList1.AddRange(vList1);}
-        if (flag1 == false){vReorderedList1.Add(collisionPoint);}
+        vList1.Add(collisionPoint);
+        vList2.Add(collisionPoint);
 
-        vReorderedList2.Add(vList2[0]);
-        vReorderedList2.Add(vList2[1]);
-        vList2.RemoveAt(0);
-        vList2.RemoveAt(0);
-        bool flag2 = false;
-        for (int i = 0; i < vList2.Count; i++)
-        {
-            float angleToCollisionPoint = Mathf.Abs( Vector3.Cross( (vReorderedList2[i+1] - vReorderedList2[i]).normalized, collisionPoint - vReorderedList2[i+1] ).z );
-            float angleToNextVertex = Mathf.Abs( Vector3.Cross( (vReorderedList2[i+1] - vReorderedList2[i]).normalized, collisionPoint - vReorderedList2[i+1] ).z );
-            if (angleToCollisionPoint < angleToNextVertex){vReorderedList2.Add(collisionPoint); flag2 = true;}
-            if(flag2 == true){break;}
-            else{vReorderedList2.Add(vList2[0]); vList2.RemoveAt(0);}
-        }
-        if (vList2.Count > 0){vReorderedList2.AddRange(vList2);}
-        if (flag2 == false){vReorderedList2.Add(collisionPoint);}
+        // Would be nice to add exit point to the list, as well as the CoM of original asteroid
+        // But this has proven to be quite buggy and challenging to do with arbitrary shapes
+        // Vector3 exitPoint = ???
+        // vReorderedList2.Add(exitPoint);
+        // vReorderedList1.Add(exitPoint);
 
+        // Sort vertices clockwise; using 360 degree convention, increasing anti-cw from 0 at right-pointing vector [1,0,0]
+        int loopIterations = vList1.Count;
+        float minAngle = 999f;
+        int minIndex = -1;
+
+        Vector3 oldCoM = meshVs[meshVs.Length-1] - Vector3.zero;
+        float angle;
+        bool CoMAdded = false;
+        for (int j = 0; j < loopIterations; j++)
+        {
+            for (int i = 0; i < vList1.Count; i++)
+            {
+                angle = Vector3.SignedAngle( Vector3.right, (vList1[i] - oldCoM), Vector3.forward );
+                if ( angle < 0) { angle = 360 + angle; }
+                if (angle < minAngle) { minIndex = i; minAngle = angle;}
+            }
+            vReorderedList1.Add(vList1[minIndex]); 
+            vList1.RemoveAt(minIndex);
+            minIndex = -1;
+            minAngle = 999f;
+        }
+
+        loopIterations = vList2.Count;
+        minAngle = 999f;
+        minIndex = -1;
+        oldCoM = meshVs[meshVs.Length-1] - Vector3.zero;
+
+        for (int k = 0; k < vList2.Count; k++)
+        {
+            vList2[k] = new Vector3(-vList2[k].x, vList2[k].y, vList2[k].z);
+        }
+
+        for (int j = 0; j < loopIterations; j++)
+        {
+            for (int i = 0; i < vList2.Count; i++)
+            {
+                angle = Vector3.SignedAngle( Vector3.right, (vList2[i] - oldCoM), Vector3.forward );
+                if ( angle < 0) { angle = 360 + angle; }
+                if (angle < minAngle) { minIndex = i; minAngle = angle;}
+            }
+            vReorderedList2.Add(vList2[minIndex]); 
+            vList2.RemoveAt(minIndex);
+            minIndex = -1;
+            minAngle = 999f;
+        }
         
+        for (int k = 0; k < vReorderedList2.Count; k++)
+        {
+            vReorderedList2[k] = new Vector3(-vReorderedList2[k].x, vReorderedList2[k].y, vReorderedList2[k].z);
+        }
+
+        // Calculate the new CoM and save it in a separate asteroid objects field
+        // So that we know how much to offset the spawning by, so that newly formed
+        // Asteroids don't end up overlapping at spawn
+        vReorderedList1 = CalculateCOM(vReorderedList1);
+        asteroidMeshData[0].CoMShift = vReorderedList1[vReorderedList1.Count-1];
+        vReorderedList1.RemoveAt(vReorderedList1.Count-1);
+        vReorderedList2 = CalculateCOM(vReorderedList2, -1f);
+        asteroidMeshData[1].CoMShift = vReorderedList2[vReorderedList2.Count-1];
+        vReorderedList2.RemoveAt(vReorderedList2.Count-1);
+
+        // Size is now proportional to, well, actual size
+        // Use below function to get the area of the polygon
+        asteroidMeshData[0].size = GetPolygonArea(vReorderedList1);
+        asteroidMeshData[1].size = GetPolygonArea(vReorderedList2);
 
         Vector3[] meshVertices1 = vReorderedList1.ToArray();
         Vector3[] meshVertices2 = vReorderedList2.ToArray();
 
+        // If the resulting asteroid has a low number vertices, don't bother.
+        // PErhaps we can just spawn some dust/chaff in the area?
         if (meshVertices1.Length >= 3)
         {
             int[] meshTriangles1 = GetTriangles(meshVertices1.Length - 1);
-            int[] meshIndices1 = GetIndices(meshVertices1.Length - 1);
             asteroidMeshData[0].meshVertices = meshVertices1;
             asteroidMeshData[0].meshTriangles = meshTriangles1;
-            asteroidMeshData[0].meshIndices = meshIndices1;
-            for (int i = 0; i < meshVertices1.Length; i++)
-            {
-                Debug.Log(meshVertices1[i]);
-            }
         }
         else
         {
@@ -108,23 +146,67 @@ public class Asteroid : MonoBehaviour
         if (meshVertices2.Length >= 3)
         {
             int[] meshTriangles2 = GetTriangles(meshVertices2.Length - 1);
-            int[] meshIndices2 = GetIndices(meshVertices2.Length - 1);
             asteroidMeshData[1].meshVertices = meshVertices2;
             asteroidMeshData[1].meshTriangles = meshTriangles2;
-            asteroidMeshData[1].meshIndices = meshIndices2;
         }
         else
         {
             asteroidMeshData[1] = null;
         }
-
         return asteroidMeshData;
     }
 
-    public void DrawAsteroid(int size)
+    List<Vector3> CalculateCOM(List<Vector3> vertices, float sign = 1f)
+    {
+        vertices.Add(vertices[0]);
+        float A = 0f;
+        float Cx = 0f;
+        float Cy = 0f;
+
+        // A = sign*GetPolygonArea(vertices);
+
+        // for (int i = 0; i < vertices.Count-1; i++)
+        // {
+        //     Cx += 1f/(6f*A) * (vertices[i].x + vertices[i+1].x) * (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+        // }
+        // for (int i = 0; i < vertices.Count-1; i++)
+        // {
+        //     Cy += 1f/(6f*A) * (vertices[i].y + vertices[i+1].y) * (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+        // }
+
+        for (int i = 0; i < vertices.Count-1; i++)
+        {
+            Cx += vertices[i].x;
+        }
+        for (int i = 0; i < vertices.Count-1; i++)
+        {
+            Cy += vertices[i].y;
+        }
+
+        vertices.RemoveAt(vertices.Count-1);    
+        vertices.Add(new Vector3(Cx/((float)vertices.Count), Cy/((float)vertices.Count), 0f));
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            vertices[i] -= vertices[vertices.Count-1];
+        }
+        vertices.Add(new Vector3(Cx/((float)vertices.Count), Cy/((float)vertices.Count), 0f));
+        return vertices;
+    }
+
+    public float GetPolygonArea(List<Vector3> vertices)
+    {
+        float A = 0f;
+        for (int i = 0; i < vertices.Count-1; i++)
+        {
+            A += 0.5f * (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+        }
+        return Mathf.Abs(A);
+    }
+
+    public void DrawAsteroid(float size)
     {
         //random int including the starting number, excluding the finishing number
-        int numberOfSides = Random.Range(10, 10);
+        int numberOfSides = Random.Range(8, 12);
 
         float radius = size / 6f;
 
@@ -202,7 +284,7 @@ public class Asteroid : MonoBehaviour
     }
 
 
-    public void DrawMesh(Vector3[] vertices, int[] triangles, bool fromSplit = false)
+    public void DrawMesh(Vector3[] vertices, int[] triangles)
     {
         // mesh = new Mesh();
         // this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
@@ -221,17 +303,10 @@ public class Asteroid : MonoBehaviour
             verticesReducedList.Add(vertices[i]);
         }
         Vector3[] verticesReduced;
-        if (fromSplit == true)
-        {
-            verticesReduced = new Vector3[vertices.Length];
-            verticesReduced = vertices;
-        }
-        else
-        {
-            verticesReduced = new Vector3[vertices.Length-1];
-            verticesReduced = verticesReducedList.ToArray();
-        }
-        // Debug.Log(verticesReduced.Length);
+ 
+        verticesReduced = new Vector3[vertices.Length-1];
+        verticesReduced = verticesReducedList.ToArray();
+
         mesh2.vertices = verticesReduced;
         
         int[] meshIndices = new int[verticesReduced.Length*2];
@@ -241,18 +316,14 @@ public class Asteroid : MonoBehaviour
             meshIndices[2*i] = i;
             meshIndices[2*i+1] = i+1;
         }
-        meshIndices[verticesReduced.Length*2-1] = 0;
-        
-        // Debug.Log("vertices:");
-        // for (int i = 0; i < verticesReduced.Length; i++)
-        // {
-        //     Debug.Log(verticesReduced[i]);
-        // }
-        // Debug.Log("indices:");
-        // for (int i = 0; i < meshIndices.Length; i++)
-        // {
-        //     Debug.Log(meshIndices[i]);
-        // }
+        // Debug.Log(verticesReduced.Length);
+        // Debug.Log((verticesReduced.Length-1)*2);
+        meshIndices[(verticesReduced.Length)*2-1] = 0;
+
+        foreach(int i in meshIndices)
+        {
+            // Debug.Log(i);
+        }
 
         mesh2.SetIndices(meshIndices, MeshTopology.Lines, 0);
     }
