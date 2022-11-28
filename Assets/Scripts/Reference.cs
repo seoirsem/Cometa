@@ -18,6 +18,7 @@ public class Reference
     public static ScoreController scoreController;
     public static WorldController worldController;
     public static ShipShields shipShields;
+    public static SoundController SoundController;
     // public static ShipShieldVisuals;
     
     
@@ -30,6 +31,7 @@ public class Reference
         hud = GameObject.Find("HUD");
 
         asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
+        SoundController = GameObject.Find("SoundController").GetComponent<SoundController>();
         animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
         hudcontroller = GameObject.Find("HUDController").GetComponent<HUDController>();
         // playerEdgeVisualsController = GameObject.Find("PlayerInputController").GetComponent<PlayerEdgeVisualsController>();

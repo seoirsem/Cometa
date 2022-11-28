@@ -27,7 +27,7 @@ public class Beam : MonoBehaviour
         Vector3 beamDirection = new Vector3(-Mathf.Sin(beamAngle)*rayCastDistance, Mathf.Cos(beamAngle)*rayCastDistance, 0f);   
         lineRenderer.SetPosition(1, Reference.playergo.transform.position + beamDirection);
         hit = Physics2D.Raycast(Reference.playergo.transform.position, beamDirection, rayCastDistance);
-        Debug.Log("hello");
+//        Debug.Log("hello");
         if (hit.collider != null)
         {
             if ( hit.collider.gameObject.name.Contains("MainAsteroid") )
