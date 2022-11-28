@@ -27,14 +27,12 @@ public class Beam : MonoBehaviour
         Vector3 beamDirection = new Vector3(-Mathf.Sin(beamAngle)*rayCastDistance, Mathf.Cos(beamAngle)*rayCastDistance, 0f);   
         lineRenderer.SetPosition(1, Reference.playergo.transform.position + beamDirection);
         hit = Physics2D.Raycast(Reference.playergo.transform.position, beamDirection, rayCastDistance);
-        Debug.Log("hello");
         if (hit.collider != null)
         {
             if ( hit.collider.gameObject.name.Contains("MainAsteroid") )
             {
                 Asteroid asteroid = hit.collider.gameObject.GetComponent<Asteroid>();
                 ShrinkVertex(asteroid, hit.point - (Vector2)asteroid.gameObject.transform.position);
-                Debug.Log("here");
                 //asteroid.meshVertices[asteroid.meshVertices.Length-1]
             }
         }
@@ -54,7 +52,6 @@ public class Beam : MonoBehaviour
             if ( ( dif < minDif ) ){ minIdx = i; minDif = dif; }
         }
         asteroid.meshVertices[minIdx] = asteroid.meshVertices[minIdx]*0.99f;
-        Debug.Log("there");
         // I use the CalculateCOM f'n to get the coordinates of the new (post-shrink) COM
         // Then shift COM (asteroid position; we always keep COM at (0,0) in local coords)
         // And all vertices in the opposite direction to compensate the GO movement 

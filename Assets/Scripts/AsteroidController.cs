@@ -18,7 +18,7 @@ public class AsteroidController : MonoBehaviour
     {
         mainAsteroidPrefab = Resources.Load("Prefabs/MainAsteroid") as GameObject;
         derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
-        // worldSize = Reference.worldController.worldSize;
+        worldSize = Reference.worldController.worldSize;
         // SpawnAsteroid(4, new Vector3(0, 15f, 0), new Vector3(0,0,0));
         // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0));
         Vector3 a = new Vector3(1f,0f,0f);
@@ -36,10 +36,10 @@ public class AsteroidController : MonoBehaviour
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // SpawnAsteroid(6, new Vector3(0f,3f,0), new Vector3(0, 0, 0)); 
-            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0));    
+            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(0, 0, 0));    
         }
     }
-    public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack)
+    public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, Vector3 offsetFromActualCollision = new Vector3())
     {
         float size = asteroid.size;
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
@@ -49,6 +49,15 @@ public class AsteroidController : MonoBehaviour
         Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
+        if ( offsetFromActualCollision != Vector3.zero )
+        {
+            // Debug.Log("Hit a fake asteroid; offsetting the original collision point of:");
+            // Debug.Log(collisionPoint);
+            collisionPoint -= offsetFromActualCollision;
+            // Debug.Log("New collision point is:");
+            // Debug.Log(collisionPoint);
+        }
+        // Debug.Log(asteroid.GetType().ToString() == "MainAsteroid");
         Asteroid[] splitAsteroidData = asteroid.SplitAsteroid(asteroid.meshVertices, collisionPoint - asteroidPosition, collisionDirection);
         
         DespawnAsteroid(asteroid, asteroidPack);
@@ -62,17 +71,7 @@ public class AsteroidController : MonoBehaviour
         // Debug.Log(splitAsteroidData[0] == null);
         // Debug.Log(splitAsteroidData[0]);
         // Debug.Log(splitAsteroidData[0].meshVertices[0]);
-        //////////////// return to split asteroids
-        
-        
-         //if(size > 1f)
-         //{
-          //   SpawnAsteroid(size - 1f, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
-         //    SpawnAsteroid(size - 1f, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
-         //}
-         //return;
 
-        //////////////
         if (splitAsteroidData[0] != null)
         {
             if (splitAsteroidData[0].size > 0.4)

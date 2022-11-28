@@ -10,7 +10,6 @@ public class MainAsteroid : Asteroid
 
         this.mass = Mathf.Pow(size,2);
         this.size = asteroidData.size;
-        Debug.Log(asteroidData.size);
         this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
         this.rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
@@ -135,7 +134,7 @@ public class MainAsteroid : Asteroid
             if (projectile.mainProjectile == true)
             {
                 Reference.scoreController.IncrementScore((float)size);
-                Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack);
+                Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, offset);
             }
         }
         else if (otherObject.GetComponent<PlayerSpriteController>() != null)
