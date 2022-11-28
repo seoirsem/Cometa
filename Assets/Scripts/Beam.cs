@@ -7,39 +7,61 @@ public class Beam : MonoBehaviour
     Ray beamRay;
     RaycastHit2D hit;
     LineRenderer lineRenderer;
+    float maxRayCastDistance;
     float rayCastDistance;
+    float rayCastAdvanceSpeed;
+    float rayCastRetractSpeed;
+    float beamPower;
+    float maxBeamPower;
+    float beamDischargeRate;
+    float beamChargeRate;
 
     // Start is called before the first frame update
     void Start()
     {
         lineRenderer = gameObject.GetComponent<LineRenderer>();
-        rayCastDistance = 3f;
+        maxRayCastDistance = 3f;
+        maxBeamPower = 100f;
+        beamPower = 100f;
+        beamDischargeRate = 1f;
+        beamChargeRate = 0.1f;
+        rayCastAdvanceSpeed = 0.1f;
+        rayCastRetractSpeed = 0.3f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if ( beamPower < 100f ){ beamPower += beamChargeRate; }
         
-        lineRenderer.SetPosition(0, Reference.playergo.transform.position);
         float beamAngle = Reference.playergo.GetComponent<Rigidbody2D>().rotation % 360; // Rigidbody angle winds above 360 so take modulo
         if ( beamAngle < 0 ){ beamAngle = (360f + beamAngle); } // Convert from -180:180 to 0:360 convention
         beamAngle = 2f*Mathf.PI*beamAngle/(360f); // Convert to radians for Mathf. trig functions
+
+        if ( Reference.playerInputController.b == false && rayCastDistance >= rayCastRetractSpeed) { rayCastDistance -= rayCastRetractSpeed; }
+        if ( Reference.playerInputController.b == true && rayCastDistance < maxRayCastDistance ) { rayCastDistance += rayCastAdvanceSpeed; }
+          
         Vector3 beamDirection = new Vector3(-Mathf.Sin(beamAngle)*rayCastDistance, Mathf.Cos(beamAngle)*rayCastDistance, 0f);   
+        lineRenderer.SetPosition(0, Reference.playergo.transform.position);
         lineRenderer.SetPosition(1, Reference.playergo.transform.position + beamDirection);
-        hit = Physics2D.Raycast(Reference.playergo.transform.position, beamDirection, rayCastDistance);
-        if (hit.collider != null)
+        if ( Reference.playerInputController.b == true )
         {
-            if ( hit.collider.gameObject.name.Contains("MainAsteroid") )
+            hit = Physics2D.Raycast(Reference.playergo.transform.position, beamDirection, rayCastDistance);
+            if (hit.collider != null)
             {
-                Asteroid asteroid = hit.collider.gameObject.GetComponent<Asteroid>();
-                ShrinkVertex(asteroid, hit.point - (Vector2)asteroid.gameObject.transform.position);
-                //asteroid.meshVertices[asteroid.meshVertices.Length-1]
+                if ( hit.collider.gameObject.name.Contains("MainAsteroid") )
+                {
+                    Asteroid asteroid = hit.collider.gameObject.GetComponent<Asteroid>();
+                    ShrinkVertex(asteroid, hit.point - (Vector2)asteroid.gameObject.transform.position);
+                }
+            }
+            else
+            {
+                // Debug.Log("Didn't hit anything!");;
             }
         }
-        else
-        {
-            // Debug.Log("Didn't hit anything!");;
-        }
+        
+        
     }
 
     void ShrinkVertex(Asteroid asteroid, Vector2 hitPoint)

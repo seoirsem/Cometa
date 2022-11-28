@@ -11,6 +11,7 @@ public class PlayerInputController : MonoBehaviour
     public Vector2 cursorPosition;
     public bool mouseClicked = false;
     public bool spaceBar = false;
+    public bool b = false;
     
     void Start()
     {
@@ -77,6 +78,14 @@ public class PlayerInputController : MonoBehaviour
         else
         {
             spaceBar = false;
+        }
+        if (Input.GetKey("b"))
+        {
+            b = true;
+        }
+        else
+        {
+            b = false;
         }
     }
 }
