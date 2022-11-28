@@ -204,10 +204,10 @@ public class Asteroid : MonoBehaviour
         return Mathf.Abs(A);
     }
 
-    public float[] ComputeVertexHealth()
-    {
-        // this.vertexHealth = new float[this.]
-    }
+    // public float[] ComputeVertexHealth()
+    // {
+    //     // this.vertexHealth = new float[this.]
+    // }
 
     public void DrawAsteroid(float size)
     {
