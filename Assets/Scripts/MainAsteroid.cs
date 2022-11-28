@@ -5,7 +5,7 @@ using UnityEngine;
 public class MainAsteroid : Asteroid
 {
 
-    public void OnSpawnSplitAsteroid(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, Asteroid asteroidData)
+    public void OnSpawnSplitAsteroid(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, Asteroid asteroidData)
     {
 
         this.mass = Mathf.Pow(size,2);
@@ -30,7 +30,7 @@ public class MainAsteroid : Asteroid
         DrawCollider(meshVertices, meshTriangles);
     }
 
-    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
+    public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
         this.mass = Mathf.Pow(size,2);
         // this.size = size;

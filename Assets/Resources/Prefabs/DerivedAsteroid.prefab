@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7253268233638833310}
   - component: {fileID: 3161182478524562038}
   - component: {fileID: 6534374921096285990}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AsteroidOutline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 6787250439989498988}
   - component: {fileID: 4955879943888381351}
   - component: {fileID: 5643605268821681269}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DerivedAsteroid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -241,5 +241,6 @@ MonoBehaviour:
   asteroidPack: []
   polygonCollider: {fileID: 0}
   rigid_body: {fileID: 0}
+  CoMShift: {x: 0, y: 0, z: 0}
   asteroidController: {fileID: 0}
   size: 0
