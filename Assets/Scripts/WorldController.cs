@@ -6,7 +6,7 @@ public class WorldController : MonoBehaviour
 {
     GameObject playergo;
     public Player player;
-    public Vector2 worldSize = new Vector2(10, 8); //(1300/90, 800/90)
+    public Vector2 worldSize;
     GameObject windowing;
 
     float asteroidSpawnInterval = 10f;
@@ -16,6 +16,7 @@ public class WorldController : MonoBehaviour
     {
 
         time = Time.time;
+        worldSize = new Vector2(10, 8); //(1300/90, 800/90)
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
