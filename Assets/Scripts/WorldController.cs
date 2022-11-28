@@ -12,18 +12,38 @@ public class WorldController : MonoBehaviour
     float asteroidSpawnInterval = 100f;
     float time;
 
+    BoxCollider2D rightEdgeCollider;
+    BoxCollider2D leftEdgeCollider;
+    BoxCollider2D topEdgeCollider;
+    BoxCollider2D bottomEdgeCollider;
+
+    float colliderThickness = 0.01f;
+
     void Awake()
     {
 
         time = Time.time;
-        worldSize = new Vector2(10, 8); //(1300/90, 800/90)
+        worldSize = new Vector2(10f, 8f); //(1300/90, 800/90)
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
         //worldSize = new Vector2(Screen.width)
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
+        rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();
+        leftEdgeCollider = transform.Find("LeftEdgeCollider").GetComponent<BoxCollider2D>();
+        topEdgeCollider = transform.Find("TopEdgeCollider").GetComponent<BoxCollider2D>();
+        bottomEdgeCollider = transform.Find("BottomEdgeCollider").GetComponent<BoxCollider2D>();
 
+        rightEdgeCollider.gameObject.transform.position = new Vector3(Reference.worldController.worldSize.x/2f + colliderThickness, 0f, 0f);
+        leftEdgeCollider.gameObject.transform.position = new Vector3(-(Reference.worldController.worldSize.x/2f + colliderThickness), 0f, 0f);
+        rightEdgeCollider.size = new Vector2(colliderThickness, Reference.worldController.worldSize.y);
+        leftEdgeCollider.size = new Vector2(colliderThickness, Reference.worldController.worldSize.y);
+
+        topEdgeCollider.gameObject.transform.position = new Vector3(0f, Reference.worldController.worldSize.y/2f + colliderThickness, 0f);
+        bottomEdgeCollider.gameObject.transform.position = new Vector3(0f, -(Reference.worldController.worldSize.y/2f + colliderThickness), 0f);
+        topEdgeCollider.size = new Vector2(Reference.worldController.worldSize.x, colliderThickness);
+        bottomEdgeCollider.size = new Vector2(Reference.worldController.worldSize.x, colliderThickness);
     }
 
     void Start() {
@@ -36,7 +56,7 @@ public class WorldController : MonoBehaviour
     {
         if (Time.time - time > asteroidSpawnInterval)
         {
-            Reference.asteroidController.SpawnNewAsteroid();
+            // Reference.asteroidController.SpawnNewAsteroid();
             time = Time.time;
         }   
     }

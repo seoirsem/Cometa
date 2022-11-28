@@ -25,7 +25,11 @@ public class AsteroidController : MonoBehaviour
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
         // SpawnAsteroid(4, new Vector3(0, 15f, 0), new Vector3(0,0,0));
+<<<<<<< HEAD
         //SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0),false);
+=======
+        // SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0),false);
+>>>>>>> c2f955e304d8b10a33466c1f8cc4f2cbb8c84a6a
         Vector3 a = new Vector3(1f,0f,0f);
         Vector3 b = new Vector3(-1f,-0.5f,0f);
         // float angle = Vector3.SignedAngle(a,b,Vector3.forward);
