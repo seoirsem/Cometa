@@ -9,8 +9,13 @@ public class WorldController : MonoBehaviour
     public Vector2 worldSize;
     GameObject windowing;
 
+    float asteroidSpawnInterval = 10f;
+    float time;
+
     void Awake()
     {
+
+        time = Time.time;
         worldSize = new Vector2(10, 8); //(1300/90, 800/90)
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
@@ -29,6 +34,10 @@ public class WorldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Time.time - time > asteroidSpawnInterval)
+        {
+            Reference.asteroidController.SpawnNewAsteroid();
+            time = Time.time;
+        }   
     }
 }

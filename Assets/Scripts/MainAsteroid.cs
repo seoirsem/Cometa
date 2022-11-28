@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MainAsteroid : Asteroid
 {
+    bool spawning = false; //this is used to mark when this asteroid is spawning in
 
     public void OnSpawnSplitAsteroid(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, Asteroid asteroidData)
     {
@@ -29,8 +30,17 @@ public class MainAsteroid : Asteroid
         DrawCollider(meshVertices, meshTriangles);
     }
 
-    public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
+    public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, bool spawning = false)
     {
+        this.spawning = spawning;
+
+        if (spawning)
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("SpawningAsteroid");
+            this.transform.position = this.transform.position + new Vector3(0,0,10);
+        }
+
+
         this.mass = Mathf.Pow(size,2);
         // this.size = size;
         this.asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
@@ -60,6 +70,16 @@ public class MainAsteroid : Asteroid
         UpdateAsteroidRotation();
     }
 
+    void NewAsteroidEnteredScreen()
+    {
+        if(this.spawning == true)
+        {
+            Debug.Log("New asteroid changing screen");
+            this.gameObject.layer = LayerMask.NameToLayer("Default");
+            this.transform.position = this.transform.position + new Vector3(0,0,-10);
+            this.spawning = false;
+        }
+    }
     void UpdateAsteroidPosition()
     {
         //Vector2 velocity2d = new Vector2(velocity.x, velocity.y);
@@ -69,18 +89,22 @@ public class MainAsteroid : Asteroid
         if (rigid_body.position.x - location.x * worldSize.x > worldSize.x / 2)
         {
             this.rigid_body.position = new Vector2(rigid_body.position.x - worldSize.x, rigid_body.position.y);// asteroidgo.transform.position.z);
+            NewAsteroidEnteredScreen();
         }
         if (rigid_body.position.x - location.x * worldSize.x < -worldSize.x / 2)
         {
             this.rigid_body.position  = new Vector2(rigid_body.position.x + worldSize.x, rigid_body.position.y);
+            NewAsteroidEnteredScreen();
         }
         if (rigid_body.position.y - location.y * worldSize.y > worldSize.y / 2)
         {
             this.rigid_body.position  = new Vector2(rigid_body.position.x, rigid_body.position.y - worldSize.y);
+            NewAsteroidEnteredScreen();
         }
         if (rigid_body.position.y - location.y * worldSize.y < -worldSize.y / 2)
         {
             this.rigid_body.position  = new Vector2(rigid_body.position.x, rigid_body.position.y + worldSize.y);
+            NewAsteroidEnteredScreen(); 
         }
     }
     void UpdateAsteroidRotation()
