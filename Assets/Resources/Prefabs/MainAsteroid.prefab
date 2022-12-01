@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6215402619467832913}
   - component: {fileID: 1817066592134383801}
   - component: {fileID: 7514117001093660137}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AsteroidOutline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 7843135950236640931}
   - component: {fileID: 8516184068674574184}
   - component: {fileID: 784641321851166302}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MainAsteroid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6705681520816806410}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.9966178, y: -3.3926775, z: -9.157618}
+  m_LocalPosition: {x: 1.9966178, y: -3.3926775, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6215402619467832913}
@@ -225,3 +225,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8da5424c7403964f9d760bdab644322, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asteroidOutlines: {fileID: 0}
+  mesh: {fileID: 0}
+  colliderMesh: {fileID: 0}
+  meshVertices: []
+  meshTriangles: 
+  meshIndices: 
+  mass: 1
+  rotation: {x: 0, y: 0, z: 0}
+  rotationRate: 0
+  asteroidgo: {fileID: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  worldSize: {x: 0, y: 0}
+  location: {x: 0, y: 0}
+  asteroidPack: []
+  polygonCollider: {fileID: 0}
+  rigid_body: {fileID: 0}
+  CoMShift: {x: 0, y: 0, z: 0}
+  asteroidController: {fileID: 0}
+  size: 0
+  vertexHealth: []
