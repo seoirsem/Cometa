@@ -10,17 +10,18 @@ public class Projectile : MonoBehaviour
     float lifespan = 2;//s
     Vector2 worldSize;
     float projectileSpeed = 11;
-    float explosionSize = 2f; // to modulate how much explosion thrust is applied to surrounding objects
+    float explosionSize = 0f; // to modulate how much explosion thrust is applied to surrounding objects
     float minExplosionRadius = 0.25f; //to avoid huge impulses near the explosion 
     float thrust = 1f;
     public List<GameObject> objectPack;
     public bool mainProjectile;
     bool leftPlayerCollider = false;
     CapsuleCollider2D capsuleCollider2D;
-    Rigidbody2D rigid_body;
+    public Rigidbody2D rigid_body;
     float rotationalPosition;
     GameObject explosionRadiusGO;
     ExplosionRadius explosionRadius;
+    public Vector2 velocity; // I need this so that I know the velocity of the projectile at collision; rb2D goes to 0 at despawn
 
 
     bool animationStarted = false;
@@ -59,7 +60,7 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        this.velocity = this.rigid_body.velocity;
         UpdateMotion();
         if(Time.time - timeFired > lifespan)
         {

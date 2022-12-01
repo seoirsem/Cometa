@@ -35,6 +35,13 @@ public class Asteroid : MonoBehaviour
         asteroidMeshData[0] = new Asteroid();
         asteroidMeshData[1] = new Asteroid();
 
+        Vector2[] tmp = StruckEdgeIndices(collisionDirection, collisionPoint, meshVs);
+
+        // Debug.Log("Yep, can confirm, collision point is:");
+        // Debug.Log(collisionPoint);
+        // Debug.Log("And direction is:");
+        // Debug.Log(collisionDirection);
+
         List<Vector3> vList1 = new List<Vector3>();
         List<Vector3> vList2 = new List<Vector3>();
         List<Vector3> vReorderedList1 = new List<Vector3>();
@@ -43,7 +50,7 @@ public class Asteroid : MonoBehaviour
         // Sort vertices into two list, either side of the collision direction (direction of incoming missile)
         // Note: last element (CoM of old asteroid) is omitted
         for (int i = 0; i < meshVs.Length-1; i++)
-        {
+        {   
             if (Vector3.Cross(meshVs[i], collisionDirection).z > 0f)
             {
                 vList1.Add(meshVs[i]);
@@ -53,8 +60,45 @@ public class Asteroid : MonoBehaviour
                 vList2.Add(meshVs[i]);
             }
         }
-        vList1.Add(collisionPoint);
-        vList2.Add(collisionPoint);
+
+        Debug.Log("New points are:");
+        Debug.Log( (meshVs[(int)tmp[0].x] + (meshVs[(int)tmp[0].y] - meshVs[(int)tmp[0].x]) * 0.5f).ToString("F4") );
+        Debug.Log( (meshVs[(int)tmp[1].x] + (meshVs[(int)tmp[1].y] - meshVs[(int)tmp[1].x]) * 0.5f).ToString("F4") );
+        Debug.Log("Pierwszy");
+        Debug.Log(meshVs[(int)tmp[0].x].ToString("F4") );
+        Debug.Log(meshVs[(int)tmp[0].y].ToString("F4") );
+        Debug.Log(tmp[0]);
+        Debug.Log(tmp[0].x);
+        Debug.Log((int)tmp[0].x);
+        Debug.Log("Drugi");
+        Debug.Log(meshVs[(int)tmp[1].x].ToString("F4") );
+        Debug.Log(meshVs[(int)tmp[1].y].ToString("F4") );
+        Debug.Log(tmp[1]);
+        Debug.Log(tmp[1].x);
+        Debug.Log((int)tmp[1].x);
+
+        
+
+        vList1.Add(meshVs[(int)tmp[0].x] + (meshVs[(int)tmp[0].y] - meshVs[(int)tmp[0].x]) * 0.5f);
+        vList1.Add(meshVs[(int)tmp[1].x] + (meshVs[(int)tmp[1].y] - meshVs[(int)tmp[1].x]) * 0.5f);
+
+        vList2.Add(meshVs[(int)tmp[0].x] + (meshVs[(int)tmp[0].y] - meshVs[(int)tmp[0].x]) * 0.5f);
+        vList2.Add(meshVs[(int)tmp[1].x] + (meshVs[(int)tmp[1].y] - meshVs[(int)tmp[1].x]) * 0.5f);
+
+        Debug.Log("List1");
+        Debug.Log(vList1.Count);
+        for (int i = 0; i < vList1.Count; i++)
+        {
+            Debug.Log(vList1[i].ToString("F4"));
+        }
+        Debug.Log("List2");
+        Debug.Log(vList2.Count);
+        for (int i = 0; i < vList2.Count; i++)
+        {
+            Debug.Log(vList2[i].ToString("F4"));
+        }
+
+        // vList2.Add(collisionPoint);
 
         // Would be nice to add exit point to the list, as well as the CoM of original asteroid
         // But this has proven to be quite buggy and challenging to do with arbitrary shapes
@@ -89,10 +133,10 @@ public class Asteroid : MonoBehaviour
         minIndex = -1;
         oldCoM = meshVs[meshVs.Length-1] - Vector3.zero;
 
-        for (int k = 0; k < vList2.Count; k++)
-        {
-            vList2[k] = new Vector3(-vList2[k].x, vList2[k].y, vList2[k].z);
-        }
+        // for (int k = 0; k < vList2.Count; k++)
+        // {
+        //     vList2[k] = new Vector3(-vList2[k].x, vList2[k].y, vList2[k].z);
+        // }
 
         for (int j = 0; j < loopIterations; j++)
         {
@@ -108,10 +152,10 @@ public class Asteroid : MonoBehaviour
             minAngle = 999f;
         }
         
-        for (int k = 0; k < vReorderedList2.Count; k++)
-        {
-            vReorderedList2[k] = new Vector3(-vReorderedList2[k].x, vReorderedList2[k].y, vReorderedList2[k].z);
-        }
+        // for (int k = 0; k < vReorderedList2.Count; k++)
+        // {
+        //     vReorderedList2[k] = new Vector3(-vReorderedList2[k].x, vReorderedList2[k].y, vReorderedList2[k].z);
+        // }
 
         // Calculate the new CoM and save it in a separate asteroid objects field
         // So that we know how much to offset the spawning by, so that newly formed
@@ -192,6 +236,46 @@ public class Asteroid : MonoBehaviour
         }
         vertices.Add(new Vector3(Cx/((float)vertices.Count), Cy/((float)vertices.Count), 0f));
         return vertices;
+    }
+
+    public Vector2[] StruckEdgeIndices(Vector3 direction, Vector3 collisionPoint, Vector3[] vertices)
+    {
+        float crossProduct1;
+        float crossProduct2;
+        Vector2[] indices = new Vector2[2];
+        indices[0] = new Vector2(-1, -1); indices[1] = new Vector2(-1, -1);
+        int count = 0;
+        for (int i = 0; i < vertices.Length-1; i++)
+        {
+            crossProduct1 = Vector3.Cross(vertices[i], direction).z;
+            if ( i < vertices.Length-2) { crossProduct2 = Vector3.Cross(vertices[i+1], direction).z; }
+            else { crossProduct2 = Vector3.Cross(vertices[0], direction).z; }
+            if ( (crossProduct1 > 0f && crossProduct2 < 0f) || 
+                 (crossProduct1 < 0f && crossProduct2 > 0f))
+            {
+                indices[count].x = i;
+                indices[count].y = i+1;
+                count += 1;
+            }
+        }
+        // Vector2 v1 = (vertices[(int)indices[0].x] - vertices[(int)indices[0].y]).normalized;
+        // Vector2 v2 = (vertices[(int)indices[1].x] - vertices[(int)indices[1].y]).normalized;
+        // Vector2 index;
+
+        // float linedUp1 = Mathf.Abs(v1.x*direction.normalized.y - v1.y*direction.normalized.x);
+        // float linedUp2 = Mathf.Abs(v2.x*direction.normalized.y - v2.y*direction.normalized.x);
+        // Debug.Log(linedUp1);
+        // Debug.Log(linedUp2);
+        // Debug.Log(count);
+        // if ( linedUp1 < linedUp2 )
+        // { 
+        //     index = new Vector2(indices[0].x, indices[0].y); 
+        // }
+        // else 
+        // { 
+        //     index = new Vector2(indices[0].x, indices[0].y);
+        // }
+        return indices;
     }
 
     public float GetPolygonArea(List<Vector3> vertices)

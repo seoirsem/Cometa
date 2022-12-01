@@ -55,19 +55,19 @@ public class AsteroidController : MonoBehaviour
         Vector3 asteroidPosition = asteroid.gameObject.transform.position;
         Vector3 asteroidVelocity = asteroid.velocity;
         Vector3 collisionPoint = new Vector3(contact.x, contact.y, 0);
-        Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
+        // Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
+        Debug.Log(otherObject.name);
+        Debug.Log(otherObject.GetComponent<Projectile>().velocity);
+        Vector3 collisionDirection = otherObject.GetComponent<Projectile>().velocity.normalized;
         Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
         Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
-        if ( offsetFromActualCollision != Vector3.zero )
-        {
-            // Debug.Log("Hit a fake asteroid; offsetting the original collision point of:");
-            // Debug.Log(collisionPoint);
-            collisionPoint -= offsetFromActualCollision;
-            // Debug.Log("New collision point is:");
-            // Debug.Log(collisionPoint);
-        }
-        // Debug.Log(asteroid.GetType().ToString() == "MainAsteroid");
+        if ( offsetFromActualCollision != Vector3.zero ) { collisionPoint -= offsetFromActualCollision; }
+
+        // Debug.Log("Splitting asteroid with hit position:");
+        // Debug.Log(collisionPoint - asteroidPosition);
+        // Debug.Log("And from direction:");
+        // Debug.Log(collisionDirection);
         Asteroid[] splitAsteroidData = asteroid.SplitAsteroid(asteroid.meshVertices, collisionPoint - asteroidPosition, collisionDirection);
         
         DespawnAsteroid(asteroid, asteroidPack);

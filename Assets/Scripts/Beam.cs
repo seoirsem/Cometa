@@ -22,8 +22,8 @@ public class Beam : MonoBehaviour
         maxRayCastDistance = 3f;
         maxBeamPower = 100f;
         beamPower = 100f;
-        beamDischargeRate = 1f;
-        beamChargeRate = 0.1f;
+        beamDischargeRate = 0.1f;
+        beamChargeRate = 0.01f;
         rayCastAdvanceSpeed = 0.1f;
         rayCastRetractSpeed = 0.3f;
     }
@@ -37,22 +37,26 @@ public class Beam : MonoBehaviour
         if ( beamAngle < 0 ){ beamAngle = (360f + beamAngle); } // Convert from -180:180 to 0:360 convention
         beamAngle = 2f*Mathf.PI*beamAngle/(360f); // Convert to radians for Mathf. trig functions
 
-        if ( Reference.playerInputController.b == false && rayCastDistance >= rayCastRetractSpeed) 
+        if ( (Reference.playerInputController.b == false || beamPower < 5f) && rayCastDistance >= rayCastRetractSpeed) 
         { 
-            rayCastDistance -= rayCastRetractSpeed; 
-            if ( lineRenderer.positionCount > 2 ) 
-            { 
-                Vector3 direction = lineRenderer.GetPosition(2) - lineRenderer.GetPosition(3);
-                lineRenderer.SetPosition(3, lineRenderer.GetPosition(3) + direction.normalized*rayCastRetractSpeed);
-                if ( direction.magnitude < rayCastRetractSpeed ) { lineRenderer.positionCount = 2; }
+            rayCastDistance -= rayCastRetractSpeed;  // debugging tool
+            if ( lineRenderer.positionCount > 2 )  // debugging tool
+            {  // debugging tool
+                Vector3 direction = lineRenderer.GetPosition(2) - lineRenderer.GetPosition(3); // debugging tool
+                lineRenderer.SetPosition(3, lineRenderer.GetPosition(3) + direction.normalized*rayCastRetractSpeed); // debugging tool
+                if ( direction.magnitude < rayCastRetractSpeed ) { lineRenderer.positionCount = 2; } // debugging tool
             }
         }
-        if ( Reference.playerInputController.b == true && rayCastDistance < maxRayCastDistance ) { rayCastDistance += rayCastAdvanceSpeed; }
+        if ( Reference.playerInputController.b == true && beamPower > 0f ) 
+        {   
+            beamPower -= beamDischargeRate; 
+            if ( rayCastDistance < maxRayCastDistance ) { rayCastDistance += rayCastAdvanceSpeed; }
+        }
           
         Vector3 beamDirection = new Vector3(-Mathf.Sin(beamAngle)*rayCastDistance, Mathf.Cos(beamAngle)*rayCastDistance, 0f);   
-        lineRenderer.SetPosition(0, Reference.playergo.transform.position);
-        lineRenderer.SetPosition(1, Reference.playergo.transform.position + beamDirection);
-        if ( Reference.playerInputController.b == true )
+        lineRenderer.SetPosition(0, Reference.playergo.transform.position); // debugging tool
+        lineRenderer.SetPosition(1, Reference.playergo.transform.position + beamDirection); // debugging tool
+        if ( Reference.playerInputController.b == true && beamPower > 0f )
         {
             DoRaycast(Reference.playergo.transform.position, beamDirection, rayCastDistance, 1);
         }   
@@ -72,38 +76,38 @@ public class Beam : MonoBehaviour
                 if ( hit.collider.gameObject.name.Contains("EdgeCollider") ) 
                 { 
                     crossScreenBeam = true;
-                    if ( lineRenderer.positionCount < 4) { lineRenderer.positionCount += 2;}
+                    if ( lineRenderer.positionCount < 4) { lineRenderer.positionCount += 2;} // debugging tool
                     float leftoverDisatnce = distance - ((Vector2)from - hit.point).magnitude;
                     Vector2 worldSize = Reference.worldController.worldSize;
                     if ( hit.collider.gameObject.name.Contains("Right") ) 
                     { 
                         DoRaycast(hit.point - new Vector2(worldSize.x*0.999f, 0f), direction, leftoverDisatnce, depth+1); 
-                        lineRenderer.SetPosition(2, hit.point - new Vector2(worldSize.x*0.999f, 0f));
-                        lineRenderer.SetPosition(3, hit.point - new Vector2(worldSize.x*0.999f, 0f) + (Vector2)direction.normalized*leftoverDisatnce);
+                        lineRenderer.SetPosition(2, hit.point - new Vector2(worldSize.x*0.999f, 0f)); // debugging tool
+                        lineRenderer.SetPosition(3, hit.point - new Vector2(worldSize.x*0.999f, 0f) + (Vector2)direction.normalized*leftoverDisatnce); // debugging tool
                     }
                     if ( hit.collider.gameObject.name.Contains("Left") ) 
                     { 
                         DoRaycast(hit.point + new Vector2(worldSize.x*0.999f, 0f), direction, leftoverDisatnce, depth+1); 
-                        lineRenderer.SetPosition(2, hit.point + new Vector2(worldSize.x*0.999f, 0f));
-                        lineRenderer.SetPosition(3, hit.point + new Vector2(worldSize.x*0.999f, 0f) + (Vector2)direction.normalized*leftoverDisatnce);
+                        lineRenderer.SetPosition(2, hit.point + new Vector2(worldSize.x*0.999f, 0f)); // debugging tool
+                        lineRenderer.SetPosition(3, hit.point + new Vector2(worldSize.x*0.999f, 0f) + (Vector2)direction.normalized*leftoverDisatnce); // debugging tool
                     }
                     if ( hit.collider.gameObject.name.Contains("Top") ) 
                     { 
                         DoRaycast(hit.point - new Vector2(0f, worldSize.y*0.999f), direction, leftoverDisatnce, depth+1);
                         Debug.Log(hit.point); 
-                        lineRenderer.SetPosition(2, hit.point - new Vector2(0f, worldSize.y*0.999f));
-                        lineRenderer.SetPosition(3, hit.point - new Vector2(0f, worldSize.y*0.999f) + (Vector2)direction.normalized*leftoverDisatnce);
+                        lineRenderer.SetPosition(2, hit.point - new Vector2(0f, worldSize.y*0.999f)); // debugging tool
+                        lineRenderer.SetPosition(3, hit.point - new Vector2(0f, worldSize.y*0.999f) + (Vector2)direction.normalized*leftoverDisatnce); // debugging tool
                     }
                     if ( hit.collider.gameObject.name.Contains("Bottom") ) 
                     { 
                         DoRaycast(hit.point + new Vector2(0f, worldSize.y*0.999f), direction, leftoverDisatnce, depth+1); 
-                        lineRenderer.SetPosition(2, hit.point + new Vector2(0f, worldSize.y*0.999f));
-                        lineRenderer.SetPosition(3, hit.point + new Vector2(0f, worldSize.y*0.999f) + (Vector2)direction.normalized*leftoverDisatnce);
+                        lineRenderer.SetPosition(2, hit.point + new Vector2(0f, worldSize.y*0.999f)); // debugging tool
+                        lineRenderer.SetPosition(3, hit.point + new Vector2(0f, worldSize.y*0.999f) + (Vector2)direction.normalized*leftoverDisatnce); // debugging tool
                     }
                 }
                 else{ ResolveRayhits(hit); } 
             }
-            if (crossScreenBeam == false && depth == 1) { lineRenderer.positionCount = 2; }
+            if (crossScreenBeam == false && depth == 1) { lineRenderer.positionCount = 2; } // debugging tool
         }
     }
 

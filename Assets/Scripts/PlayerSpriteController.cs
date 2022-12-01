@@ -23,7 +23,7 @@ public class PlayerSpriteController : MonoBehaviour
     void Start()
     {
         playergo = Reference.playergo;
-        playergo.transform.position = new Vector2(0, 0);
+        playergo.transform.position = new Vector2(0, -3);
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
