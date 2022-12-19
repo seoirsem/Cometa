@@ -15,8 +15,10 @@ public class PlayerSpriteController : MonoBehaviour
     Vector2 worldEdges;
     float maxSpeed = 10;
     List<GameObject> visualClones;
-    float shootingCooldownTimer;
-    float cooldown = 0.75f;//s
+    float bulletCooldownTimer;
+    float rocketCooldownTimer;
+    float rocketCooldown = 0.75f;//s
+    float bulletCooldown = 0.3f;
     public Rigidbody2D rigid_body;
     
 
@@ -29,6 +31,8 @@ public class PlayerSpriteController : MonoBehaviour
         worldEdges = Reference.worldController.worldSize;
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.mass = mass;
+        bulletCooldownTimer = Time.time;
+        rocketCooldownTimer = Time.time;
         SpawnVisualClones();
     }
 
@@ -49,11 +53,20 @@ public class PlayerSpriteController : MonoBehaviour
     {
         if (Reference.playerInputController.spaceBar)
         {
-            if (Time.time - shootingCooldownTimer > cooldown)
+            if (Time.time - bulletCooldownTimer > bulletCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
-                shootingCooldownTimer = Time.time;
+                bulletCooldownTimer = Time.time;
 
-                Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90));
+                Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Bullet");
+            }
+        }
+        if (Reference.playerInputController.r)
+        {
+            if (Time.time - rocketCooldownTimer > bulletCooldown)
+            {//space to set variable cooldowns, and noises if on cooldown....etc
+                rocketCooldownTimer = Time.time;
+
+                Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Rocket");
             }
         }
     }

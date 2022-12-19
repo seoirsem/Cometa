@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7905436832255345721}
   - component: {fileID: 7413722311944758321}
   - component: {fileID: 7324802273532116729}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ExplosionRadius
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 1214453047590090735}
   - component: {fileID: 3460200504563171949}
   - component: {fileID: 4495628053265313353}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9cc32de8632f8340b405b2717e5def7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeFired: 0
   objectPack: []
   mainProjectile: 0
 --- !u!70 &3460200504563171949

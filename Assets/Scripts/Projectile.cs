@@ -17,10 +17,12 @@ public class Projectile : MonoBehaviour
     public bool mainProjectile;
     bool leftPlayerCollider = false;
     CapsuleCollider2D capsuleCollider2D;
+    CircleCollider2D circleCollider2d; 
     Rigidbody2D rigid_body;
     float rotationalPosition;
     GameObject explosionRadiusGO;
     ExplosionRadius explosionRadius;
+    public string projectileType;
 
 
     bool animationStarted = false;
@@ -31,8 +33,9 @@ public class Projectile : MonoBehaviour
         
     }
 
-    public void OnFired(Vector2 screenCenter, List<GameObject> objectPack)
+    public void OnFired(Vector2 screenCenter, List<GameObject> objectPack, string projectileType)
     {
+        this.projectileType = projectileType;
         go = this.gameObject;
         explosionRadiusGO = go.transform.Find("ExplosionRadius").gameObject;
         explosionRadius = explosionRadiusGO.GetComponent<ExplosionRadius>();
@@ -44,8 +47,16 @@ public class Projectile : MonoBehaviour
         animationStarted = false;
 
         rigid_body = go.GetComponent<Rigidbody2D>();
-        this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
-        capsuleCollider2D.enabled = false;
+        if(projectileType == "Rocket")
+        {
+            this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
+            capsuleCollider2D.enabled = false;
+        }
+        else if(projectileType == "Bullet")
+        {
+            this.circleCollider2d = go.GetComponent<CircleCollider2D>();
+            circleCollider2d.enabled = false;
+        }
         rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
         rigid_body.rotation = rotationalPosition + 90f;
 
@@ -53,8 +64,18 @@ public class Projectile : MonoBehaviour
 
 
 //        Vector3 playerVelocity = Reference.playerSpriteController.velocity;
+
         rigid_body.velocity = Reference.playerSpriteController.rigid_body.velocity;
-        rigid_body.AddForce(0.1f*transform.right,ForceMode2D.Impulse);
+        
+        if(projectileType == "Rocket")
+        {
+            //Debug.Log("Rocket fired");
+            rigid_body.AddForce(0.1f*transform.right,ForceMode2D.Impulse);
+        }
+        if(projectileType == "Bullet")
+        {
+            rigid_body.AddForce(0.4f*transform.right,ForceMode2D.Impulse);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -63,33 +84,44 @@ public class Projectile : MonoBehaviour
         UpdateMotion();
         if(Time.time - timeFired > lifespan)
         {
-            //Debug.Log("Projectile Timed Out");
             DestroySelf();
         }
         if(Time.time - timeFired > 0.25f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
-            capsuleCollider2D.enabled = true;
+            if(projectileType == "Rocket")
+            {
+                capsuleCollider2D.enabled = true;
+            }
+            else if(projectileType == "Bullet")
+            {
+                circleCollider2d.enabled = true;
+            }
         }
     }
     void FixedUpdate()
     {
         explosionRadius.GetComponent<Rigidbody2D>().position = rigid_body.position;
         
-        if(Time.time - timeFired > 0.5f)
+        if(projectileType == "Rocket")
         {
-            rigid_body.AddForce(transform.right*thrust);
+            if(Time.time - timeFired > 0.5f)
+            {
+                rigid_body.AddForce(transform.right*thrust);
 
+            }
+            if (Time.time - timeFired > 0.5f && !animationStarted)
+            {
+                Vector3 tailLocation = this.gameObject.transform.position -0.15f*this.gameObject.transform.right + 0.01f*this.gameObject.transform.up;
+                blueFlameAnimation = Reference.animationController.SpawnBlueFlameAnimation(tailLocation, this.gameObject);
+                /// this does nothing yet but may do in the future
+                /// blueFlameAnimation.GetComponent<BlueFlameFunction>().TransitionToFullJet();
+                animationStarted = true;
+                Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), false);
+            }
         }
-        if (Time.time - timeFired > 0.5f && !animationStarted)
+        else if(projectileType == "Bullet")
         {
-            Vector3 tailLocation = this.gameObject.transform.position -0.15f*this.gameObject.transform.right + 0.01f*this.gameObject.transform.up;
-            blueFlameAnimation = Reference.animationController.SpawnBlueFlameAnimation(tailLocation, this.gameObject);
-            /// this does nothing yet but may do in the future
-            /// blueFlameAnimation.GetComponent<BlueFlameFunction>().TransitionToFullJet();
-            animationStarted = true;
-            Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), false);
-
-
+            // animation to make it pulse slightly?
         }
 
 
@@ -146,8 +178,17 @@ public class Projectile : MonoBehaviour
             Vector3 direction = hitCollider.gameObject.transform.position - this.transform.position;
             float distance = direction.magnitude;            
             if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
-            float explosionImpulse = explosionSize / distance * distance;
-            
+            float explosionImpulse = 0f;
+            if(projectileType == "Rocket")
+            {
+                explosionImpulse = explosionSize / distance * distance;
+            }
+            else if(projectileType == "Bullet")
+            {
+                explosionImpulse = explosionSize / (distance * distance * 10f);
+            }
+
+
             if (hitCollider.gameObject.GetComponent<Asteroid>() != null)
             {
                 // this is janky repeating code which can probably be fixed by using derived classes better oh well
@@ -173,13 +214,16 @@ public class Projectile : MonoBehaviour
         
 
 
-
-        /// perform animations etc
-        Reference.animationController.SpawnExplosionAnimation(this.transform.position);
-        
-        if(blueFlameAnimation != null)
+        if(projectileType == "Rocket")
         {
-            blueFlameAnimation.GetComponent<BlueFlameFunction>().DestroyAnimationGO();
+            Debug.Log(projectileType);
+            /// perform animations etc
+            Reference.animationController.SpawnExplosionAnimation(this.transform.position);
+            
+            if(blueFlameAnimation != null)
+            {
+                blueFlameAnimation.GetComponent<BlueFlameFunction>().DestroyAnimationGO();
+            }
         }
         Reference.projectileController.DespawnProjectile(go,objectPack);
 

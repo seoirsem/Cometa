@@ -15,7 +15,7 @@ public class MainAsteroid : Asteroid
     public void OnSpawnSplitAsteroid(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, Asteroid asteroidData)
     {
         backgroundCollider = GameObject.Find("Background").GetComponent<BackgroundCollider>();
-
+        this.gameObject.layer = LayerMask.NameToLayer("Default");
         this.mass = Mathf.Pow(size,2);
         this.size = asteroidData.size;
         this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
@@ -55,7 +55,7 @@ public class MainAsteroid : Asteroid
 
 
         this.mass = Mathf.Pow(size,2);
-        // this.size = size;
+        this.size = size;
         this.asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
         this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
         this.rigid_body = this.GetComponent<Rigidbody2D>();
@@ -70,9 +70,9 @@ public class MainAsteroid : Asteroid
         this.rigid_body.angularVelocity = rotationRate;
         this.rigid_body.mass = mass;
 
-        DrawAsteroid(8f);
+        DrawAsteroid(size);
 
-        this.size = GetPolygonArea(new List<Vector3>(this.meshVertices));
+        //this.size = GetPolygonArea(new List<Vector3>(this.meshVertices));
     }
 
 
