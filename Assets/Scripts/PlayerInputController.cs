@@ -13,6 +13,7 @@ public class PlayerInputController : MonoBehaviour
     public bool spaceBar = false;
     public bool b = false;
     public bool r = false;
+    public bool escape = false;
     public bool e = false;
 
     public bool p = false;
@@ -36,6 +37,11 @@ public class PlayerInputController : MonoBehaviour
 
         cursorPosition = Input.mousePosition;
 
+        if (Input.GetKey("escape"))
+        {
+            escape = true;   
+        }
+        else 
         if (Input.GetKey("up"))
         {
             upKey = true;   
