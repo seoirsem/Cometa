@@ -37,7 +37,7 @@ public class AsteroidController : MonoBehaviour
 
     void Update()
     {
-        if (Reference.playerInputController.mouseClicked)
+        if (Reference.playerInputController.mouseClicked && !Reference.worldController.isPaused)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // SpawnAsteroid(6, new Vector3(0f,3f,0), new Vector3(0, 0, 0)); 

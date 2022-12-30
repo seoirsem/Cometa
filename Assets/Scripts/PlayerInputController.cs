@@ -42,6 +42,9 @@ public class PlayerInputController : MonoBehaviour
             escape = true;   
         }
         else 
+        {
+            escape = false;
+        }
         if (Input.GetKey("up"))
         {
             upKey = true;   
