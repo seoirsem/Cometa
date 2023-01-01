@@ -14,8 +14,10 @@ public class WorldController : MonoBehaviour
     bool escPressed = false;
     string mainMenuScene = "Scenes/MainMenu";
     string loadingScene = "Scenes/LoadingScene";
+    string gameScene = "Scenes/GameScene";
     float asteroidSpawnInterval = 100f;
     float time;
+    bool gameOver = false;
 
     BoxCollider2D rightEdgeCollider;
     BoxCollider2D leftEdgeCollider;
@@ -65,7 +67,7 @@ public class WorldController : MonoBehaviour
             time = Time.time;
         }
 
-        if(!isPaused && !escPressed && Reference.playerInputController.escape)
+        if(!isPaused && !escPressed && Reference.playerInputController.escape && !gameOver)
         {
             PauseGame();
 
@@ -76,7 +78,7 @@ public class WorldController : MonoBehaviour
             escPressed = false;
         }
         
-        if(isPaused && !escPressed && Reference.playerInputController.escape)
+        if(isPaused && !escPressed && Reference.playerInputController.escape && !gameOver) 
         {
             UnPauseGame();
             escPressed = true;
@@ -84,6 +86,18 @@ public class WorldController : MonoBehaviour
         }
 
     }
+    public void PlayerDead()
+    {
+        if(!gameOver)
+        {
+            Reference.soundController.PlayerDeadSound();
+            Time.timeScale = 0;
+            gameOver = true;
+            Reference.hudController.GameOverUI(Reference.scoreController.totalScore);
+        }
+    }
+
+
 
     void PauseGame()
     {
@@ -101,6 +115,14 @@ public class WorldController : MonoBehaviour
         Time.timeScale = 1;
         Reference.hudController.DisablePauseMenu();
 
+    }
+
+    public void ReplayLevel()
+    {
+        Time.timeScale = 1;
+        //maybe save game state so you can resume it later?
+        OptionsParameters.sceneToLoad = gameScene;
+        SceneManager.LoadScene(loadingScene);
     }
 
     public void QuitToMainMenu()

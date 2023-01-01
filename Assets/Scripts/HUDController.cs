@@ -7,6 +7,7 @@ public class HUDController : MonoBehaviour
 {
     string pauseMenuPath;
     string optionsButtonsPath;
+    string gameOverPath;
 
     public GameObject scorego;
     GameObject shieldBar;
@@ -14,6 +15,8 @@ public class HUDController : MonoBehaviour
     GameObject pauseMenuPrefab;
     GameObject optionsButtons;
     GameObject optionsButtonsPrefab;
+    GameObject gameOverScreen;
+    GameObject gameOverScreenPrefab;
 
     SoundController soundController;
 
@@ -35,6 +38,7 @@ public class HUDController : MonoBehaviour
     Button options;
     Button exitToMenu;
 
+
     void Start()
     {
         this.scorego = Reference.hud.transform.Find("Score").gameObject;
@@ -45,6 +49,10 @@ public class HUDController : MonoBehaviour
 
         optionsButtonsPath = "Prefabs/OptionsButtons";
         optionsButtonsPrefab = Resources.Load(optionsButtonsPath) as GameObject;
+
+        gameOverPath = "Prefabs/GameOverScreen";
+        gameOverScreenPrefab = Resources.Load(gameOverPath) as GameObject;
+        
         soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
 
     }
@@ -59,6 +67,12 @@ public class HUDController : MonoBehaviour
         resume = GameObject.Find("Resume").GetComponent<Button>();
         options = GameObject.Find("Options").GetComponent<Button>();
         exitToMenu = GameObject.Find("ExitToMenu").GetComponent<Button>();
+
+        GameObject.Find("Resume").GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+        GameObject.Find("Options").GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+        GameObject.Find("ExitToMenu").GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+
+
         resume.onClick.AddListener(ResumeButton);
         options.onClick.AddListener(Options);
         exitToMenu.onClick.AddListener(EscapeToMenu);        
@@ -67,6 +81,19 @@ public class HUDController : MonoBehaviour
     {
         Destroy(pauseMenu);
     }
+    public void GameOverUI(float finalScore)
+    {
+        gameOverScreen = GameObject.Instantiate(gameOverScreenPrefab);
+        gameOverScreen.transform.SetParent(this.transform);
+        gameOverScreen.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
+        gameOverScreen.GetComponent<RectTransform>().localPosition = new Vector3(0,0,-3);
+
+        gameOverScreen.GetComponent<FinalScoreFadeIn>().SetScore(finalScore);
+
+
+    }
+
+
     void LoadOptionsMenu()
     {
         optionsButtons = GameObject.Instantiate(optionsButtonsPrefab);
@@ -79,6 +106,12 @@ public class HUDController : MonoBehaviour
         musicVolumeTogglego = GameObject.Find("MusicVolumeToggle");
         musicVolumeSwitchgo = GameObject.Find("MusicSwitch");
         optionsReturngo = GameObject.Find("OptionsReturn");
+
+        masterVolumeTogglego.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+        masterVolumeSwitchgo.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+        musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+        musicVolumeTogglego.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+        optionsReturngo.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
 
         masterVolumeToggle = masterVolumeTogglego.GetComponent<Button>();
         masterVolumeSwitch = masterVolumeSwitchgo.GetComponent<Button>();

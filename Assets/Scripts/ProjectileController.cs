@@ -80,7 +80,7 @@ public class ProjectileController : MonoBehaviour
                     if(projectileObject.GetComponent<Projectile>().projectileType == "Rocket")
                     {
                         Reference.animationController.SpawnExplosionAnimation(projectileObject.transform.position);
-                        Reference.SoundController.playExplosionSound();
+                        Reference.soundController.playExplosionSound();
                     }
                     SimplePool.Despawn(projectileObject);
                     projectileList.Remove(projectileObject);

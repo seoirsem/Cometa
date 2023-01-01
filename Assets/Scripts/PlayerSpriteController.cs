@@ -44,10 +44,15 @@ public class PlayerSpriteController : MonoBehaviour
         UpdatePlayerShooting();
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    { // A collision with the ship's hull has occurred! This is game over (for the time being)
+        Debug.Log(collision.gameObject.name);
+        Reference.worldController.PlayerDead();
+    }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        // Debug.Log("Collision! - Player");
+        //Debug.Log(collision.gameObject.name);
     }
     void UpdatePlayerShooting()
     {

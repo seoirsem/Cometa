@@ -14,12 +14,14 @@ public class SoundController : MonoBehaviour
     AudioClip asteroidCollision;
     AudioClip explosion;
     AudioClip music;
+    AudioClip playerDeadSound;
     // Start is called before the first frame update
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         musicSource = transform.Find("MusicController").GetComponent<AudioSource>();
         asteroidCollision = Resources.Load<AudioClip>("Sounds/rockImpact");
+        playerDeadSound = Resources.Load<AudioClip>("Sounds/player_dead_sound");
         explosion = Resources.Load<AudioClip>("Sounds/explosion");
         music = Resources.Load<AudioClip>("Sounds/song_pixabay");
         InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
@@ -39,6 +41,13 @@ public class SoundController : MonoBehaviour
         musicSource.clip = music;
         musicSource.loop = true;
         musicSource.Play();
+    }
+
+    public void PlayerDeadSound()
+    {
+        musicSource.Stop();
+        audioSource.Stop();
+        audioSource.PlayOneShot(playerDeadSound);
     }
 
     public void InitialiseVolumes(float musicVolumeSet, float masterVolumeSet)

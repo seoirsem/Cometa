@@ -74,10 +74,17 @@ public class MainUIController : MonoBehaviour
         mainButtons.GetComponent<RectTransform>().localScale = new Vector3(3,3,1);
         mainButtons.GetComponent<RectTransform>().localPosition = new Vector3(mainButtons.GetComponent<RectTransform>().localPosition.x,mainButtons.GetComponent<RectTransform>().localPosition.y,-3);
 
+
         play = GameObject.Find("Play");
         highScores = GameObject.Find("HighScores");
         options = GameObject.Find("Options");
         exit = GameObject.Find("Exit");
+
+        play.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+        highScores.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+        options.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+        exit.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+
 
         playButton = play.GetComponent<Button>();
         highScoresButton = highScores.GetComponent<Button>();
@@ -117,6 +124,12 @@ public class MainUIController : MonoBehaviour
         musicVolumeTogglego = GameObject.Find("MusicVolumeToggle");
         musicVolumeSwitchgo = GameObject.Find("MusicSwitch");
         optionsReturngo = GameObject.Find("OptionsReturn");
+
+        masterVolumeTogglego.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+        masterVolumeSwitchgo.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+        musicVolumeTogglego.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+        musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
+        optionsReturngo.GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = menuSoundController.gameObject.GetComponent<AudioSource>();
 
         masterVolumeToggle = masterVolumeTogglego.GetComponent<Button>();
         masterVolumeSwitch = masterVolumeSwitchgo.GetComponent<Button>();
