@@ -10,5 +10,7 @@ public class OptionsParameters
 
     public static float score = 0f;
 
+    public static string sceneToLoad = "Scenes/MainMenu";
+
 
 }

@@ -13,6 +13,7 @@ public class WorldController : MonoBehaviour
     public bool isPaused = false;
     bool escPressed = false;
     string mainMenuScene = "Scenes/MainMenu";
+    string loadingScene = "Scenes/LoadingScene";
     float asteroidSpawnInterval = 100f;
     float time;
 
@@ -106,7 +107,8 @@ public class WorldController : MonoBehaviour
     {
         Time.timeScale = 1;
         //maybe save game state so you can resume it later?
-        SceneManager.LoadScene(mainMenuScene);
+        OptionsParameters.sceneToLoad = mainMenuScene;
+        SceneManager.LoadScene(loadingScene);
 
     }
 }

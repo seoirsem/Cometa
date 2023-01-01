@@ -5,11 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    string gameScene;
+    string gameScene = "Scenes/GameScene";
+    string loadingScene = "Scenes/LoadingScene";
+
     // Start is called before the first frame update
     void Start()
     {
-        gameScene = "Scenes/GameScene";
+    
     }
 
     // Update is called once per frame
@@ -34,8 +36,9 @@ public class GameController : MonoBehaviour
 
         // countdown timer? Then start playing
 
-        //Debug.Log("Playing Game");
-        SceneManager.LoadScene(gameScene);
+        //Debug.Log("Playing Game");        
+        OptionsParameters.sceneToLoad = gameScene;
+        SceneManager.LoadScene(loadingScene);
 
     }
 
