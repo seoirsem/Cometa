@@ -5,10 +5,31 @@ using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
+    string pauseMenuPath;
+    string optionsButtonsPath;
 
     public GameObject scorego;
     GameObject shieldBar;
     GameObject pauseMenu;  
+    GameObject pauseMenuPrefab;
+    GameObject optionsButtons;
+    GameObject optionsButtonsPrefab;
+
+    SoundController soundController;
+
+    /// Options Buttons
+
+    GameObject masterVolumeSwitchgo;
+    GameObject masterVolumeTogglego;
+    GameObject musicVolumeSwitchgo;
+    GameObject musicVolumeTogglego;
+    GameObject optionsReturngo;
+
+    Button masterVolumeToggle;
+    Button masterVolumeSwitch;
+    Button musicVolumeToggle;
+    Button musicVolumeSwitch;
+    Button optionsReturn;
 
     Button resume;
     Button options;
@@ -18,22 +39,79 @@ public class HUDController : MonoBehaviour
     {
         this.scorego = Reference.hud.transform.Find("Score").gameObject;
         this.shieldBar = Reference.hud.transform.Find("ShieldBar").gameObject;
-        pauseMenu = GameObject.Find("PauseMenu");
+        
+        pauseMenuPath = "Prefabs/PauseMenu";
+        pauseMenuPrefab = Resources.Load(pauseMenuPath) as GameObject;
 
+        optionsButtonsPath = "Prefabs/OptionsButtons";
+        optionsButtonsPrefab = Resources.Load(optionsButtonsPath) as GameObject;
+        soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
+
+    }
+
+    void LoadPauseMenu()
+    {   
+        pauseMenu = GameObject.Instantiate(pauseMenuPrefab);
+        pauseMenu.transform.SetParent(this.transform);
+        pauseMenu.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
+        pauseMenu.GetComponent<RectTransform>().localPosition = new Vector3(0,0,-3);
 
         resume = GameObject.Find("Resume").GetComponent<Button>();
         options = GameObject.Find("Options").GetComponent<Button>();
         exitToMenu = GameObject.Find("ExitToMenu").GetComponent<Button>();
         resume.onClick.AddListener(ResumeButton);
         options.onClick.AddListener(Options);
-        exitToMenu.onClick.AddListener(EscapeToMenu);
-
-        pauseMenu.SetActive(false);
+        exitToMenu.onClick.AddListener(EscapeToMenu);        
     }
-
-    void Update()
+    void UnloadPauseMenu()
     {
-        
+        Destroy(pauseMenu);
+    }
+    void LoadOptionsMenu()
+    {
+        optionsButtons = GameObject.Instantiate(optionsButtonsPrefab);
+        optionsButtons.transform.SetParent(this.transform);
+        optionsButtons.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
+        optionsButtons.GetComponent<RectTransform>().localPosition = new Vector3(0,0,-3);
+
+        masterVolumeTogglego = GameObject.Find("MasterVolumeToggle");
+        masterVolumeSwitchgo = GameObject.Find("SoundSwitch");
+        musicVolumeTogglego = GameObject.Find("MusicVolumeToggle");
+        musicVolumeSwitchgo = GameObject.Find("MusicSwitch");
+        optionsReturngo = GameObject.Find("OptionsReturn");
+
+        masterVolumeToggle = masterVolumeTogglego.GetComponent<Button>();
+        masterVolumeSwitch = masterVolumeSwitchgo.GetComponent<Button>();
+        musicVolumeSwitch = musicVolumeSwitchgo.GetComponent<Button>();
+        musicVolumeToggle = musicVolumeTogglego.GetComponent<Button>();
+        optionsReturn = optionsReturngo.GetComponent<Button>();
+
+        optionsReturn.onClick.AddListener(OptionsReturnButtonPressed);
+        musicVolumeToggle.onClick.AddListener(MusicVolumeTogglePressed);
+        musicVolumeSwitch.onClick.AddListener(MusicVolumeSwitchPressed);
+        masterVolumeToggle.onClick.AddListener(MasterVolumeTogglePressed);
+        masterVolumeSwitch.onClick.AddListener(MasterVolumeSwitchPressed);
+
+        float masterVolumeSetting = OptionsParameters.MasterVolume;
+        float musicVolumeSetting = OptionsParameters.MusicVolume;
+
+        if(masterVolumeSetting == 1f)
+        {
+            masterVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().isOn = true;
+            masterVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().AnimateSwitch();
+            masterVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().AnimateSwitch();
+        }
+        if(musicVolumeSetting == 1f)
+        {
+            musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().isOn = true;
+            musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().AnimateSwitch();
+            musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().AnimateSwitch();
+        }
+
+    }
+    void UnloadOptionsMenu()
+    {
+        Destroy(optionsButtons);
     }
 
     public void UpdateOnScreenScore(float scoreValue)
@@ -48,24 +126,25 @@ public class HUDController : MonoBehaviour
 
     public void EnablePauseMenu()
     {
-        pauseMenu.SetActive(true);
+        LoadPauseMenu();
         //also deactivate other HUD options
     }
 
     public void DisablePauseMenu()
     {
-        pauseMenu.SetActive(false);
+        UnloadOptionsMenu();
+        UnloadPauseMenu();
     }
 
     void ResumeButton()
     {
-        Debug.Log("Resuming...");
         Reference.worldController.UnPauseGame();
     }
 
     void Options()
     {
-        Debug.Log("Options menu to be implemented");
+        UnloadPauseMenu();
+        LoadOptionsMenu();
     }
 
     void EscapeToMenu()
@@ -73,5 +152,60 @@ public class HUDController : MonoBehaviour
         //first save score perhaps? Maybe save your game state?
         
         Reference.worldController.QuitToMainMenu();
+    }
+
+     void OptionsReturnButtonPressed()
+    {
+        UnloadOptionsMenu();
+        LoadPauseMenu();
+    }
+
+    void MasterVolumeTogglePressed()
+    {
+        masterVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().AnimateSwitch();
+        MasterVolumeSwitchPressed();
+    }
+
+    void MasterVolumeSwitchPressed()
+    {
+        bool masterSwitch = masterVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().isOn;  
+        bool musicSwitch = musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().isOn;        
+        
+        if(masterSwitch)
+        {
+            soundController.SetMasterVolume(1);
+            if(!musicSwitch)
+            {
+                MusicVolumeTogglePressed();
+            }
+        }
+        else
+        {
+            soundController.SetMasterVolume(0);
+            if(musicSwitch)
+            {
+                MusicVolumeTogglePressed();
+            }
+        }
+        
+    }
+
+    void MusicVolumeTogglePressed()
+    {
+        musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().AnimateSwitch();
+        MusicVolumeSwitchPressed();
+    }
+
+    void MusicVolumeSwitchPressed()
+    {
+        bool musicSwitch = musicVolumeSwitchgo.GetComponent<Michsky.UI.Shift.SwitchManager>().isOn;        
+        if(musicSwitch)
+        {
+            soundController.SetMusicVolume(1);
+        }
+        else
+        {
+            soundController.SetMusicVolume(0);
+        }
     }
 }

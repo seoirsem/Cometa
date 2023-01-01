@@ -19,6 +19,7 @@ public class MenuSoundController : MonoBehaviour
         Debug.Log(musicSource);
         menuMusic = Resources.Load<AudioClip>("Sounds/menuSongPixabay");
 
+        InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
         //ToDo: menu and game music. Music ramps up as you play
         StartMusic();
     }
@@ -35,6 +36,47 @@ public class MenuSoundController : MonoBehaviour
         musicSource.loop = true;
         musicSource.Play();
     }
+
+    public void InitialiseVolumes(float musicVolumeSet, float masterVolumeSet)
+    {
+        if(musicVolumeSet >= 1)
+        {
+            musicVolume = 1;
+            musicSource.volume = 1;
+            OptionsParameters.MusicVolume = 1;
+        }
+        else if(musicVolumeSet <= 0)
+        {
+            musicVolume = 0;
+            musicSource.volume = 0;    
+            OptionsParameters.MusicVolume = 0;
+        }
+        else
+        {
+            musicVolume = musicVolumeSet;
+            musicSource.volume = musicVolumeSet;
+            OptionsParameters.MusicVolume = musicVolumeSet;
+        }
+        if(masterVolumeSet >= 1)
+        {
+            masterVolume = 1;
+            audioSource.volume = 1;
+            OptionsParameters.MasterVolume = 1;
+        }
+        else if(masterVolumeSet <= 0)
+        {
+            masterVolume = 0;
+            audioSource.volume = 0;
+            OptionsParameters.MasterVolume = 0;
+        }
+        else
+        {
+            masterVolume = masterVolumeSet;
+            audioSource.volume = masterVolumeSet;
+            OptionsParameters.MasterVolume = masterVolumeSet;
+        }
+    }
+
 
     public void SetMasterVolume(float volume)
     {
