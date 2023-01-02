@@ -5,7 +5,7 @@ using UnityEngine;
 public class AsteroidController : MonoBehaviour
 {
     GameObject mainAsteroidPrefab;
-    GameObject derivedAsteroidPrefab;
+    GameObject deriveAsteroidPrefab;
     List<GameObject> asteroids = new List<GameObject>();
     List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
     Vector2 worldSize;
@@ -21,7 +21,7 @@ public class AsteroidController : MonoBehaviour
     void Start()
     {
         mainAsteroidPrefab = Resources.Load("Prefabs/MainAsteroid") as GameObject;
-        derivedAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
+        deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
         // SpawnAsteroid(4, new Vector3(0, 15f, 0), new Vector3(0,0,0));
@@ -180,10 +180,10 @@ public class AsteroidController : MonoBehaviour
         MainAsteroid mainAsteroid = asteroidgo.GetComponent<MainAsteroid>();
         mainAsteroid.derivedAsteroids = new Dictionary<Vector2,GameObject>();
 
-        GameObject asteroidgo1 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo2 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo3 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo4 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo1 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo2 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo3 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo4 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
 
         asteroidPack.Add(asteroidgo);
         asteroidPack.Add(asteroidgo1);
@@ -229,10 +229,10 @@ public class AsteroidController : MonoBehaviour
         MainAsteroid mainAsteroid = asteroidgo.GetComponent<MainAsteroid>();
         mainAsteroid.derivedAsteroids = new Dictionary<Vector2,GameObject>();
 
-        GameObject asteroidgo1 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo2 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo3 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo4 = SimplePool.Spawn(derivedAsteroidPrefab, position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo1 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo2 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo3 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo4 = SimplePool.Spawn(deriveAsteroidPrefab,position, new Quaternion(0, 0, 0, 0));
 
         asteroidPack.Add(asteroidgo);
         asteroidPack.Add(asteroidgo1);

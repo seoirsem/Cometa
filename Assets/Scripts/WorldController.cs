@@ -92,6 +92,8 @@ public class WorldController : MonoBehaviour
         {
             Reference.soundController.PlayerDeadSound();
             Time.timeScale = 0;
+            isPaused = true;
+
             gameOver = true;
             Reference.hudController.GameOverUI(Reference.scoreController.totalScore);
         }
@@ -119,6 +121,7 @@ public class WorldController : MonoBehaviour
 
     public void ReplayLevel()
     {
+        Reference.scoreController.SaveHighScore();
         Time.timeScale = 1;
         //maybe save game state so you can resume it later?
         OptionsParameters.sceneToLoad = gameScene;
@@ -127,10 +130,11 @@ public class WorldController : MonoBehaviour
 
     public void QuitToMainMenu()
     {
+        Reference.scoreController.SaveHighScore();
         Time.timeScale = 1;
         //maybe save game state so you can resume it later?
+
         OptionsParameters.sceneToLoad = mainMenuScene;
         SceneManager.LoadScene(loadingScene);
-
     }
 }

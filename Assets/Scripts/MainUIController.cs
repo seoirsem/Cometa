@@ -40,6 +40,9 @@ public class MainUIController : MonoBehaviour
     Button musicVolumeSwitch;
     Button optionsReturn;
 
+    GameObject highScoresMenu;
+    HighScoresTable highScoresTable;
+
 
     // Start is called before the first frame update
     void Start()
@@ -50,9 +53,13 @@ public class MainUIController : MonoBehaviour
         optionsButtonsPath = "Prefabs/OptionsButtons";
         optionsButtonsPrefab = Resources.Load(optionsButtonsPath) as GameObject;
 
+        highScoresMenu = GameObject.Find("HighScoresMenu");
+        highScoresTable = highScoresMenu.GetComponent<HighScoresTable>();
+
         menuSoundController = GameObject.Find("MenuSoundController").GetComponent<MenuSoundController>();
         ///// Initial startup
         LoadMainButtons();
+
     }
 
     void Update()
@@ -63,7 +70,7 @@ public class MainUIController : MonoBehaviour
         // }
     }
 
-    void LoadMainButtons()
+    public void LoadMainButtons()
     {
 
 
@@ -107,7 +114,8 @@ public class MainUIController : MonoBehaviour
 
     void LoadHighScores()
     {
-        Debug.Log("High scores menu to be implemented");
+        UnloadMainButtons();
+        highScoresTable.MakeScoreMenu();
     }
 
     void LoadOptions()

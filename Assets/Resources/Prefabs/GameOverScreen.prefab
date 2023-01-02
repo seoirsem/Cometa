@@ -1180,7 +1180,7 @@ GameObject:
   - component: {fileID: 8166150332708197551}
   - component: {fileID: 1495548602994986058}
   m_Layer: 5
-  m_Name: GameOverScreen 1
+  m_Name: GameOverScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1207,7 +1207,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 736, y: 478}
+  m_SizeDelta: {x: 5000, y: 5000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5842967767954750881
 CanvasRenderer:
