@@ -15,12 +15,14 @@ public class DerivedAsteroid : Asteroid
 
     public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
+        DrawDerivedAsteroid();
+
         this.mass = Mathf.Pow(size,2);
         // Update this in future to calculate based on the area of the shape formed by the mesh
         this.location = location;
         this.size = size;
         asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
-        asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
+        //asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
         mainAsteroidClass = mainAsteroid.GetComponent<MainAsteroid>();
         rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
@@ -32,7 +34,7 @@ public class DerivedAsteroid : Asteroid
         rigid_body.centerOfMass = new Vector2(0,0);
         PolygonCollider2D polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
         offset = new Vector2(location.x * worldSize.x, location.y * worldSize.y);
-        CloneAsteroid(mainAsteroid);
+        CloneAsteroidGeometry(mainAsteroid);
         gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, -1);
         thisStepMainPosition = mainAsteroidClass.rigid_body.position;
         thisStepMainRotation = mainAsteroidClass.rigid_body.rotation;
@@ -45,6 +47,7 @@ public class DerivedAsteroid : Asteroid
         UpdateAsteroidPosition();
     }
 
+
     void UpdateAsteroidPosition()
     { //always one step behind main
 
@@ -56,14 +59,15 @@ public class DerivedAsteroid : Asteroid
 
 
 
-    void CloneAsteroid(GameObject mainAsteroid)
+    void CloneAsteroidGeometry(GameObject mainAsteroid)
     {
         Asteroid mainAst = mainAsteroid.GetComponent<Asteroid>();
-        meshVertices = mainAst.meshVertices;
-        meshTriangles = mainAst.meshTriangles;
-        meshIndices = mainAst.meshIndices;
-        DrawMesh(meshVertices, meshTriangles);
-        DrawCollider(meshVertices, meshTriangles);
+        List<Vector2> perimeterVertices = mainAst.squareMesh.perimeterVertices;
+        //Debug.Log(this.squareMesh);
+        this.squareMesh.perimeterVertices = perimeterVertices; 
+        this.squareMesh.RedrawMesh();
+        //DrawMesh(meshVertices, meshTriangles);
+        //DrawCollider(meshVertices, meshTriangles);
         
     }
 
