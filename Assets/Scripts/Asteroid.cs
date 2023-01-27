@@ -38,11 +38,10 @@ public class Asteroid : MonoBehaviour
     {
         squareMesh = new SquareMesh();
 
-        squareMesh.edgeLength = 0.2f;
         squareMesh.SetAsteroid(this);
 
         polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
-        squareMesh.GenerateMesh(20);
+        squareMesh.GenerateCircularMesh(20,0.2f);
         squareMesh.FindOutline();
         squareMesh.ScaleEdgeLength();
         squareMesh.ResetMesh();

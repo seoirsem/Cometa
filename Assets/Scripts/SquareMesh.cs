@@ -196,9 +196,114 @@ public class SquareMesh
         return closestSquare;
     }
 
-    public void GenerateMesh(int size)
+    public void GenerateCircularMesh(int size, float celSize)
+    {
+        // size determines the outer extents of the bounding square
+        this.size = size;
+        this.edgeLength = celSize;
+        this.squares = new Square[size, size];
+        // generate shape
+        Vector2 centre = new Vector2(size/2,size/2);
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                Vector2 squareCentre = new Vector2(x,y);
+                float distance = Vector2.Distance(squareCentre,centre);
+                if(distance < size/2)
+                {
+                    squares[x,y] = new Square(x, y);
+                }
+                else
+                {
+                    squares[x,y] = null;
+                }
+            }
+        }
+        UpdateNeighboursAndEdges();
+    }
+
+    void UpdateNeighboursAndEdges()
+    {
+        //check neighbours and edges
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                if(squares[x,y] == null)
+                {
+                    continue;
+                }
+                if(y!=0)
+                {
+                    if(squares[x,y-1] == null)
+                    {
+                        squares[x,y].AddEdge(2);
+                    }
+                    else
+                    {
+                        squares[x,y].neighbourSquares[2] = squares[x,y-1];
+                    }
+                }
+                else
+                {
+                    squares[x,0].AddEdge(2);
+                }
+                if(y!=size-1)
+                {
+                    if(squares[x,y+1] == null)
+                    {
+                        squares[x,y].AddEdge(0);
+                    }
+                    else
+                    {
+                        squares[x,y].neighbourSquares[0] = squares[x,y+1];
+                    }
+                }
+                else
+                {
+                    squares[x,size-1].AddEdge(0);
+                }
+                if(x!=0)
+                {
+                    if(squares[x-1,y] == null)
+                    {
+                        squares[x,y].AddEdge(3);
+                    }
+                    else
+                    {
+                        squares[x,y].neighbourSquares[3] = squares[x-1,y];
+                    }
+                }
+                else
+                {
+                    squares[0,y].AddEdge(3);
+                }
+                if(x!=size-1)
+                {
+                    if(squares[x+1,y] == null)
+                    {
+                        squares[x,y].AddEdge(1);
+                    }
+                    else
+                    {
+                        squares[x,y].neighbourSquares[1] = squares[x+1,y];
+                    }
+                }
+                else
+                {
+                    squares[size-1,y].AddEdge(1);
+                }
+                
+            }
+        }
+
+
+    }
+    public void GenerateSquareMesh(int size, float celSize)
     {
         this.size = size;
+        this.edgeLength = celSize;
         this.squares = new Square[size, size];
         for (int x = 0; x < size; x++)
         {
