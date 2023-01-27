@@ -51,7 +51,6 @@ public class Asteroid : MonoBehaviour
 
     public void DrawDerivedAsteroid()
     {
-        Debug.Log("here");
         squareMesh = new SquareMesh();
         squareMesh.edgeLength = 0.2f;
         squareMesh.SetAsteroid(this);

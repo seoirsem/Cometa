@@ -59,7 +59,7 @@ public class DerivedAsteroid : Asteroid
 
 
 
-    void CloneAsteroidGeometry(GameObject mainAsteroid)
+    public void CloneAsteroidGeometry(GameObject mainAsteroid)
     {
         Asteroid mainAst = mainAsteroid.GetComponent<Asteroid>();
         List<Vector2> perimeterVertices = mainAst.squareMesh.perimeterVertices;
@@ -76,7 +76,7 @@ public class DerivedAsteroid : Asteroid
         Collider2D otherObject = collision.collider;
         // Debug.Log("ontriggerenter");
         // This passes note of any collisions straight to the main asteroid
-        mainAsteroidClass.DerivedAsteroidCollision(otherObject, this.gameObject, offset);
+        mainAsteroidClass.DerivedAsteroidCollision(otherObject, this.gameObject, offset, collision);
 
     }
 

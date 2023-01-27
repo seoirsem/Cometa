@@ -107,7 +107,7 @@ public class MainAsteroid : Asteroid
             spawning = false;
             halfSpawning = true;
             Debug.Log("Turtling");
-            Debug.Break();
+            //Debug.Break();
 
         }
     }
@@ -215,14 +215,14 @@ public class MainAsteroid : Asteroid
         ResolveCollision(collision.gameObject, collision, null, new Vector2(0,0));
     }
 
-    public void DerivedAsteroidCollision(Collider2D collidee, GameObject collidingAsteroid, Vector2 offset)
+    public void DerivedAsteroidCollision(Collider2D collidee, GameObject collidingAsteroid, Vector2 offset, Collision2D collision)
     {
         //Debug.Log("derived collision");
         if (collidee.gameObject.GetComponent<Projectile>() != null)
         {
             // Debug.Log("derived projectile collision");
 
-            ResolveCollision(collidee.gameObject, null, collidee, offset);
+            ResolveCollision(collidee.gameObject, collision, collidee, offset);
         }
     }
 
@@ -249,6 +249,7 @@ public class MainAsteroid : Asteroid
             if (projectile.mainProjectile == true)
             {
                 Reference.scoreController.IncrementScore((float)size);
+                this.squareMesh.RemoveSquareAtWorldPosition(otherObject.transform.position + (Vector3)collision.relativeVelocity.normalized * squareMesh.edgeLength*0.25f);
                 Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, offset);
             }
         }
@@ -263,7 +264,18 @@ public class MainAsteroid : Asteroid
             //Debug.Log("Asteroid hit other asteroid");
 
         }
+
+        foreach(GameObject asteroidgo in asteroidPack)
+        {
+            if(asteroidgo.GetComponent<DerivedAsteroid>() != null)
+            {
+                asteroidgo.GetComponent<DerivedAsteroid>().CloneAsteroidGeometry(this.gameObject);
+            }
+        }
     }
+
+
+
     public void ApplyExplosionImpulse(Vector3 direction, float explosionImpulse)
     {
         ApplyImpulse(direction, explosionImpulse);
@@ -271,7 +283,9 @@ public class MainAsteroid : Asteroid
 
     public void HitByProjectile()
     {
-        
+
+
+
     }
 
 }

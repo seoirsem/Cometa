@@ -346,9 +346,9 @@ public class SquareMesh
             // Stop the loop if there is no neighbours with an edge continuing the perimeter
             // or if we have returned to the starting square
             // Debug.Log("Halting or continuing on the perimeter");
-            if ( startFromEdgeIndex < 0 ) { Debug.Log("v1"); break;}
-            if ( candidate == null ) { Debug.Log("v2"); break; }
-            if ( candidate == startingSquare && AllEdgesAccountedFor(currentSquare, vertices) ) { Debug.Log("v3"); break; }
+            if ( startFromEdgeIndex < 0 ) {  break;}
+            if ( candidate == null ) { break; }
+            if ( candidate == startingSquare && AllEdgesAccountedFor(currentSquare, vertices) ) { break; }
             vertices = ExtendVerticesList(currentSquare, vertices, startFromEdgeIndex);
             // Debug.Log("Here");
             // Debug.Log(( ( currentSquare != startingSquare && AllEdgesAccountedFor(currentSquare, vertices) ) || firstLoopCompleted == false ));
