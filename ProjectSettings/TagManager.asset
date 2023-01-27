@@ -13,11 +13,11 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - DerivedAsteroids
+  - SpawningAsteroid
+  - Background
+  - EdgeCollider
+  - Projectile
   - 
   - 
   - 

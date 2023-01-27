@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class WorldController : MonoBehaviour
 {
@@ -8,9 +10,14 @@ public class WorldController : MonoBehaviour
     public Player player;
     public Vector2 worldSize;
     GameObject windowing;
-
+    public bool isPaused = false;
+    bool escPressed = false;
+    string mainMenuScene = "Scenes/MainMenu";
+    string loadingScene = "Scenes/LoadingScene";
+    string gameScene = "Scenes/GameScene";
     float asteroidSpawnInterval = 100f;
     float time;
+    bool gameOver = false;
 
     BoxCollider2D rightEdgeCollider;
     BoxCollider2D leftEdgeCollider;
@@ -46,7 +53,8 @@ public class WorldController : MonoBehaviour
         bottomEdgeCollider.size = new Vector2(Reference.worldController.worldSize.x, colliderThickness);
     }
 
-    void Start() {
+    void Start() 
+    {
         playergo = Reference.playergo;
         player = new Player(playergo);
     }
@@ -58,6 +66,76 @@ public class WorldController : MonoBehaviour
         {
             // Reference.asteroidController.SpawnNewAsteroid();
             time = Time.time;
-        }   
+        }
+
+        if(!isPaused && !escPressed && Reference.playerInputController.escape && !gameOver)
+        {
+            PauseGame();
+
+        }
+        if(escPressed && !Reference.playerInputController.escape)
+        {
+            //This means escape has been de-pressed
+            escPressed = false;
+        }
+        
+        if(isPaused && !escPressed && Reference.playerInputController.escape && !gameOver) 
+        {
+            UnPauseGame();
+            escPressed = true;
+
+        }
+
+    }
+    public void PlayerDead()
+    {
+        if(!gameOver)
+        {
+            Reference.soundController.PlayerDeadSound();
+            Time.timeScale = 0;
+            isPaused = true;
+
+            gameOver = true;
+            Reference.hudController.GameOverUI(Reference.scoreController.totalScore);
+        }
+    }
+
+
+
+    void PauseGame()
+    {
+        Debug.Log("Game Paused");
+        isPaused = true;
+        escPressed = true;
+        Time.timeScale = 0;
+        Reference.hudController.EnablePauseMenu();
+    }
+
+    public void UnPauseGame()
+    {
+        Debug.Log("Game Resuming");
+        isPaused = false;;
+        Time.timeScale = 1;
+        Reference.hudController.DisablePauseMenu();
+
+    }
+
+    public void ReplayLevel()
+    {
+        Reference.scoreController.SaveHighScore();
+        Time.timeScale = 1;
+        //maybe save game state so you can resume it later?
+        OptionsParameters.sceneToLoad = gameScene;
+        SceneManager.LoadScene(loadingScene);
+    }
+
+    public void QuitToMainMenu()
+    {
+        Reference.scoreController.SaveHighScore();
+        Time.timeScale = 1;
+        //maybe save game state so you can resume it later?
+
+        OptionsParameters.sceneToLoad = mainMenuScene;
+        SceneManager.LoadScene(loadingScene);
     }
 }

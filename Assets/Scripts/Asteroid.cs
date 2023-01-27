@@ -298,7 +298,7 @@ public class Asteroid : MonoBehaviour
         //random int including the starting number, excluding the finishing number
         int numberOfSides = Random.Range(8, 12);
 
-        float radius = size / 6f;
+        float radius = size / 2f;
 
         meshVertices = new Vector3[numberOfSides+1];
         float angle = 0;

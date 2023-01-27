@@ -10,7 +10,7 @@ public class Reference
 
     public static AsteroidController asteroidController;
     public static AnimationController animationController;
-    public static HUDController hudcontroller;
+    public static HUDController hudController;
     // public static PlayerEdgeVisualsController playerEdgeVisualsController;
     public static PlayerInputController playerInputController;
     public static PlayerSpriteController playerSpriteController;
@@ -18,7 +18,7 @@ public class Reference
     public static ScoreController scoreController;
     public static WorldController worldController;
     public static ShipShields shipShields;
-    public static SoundController SoundController;
+    public static SoundController soundController;
     // public static ShipShieldVisuals;
     
     
@@ -31,9 +31,9 @@ public class Reference
         hud = GameObject.Find("HUD");
 
         asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
-        SoundController = GameObject.Find("SoundController").GetComponent<SoundController>();
+        soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
         animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
-        hudcontroller = GameObject.Find("HUDController").GetComponent<HUDController>();
+        hudController = GameObject.Find("HUDController").GetComponent<HUDController>();
         // playerEdgeVisualsController = GameObject.Find("PlayerInputController").GetComponent<PlayerEdgeVisualsController>();
         playerInputController = GameObject.Find("PlayerInputController").GetComponent<PlayerInputController>();
         playerSpriteController = GameObject.Find("Player").GetComponent<PlayerSpriteController>();

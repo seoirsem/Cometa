@@ -12,6 +12,9 @@ public class PlayerInputController : MonoBehaviour
     public bool mouseClicked = false;
     public bool spaceBar = false;
     public bool b = false;
+    public bool r = false;
+    public bool escape = false;
+    public bool e = false;
 
     public bool p = false;
     public bool o = false;
@@ -34,6 +37,14 @@ public class PlayerInputController : MonoBehaviour
 
         cursorPosition = Input.mousePosition;
 
+        if (Input.GetKey("escape"))
+        {
+            escape = true;   
+        }
+        else 
+        {
+            escape = false;
+        }
         if (Input.GetKey("up"))
         {
             upKey = true;   
@@ -82,6 +93,14 @@ public class PlayerInputController : MonoBehaviour
         {
             spaceBar = false;
         }
+        if (Input.GetKey("r"))
+        {
+            r = true;
+        }
+        else
+        {
+            r = false;
+        }
         if (Input.GetKey("b"))
         {
             b = true;
@@ -105,6 +124,14 @@ public class PlayerInputController : MonoBehaviour
         else
         {
             p = false;
+        }
+        if (Input.GetKey("e"))
+        {
+            e = true;
+        }
+        else
+        {
+            e = false;
         }
     }
 }
