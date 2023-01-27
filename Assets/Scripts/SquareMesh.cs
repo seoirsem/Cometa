@@ -9,16 +9,11 @@ public class SquareMesh : MonoBehaviour
     public Square[,] squares;
     public bool[,] edgeSquares;
 
-    public SquareMesh squareMesh;
     public List<Vector2> perimeterVertices;
     public List<Square> perimeterSquares;
     public int[] perimeterIndices;
 
     public PolygonCollider2D polygonCollider;
-
-    // NOTE: WILL HAVE TO ADD DIAGONAL NEIGHBOURS, OTHERWISE GET STUCK WHEN ONLY 
-    // A SINGLE-VERTEX-ON-PERIMETER NEIGHBOUR LINKS TO NEXT FULL-EDGE-ON-PERIMETER
-    // NEIGHBOUR
 
     void Start() 
     {
@@ -53,12 +48,97 @@ public class SquareMesh : MonoBehaviour
         RemoveSquareAtWorldPosition(other.gameObject.transform.position + (Vector3)other.relativeVelocity.normalized * this.edgeLength*0.25f);
     }
 
+    public void OnSplit()
+    {
+
+        List<Square> allSquares = new List<Square>();
+        for ( int i = 0; i < this.squares.GetLength(0); i++ ) 
+        { 
+            for ( int j = 0; j < this.squares.GetLength(1); j++ )
+            {
+                if ( this.squares[i,j] != null ) { allSquares.Add(this.squares[i,j]); }
+            }
+        }
+        if ( allSquares.Count == 0 ) { return; }
+
+        while ( allSquares.Count > 0 )
+        {
+            Square startingSquare = allSquares[0];        
+            List<Square> asteroidChunkList = CrawlThroughNeighbours(startingSquare); 
+            allSquares = SubtractChunk(allSquares, asteroidChunkList);
+            SquareMesh newAsteroidChunk = MakeNewAsteroidFromChunk(asteroidChunkList);
+        }
+    }
+
+    public SquareMesh MakeNewAsteroidFromChunk(List<Square> chunkSquaresList)
+    {
+        SquareMesh newSquareMesh = new SquareMesh();
+        int leftmostCoord = -1; int rightmostCoord = -1; int topCoord = -1; int bottomCoord = -1;
+        foreach ( Square s in chunkSquaresList )
+        {
+            if ( s.x < leftmostCoord ) { leftmostCoord = s.x; }
+            if ( s.x > rightmostCoord ) { rightmostCoord = s.x; }
+            if ( s.y < bottomCoord ) { bottomCoord = s.y; }
+            if ( s.y > topCoord ) { topCoord = s.y; }
+        }
+        Square[,] chunkSquaresArray = new Square[rightmostCoord - leftmostCoord + 1, topCoord - bottomCoord + 1];
+        foreach ( Square s in chunkSquaresList )
+        {
+            chunkSquaresArray[s.x, s.y] = s;
+        }
+        newSquareMesh.squares = chunkSquaresArray;
+        newSquareMesh.edgeLength = this.edgeLength;
+        return newSquareMesh;
+    }
+
+    public List<Square> SubtractChunk(List<Square> allSquares, List<Square> asteroidChunkList)
+    {
+        foreach ( Square s in asteroidChunkList )
+        {
+            if ( allSquares.Contains(s) ) { allSquares.Remove(s); }
+            else { Debug.Log("allSquares did not contain the chunk's element, and I think it should?"); }
+        }
+        return allSquares;
+    }
+
+    public List<Square> CrawlThroughNeighbours(Square startingSquare)
+    {
+        List<Square> gotNeighboursOf = new List<Square>(); List<Square> chunkSquaresList = new List<Square>(); List<Square> searchForNeighbours = new List<Square>();
+        Square currentSquare = startingSquare;
+
+        while ( searchForNeighbours.Count > 0 )
+        {
+            currentSquare = searchForNeighbours[0];
+
+            foreach (Square s in currentSquare.neighbourSquares)
+            {
+                if ( s != null )
+                {
+                    if ( gotNeighboursOf.Contains(s) == false ) { searchForNeighbours.Add(s); }
+                    if ( chunkSquaresList.Contains(s) == false ) { chunkSquaresList.Add(s); }
+                }
+            }
+            gotNeighboursOf.Add(startingSquare);
+            searchForNeighbours.Remove(currentSquare);
+        }
+        // Square[,] chunkSquaresArray = Square[rightmostCoord - leftmostCoord + 1, topCoord - bottomCoord + 1];
+        // foreach ( Square s in chunkSquaresList )
+        // {
+        //     chunkSquaresArray[s.x, s.y] = s;
+        // }
+        return chunkSquaresList;
+    }
+
     void RemoveSquareAtWorldPosition(Vector3 worldPosition)
     {
         Square squareToRemove = SquareAtWorldPoint(worldPosition);
+        
         if ( squareToRemove != null ) 
         {
-            RemoveSquare(squareToRemove.x, squareToRemove.y);
+            List<Square> squaresToRemove = new List<Square>();
+            squaresToRemove.Add(squareToRemove);
+            RemoveSquares(squaresToRemove);
+            // Check for a split here?
             FindOutline();
             ScaleEdgeLength();
             ResetMesh();
@@ -197,9 +277,9 @@ public class SquareMesh : MonoBehaviour
     {
         List<Vector2> vertices = new List<Vector2>();
         Square startingSquare = null;
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < squares.GetLength(0); i++)
         {
-            for (int j = 0; j < size; j++)
+            for (int j = 0; j < squares.GetLength(1); j++)
             {
                 if (squares[i,j] != null){ startingSquare = squares[i,j]; } // Retain starting square to use in halting condition
                 if ( startingSquare != null) { break; };
@@ -242,7 +322,7 @@ public class SquareMesh : MonoBehaviour
                     // Debug.Log("Current square is ");
                     // Debug.Log(currentSquare.x);
                     // Debug.Log(currentSquare.y);
-                    if ( currentSquare.x+dx >= 0 && currentSquare.x+dx <= size - 1 && currentSquare.y+dy >= 0 && currentSquare.y+dy <= size - 1 )
+                    if ( currentSquare.x+dx >= 0 && currentSquare.x+dx <= squares.GetLength(0) - 1 && currentSquare.y+dy >= 0 && currentSquare.y+dy <= squares.GetLength(1) - 1 )
                     {
                         if ( dx == 0 && dy == 0) { continue; }
                         // Debug.Log("Candidate square is:");
@@ -357,6 +437,7 @@ public class SquareMesh : MonoBehaviour
 
     public void SparsifyMesh(int deletionCount)
     {
+        List<Square> squaresToRemove = new List<Square>();
         for (int i = 0; i < deletionCount; i++)
         {
             // Debug.Log(i);
@@ -364,50 +445,51 @@ public class SquareMesh : MonoBehaviour
             // Debug.Log(toRemoveIndex);
             // Debug.Log(perimeterSquares[toRemoveIndex].x);
             // Debug.Log(perimeterSquares[toRemoveIndex].y);
-            RemoveSquare(perimeterSquares[toRemoveIndex].x, perimeterSquares[toRemoveIndex].y);
+            squaresToRemove.Add(perimeterSquares[toRemoveIndex]);
         }
+        RemoveSquares(squaresToRemove);
     }
 
-    public void RemoveSquare(int x, int y)
+    public void RemoveSquares(List<Square> squaresToRemove)
     {
-        // Debug.Log("Getting here?");
-        Square square = squares[x,y];
-        if ( square == null ){ return; }
-        // Debug.Log(x);
-        // Debug.Log(y);
-        // Update neighbours and edges of neighbours
-        if ( square.neighbourSquares[0] != null )
+        foreach ( Square s in squaresToRemove )
         {
-            square.neighbourSquares[0].neighbourSquares[2] = null;
-            square.neighbourSquares[0].AddEdge(2);
-            if ( perimeterSquares.Contains(square) == true ) { perimeterSquares.Remove(square); }
-            if ( perimeterSquares.Contains(square.neighbourSquares[0]) == false ){ perimeterSquares.Add(square.neighbourSquares[0]); }
-        }
+            if (s == null) { continue; }
 
-        if ( square.neighbourSquares[1] != null )
-        {
-            square.neighbourSquares[1].neighbourSquares[3] = null;
-            square.neighbourSquares[1].AddEdge(3);
-            if ( perimeterSquares.Contains(square) == true ) { perimeterSquares.Remove(square); }
-            if ( perimeterSquares.Contains(square.neighbourSquares[1]) == false ){ perimeterSquares.Add(square.neighbourSquares[1]); }
-        }
+            // Update neighbours and edges of neighbours
+            if ( s.neighbourSquares[0] != null )
+            {
+                s.neighbourSquares[0].neighbourSquares[2] = null;
+                s.neighbourSquares[0].AddEdge(2);
+                if ( perimeterSquares.Contains(s) == true ) { perimeterSquares.Remove(s); }
+                if ( perimeterSquares.Contains(s.neighbourSquares[0]) == false ){ perimeterSquares.Add(s.neighbourSquares[0]); }
+            }
 
-        if ( square.neighbourSquares[2] != null )
-        {
-            square.neighbourSquares[2].neighbourSquares[0] = null;
-            square.neighbourSquares[2].AddEdge(0);
-            if ( perimeterSquares.Contains(square) == true ) { perimeterSquares.Remove(square); }
-            if ( perimeterSquares.Contains(square.neighbourSquares[2]) == false ){ perimeterSquares.Add(square.neighbourSquares[2]); }
-        }
+            if ( s.neighbourSquares[1] != null )
+            {
+                s.neighbourSquares[1].neighbourSquares[3] = null;
+                s.neighbourSquares[1].AddEdge(3);
+                if ( perimeterSquares.Contains(s) == true ) { perimeterSquares.Remove(s); }
+                if ( perimeterSquares.Contains(s.neighbourSquares[1]) == false ){ perimeterSquares.Add(s.neighbourSquares[1]); }
+            }
 
-        if ( square.neighbourSquares[3] != null )
-        {
-            square.neighbourSquares[3].neighbourSquares[1] = null;
-            square.neighbourSquares[3].AddEdge(1);
-            if ( perimeterSquares.Contains(square) == true ) { perimeterSquares.Remove(square); }
-            if ( perimeterSquares.Contains(square.neighbourSquares[3]) == false ){ perimeterSquares.Add(square.neighbourSquares[3]); }
+            if ( s.neighbourSquares[2] != null )
+            {
+                s.neighbourSquares[2].neighbourSquares[0] = null;
+                s.neighbourSquares[2].AddEdge(0);
+                if ( perimeterSquares.Contains(s) == true ) { perimeterSquares.Remove(s); }
+                if ( perimeterSquares.Contains(s.neighbourSquares[2]) == false ){ perimeterSquares.Add(s.neighbourSquares[2]); }
+            }
+
+            if ( s.neighbourSquares[3] != null )
+            {
+                s.neighbourSquares[3].neighbourSquares[1] = null;
+                s.neighbourSquares[3].AddEdge(1);
+                if ( perimeterSquares.Contains(s) == true ) { perimeterSquares.Remove(s); }
+                if ( perimeterSquares.Contains(s.neighbourSquares[3]) == false ){ perimeterSquares.Add(s.neighbourSquares[3]); }
+            }
+            this.squares[s.x, s.y] = null;
         }
-        squares[x,y] = null;
     }
 
 
