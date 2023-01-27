@@ -30,7 +30,7 @@ public class ProjectileController : MonoBehaviour
         // NOTE the other 4 are commented out because they are not needed. Projectioles can hit the virtual asteroid objects instead of needing to wrap neatly
         worldSize = Reference.worldController.worldSize;
         //5 times for the 5 screens
-        GameObject projectilego = new GameObject();
+        GameObject projectilego;// = new GameObject();
         if(projectileType == "Rocket")
         {
             projectilego = SimplePool.Spawn(rocketPrefab, position, rotation);
@@ -42,6 +42,7 @@ public class ProjectileController : MonoBehaviour
         else
         {
             Debug.LogError("No projectile type exists with name " + projectileType);
+            return;
         }
         
         List<GameObject> projectilePack = new List<GameObject>();
