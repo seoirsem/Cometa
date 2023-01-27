@@ -269,4 +269,9 @@ public class MainAsteroid : Asteroid
         ApplyImpulse(direction, explosionImpulse);
     }
 
+    public void HitByProjectile()
+    {
+        
+    }
+
 }

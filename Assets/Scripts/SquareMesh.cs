@@ -16,11 +16,10 @@ public class SquareMesh
 
     Asteroid asteroid;
 
-    void Start() 
+    public void SetAsteroid(Asteroid asteroid)
     {
         this.asteroid = asteroid;
     }
-
 
     public void ResetColliderMesh()
     {

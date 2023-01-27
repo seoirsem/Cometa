@@ -84,49 +84,10 @@ public class AsteroidController : MonoBehaviour
         Debug.Log(otherObject.name);
         Debug.Log(otherObject.GetComponent<Projectile>().velocity);
         Vector3 collisionDirection = otherObject.GetComponent<Projectile>().velocity.normalized;
-        Vector3 left = Vector3.Cross(collisionDirection, new Vector3(0, 0, 1)).normalized;
-        Vector3 right = Vector3.Cross(collisionDirection, new Vector3(0, 0, -1)).normalized;
 
-        if ( offsetFromActualCollision != Vector3.zero ) { collisionPoint -= offsetFromActualCollision; }
-
-        // Debug.Log("Splitting asteroid with hit position:");
-        // Debug.Log(collisionPoint - asteroidPosition);
-        // Debug.Log("And from direction:");
-        // Debug.Log(collisionDirection);
-        Asteroid[] splitAsteroidData = null;//asteroid.SplitAsteroid(asteroid.meshVertices, collisionPoint - asteroidPosition, collisionDirection);
         
-        DespawnAsteroid(asteroid, asteroidPack);
-        
-        // Asteroid[] splitAsteroidData = new Asteroid[2];
-        
-        float debugDontMove = 1f;
 
-        // Oooo-kayyyy... So in Logs below, first evaluates to null, both the second has a well defined value.
-        // God is dead.
-        // Debug.Log(splitAsteroidData[0] == null);
-        // Debug.Log(splitAsteroidData[0]);
-        // Debug.Log(splitAsteroidData[0].meshVertices[0]);
-        // if(size != 1)
-        // {
-        //     SpawnAsteroid(size - 1, asteroidPosition + left * (size / 6f), (asteroidVelocity + left * 1f)*debugDontMove);
-        //     SpawnAsteroid(size - 1, asteroidPosition + right * (size / 6f), (asteroidVelocity + right * 1f)*debugDontMove);
-        // }
-        // return;
-        if (splitAsteroidData[0] != null)
-        {
-            if (splitAsteroidData[0].size > 0.4)
-            {
-                SpawnSplitAsteroid(2, asteroidPosition + splitAsteroidData[0].CoMShift, (asteroidVelocity + left * 1f)*debugDontMove, splitAsteroidData[0]);
-            }
-        }
 
-        if (splitAsteroidData[1] != null)
-        {
-            if ( splitAsteroidData[1].size > 0.4)
-            {
-                SpawnSplitAsteroid(2, asteroidPosition + splitAsteroidData[1].CoMShift, (asteroidVelocity + right * 1f)*debugDontMove, splitAsteroidData[1]);
-            }
-        }
     }
     
     public void AsteroidAstroidCollision(Asteroid asteroid, Vector2 contact, List<GameObject> asteroidPack)
