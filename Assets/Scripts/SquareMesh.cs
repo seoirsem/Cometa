@@ -2,50 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SquareMesh : MonoBehaviour
+public class SquareMesh
 {
     public int size;
     public float edgeLength;
     public Square[,] squares;
     public bool[,] edgeSquares;
 
-    public List<Vector2> perimeterVertices;
+    public List<Vector2> perimeterVertices; // this one the scale edge length
     public List<Square> perimeterSquares;
     public int[] perimeterIndices;
 
-    public PolygonCollider2D polygonCollider;
+
+    Asteroid asteroid;
 
     void Start() 
     {
-        this.edgeLength = 0.2f;
-        polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
-        GenerateMesh(20);
-        // SparsifyMesh(1);
-        FindOutline();
-        ScaleEdgeLength();
-        ResetMesh();
-        ResetColliderMesh();
-        
+        this.asteroid = asteroid;
     }
 
-    void Update()
-    {
-        if (Reference.playerInputController.mouseClicked && !Reference.worldController.isPaused)
-        {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RemoveSquareAtWorldPosition(mousePosition);
-        }
-    }
 
-    void ResetColliderMesh()
+    public void ResetColliderMesh()
     {
         Vector2[] xyPoints = perimeterVertices.ToArray();
-        polygonCollider.points = xyPoints; 
+        asteroid.gameObject.GetComponent<PolygonCollider2D>().points = xyPoints; 
     }
 
-    private void OnCollisionEnter2D(Collision2D other) {
-        Debug.Log(other.gameObject.transform.position);
-        RemoveSquareAtWorldPosition(other.gameObject.transform.position + (Vector3)other.relativeVelocity.normalized * this.edgeLength*0.25f);
+    public void RedrawMesh()
+    {
+        //ScaleEdgeLength();
+        ResetMesh();
+        ResetColliderMesh();
     }
 
     public void OnSplit()
@@ -129,7 +116,7 @@ public class SquareMesh : MonoBehaviour
         return chunkSquaresList;
     }
 
-    void RemoveSquareAtWorldPosition(Vector3 worldPosition)
+    public void RemoveSquareAtWorldPosition(Vector3 worldPosition)
     {
         Square squareToRemove = SquareAtWorldPoint(worldPosition);
         
@@ -146,7 +133,7 @@ public class SquareMesh : MonoBehaviour
         }
     }
 
-    void ScaleEdgeLength()
+    public void ScaleEdgeLength()
     {
         List<Vector2> tmp = new List<Vector2>();
         foreach ( Vector2 v in perimeterVertices )
@@ -158,7 +145,8 @@ public class SquareMesh : MonoBehaviour
 
     public void ResetMesh()
     {
-        MeshFilter meshFilter = GetComponent<MeshFilter>();
+        
+        MeshFilter meshFilter = asteroid.gameObject.GetComponent<MeshFilter>();
         Mesh mesh2 = new Mesh();
         meshFilter.mesh = mesh2;
         
@@ -172,7 +160,7 @@ public class SquareMesh : MonoBehaviour
         }
 
         mesh2.vertices = meshVertices.ToArray();
-        GetComponent<MeshFilter>().mesh = mesh2;
+        meshFilter.mesh = mesh2;
 
         perimeterIndices = new int[2*meshVertices.Count];
 
@@ -192,7 +180,7 @@ public class SquareMesh : MonoBehaviour
         // Debug.Log("World point: ");
         // Debug.Log(worldPoint);
         Square closestSquare = null;
-        Vector2 point = (Vector2)((worldPoint - this.gameObject.transform.position) / this.edgeLength);
+        Vector2 point = (Vector2)((worldPoint - asteroid.gameObject.transform.position) / this.edgeLength);
         // Debug.Log("Point in square reference frame: ");
         // Debug.Log(point);
         point -= new Vector2(0.5f, 0.5f);

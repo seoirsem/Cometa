@@ -12,30 +12,7 @@ public class MainAsteroid : Asteroid
     BackgroundCollider backgroundCollider;
     List<GameObject> derivedOnScreen;
     List<GameObject> derivedOffScreen;
-    public void OnSpawnSplitAsteroid(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, Asteroid asteroidData)
-    {
-        backgroundCollider = GameObject.Find("Background").GetComponent<BackgroundCollider>();
-        this.gameObject.layer = LayerMask.NameToLayer("Default");
-        this.mass = Mathf.Pow(size,2);
-        this.size = asteroidData.size;
-        this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
-        this.rigid_body = this.GetComponent<Rigidbody2D>();
-        this.asteroidPack = asteroidPack;
-        this.asteroidgo = this.gameObject;
-        this.velocity = velocity;
-        this.rigid_body.velocity = velocity;
-        this.worldSize = Reference.worldController.worldSize;
-        this.location = location;
-        this.rigid_body.centerOfMass = new Vector2(0,0);
-        this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 0;//random rotation rate
-        this.rigid_body.angularVelocity = rotationRate;
 
-        this.meshVertices = asteroidData.meshVertices;
-        this.meshTriangles = asteroidData.meshTriangles;
-        this.meshIndices = asteroidData.meshIndices;
-        DrawMesh(meshVertices, meshTriangles);
-        DrawCollider(meshVertices, meshTriangles);
-    }
 
     public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, bool spawning = false)
     {
@@ -57,7 +34,7 @@ public class MainAsteroid : Asteroid
         this.mass = Mathf.Pow(size,2);
         this.size = size;
         this.asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
-        this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
+        //this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
         this.rigid_body = this.GetComponent<Rigidbody2D>();
         this.asteroidPack = asteroidPack;
         this.asteroidgo = this.gameObject;
@@ -252,6 +229,8 @@ public class MainAsteroid : Asteroid
 
     void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
     {
+//                squareMesh.RemoveSquareAtWorldPosition(other.gameObject.transform.position + (Vector3)other.relativeVelocity.normalized * squareMesh.edgeLength*0.25f);
+
         Vector2 collisionLocation;
 
         if(collision == null)

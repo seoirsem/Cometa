@@ -39,9 +39,8 @@ public class AsteroidController : MonoBehaviour
     {
         if (Reference.playerInputController.mouseClicked && !Reference.worldController.isPaused)
         {
-            // Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            // SpawnAsteroid(6, new Vector3(0f,3f,0), new Vector3(0, 0, 0)); 
-            // SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0),false);    
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0),false);    
         }
         if(Reference.playerInputController.o)
         { //clear screen
@@ -94,7 +93,7 @@ public class AsteroidController : MonoBehaviour
         // Debug.Log(collisionPoint - asteroidPosition);
         // Debug.Log("And from direction:");
         // Debug.Log(collisionDirection);
-        Asteroid[] splitAsteroidData = asteroid.SplitAsteroid(asteroid.meshVertices, collisionPoint - asteroidPosition, collisionDirection);
+        Asteroid[] splitAsteroidData = null;//asteroid.SplitAsteroid(asteroid.meshVertices, collisionPoint - asteroidPosition, collisionDirection);
         
         DespawnAsteroid(asteroid, asteroidPack);
         
@@ -241,7 +240,7 @@ public class AsteroidController : MonoBehaviour
         asteroidPack.Add(asteroidgo4);
 
         asteroidgo.transform.SetParent(this.gameObject.transform);
-        asteroidgo.GetComponent<MainAsteroid>().OnSpawnSplitAsteroid(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, asteroidData);
+        asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, asteroidData);
         asteroids.Add(asteroidgo);
 
         asteroidgo1.transform.SetParent(this.gameObject.transform);

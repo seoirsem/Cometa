@@ -127,29 +127,29 @@ public class Beam : MonoBehaviour
 
     void ShrinkVertex(Asteroid asteroid, Vector2 hitPoint)
     {
-        float minDif = Mathf.Infinity;
-        int minIdx = -1;
-        for (int i = 0; i < asteroid.meshVertices.Length; i++ )
-        {
-            float dif = ((Vector2)asteroid.meshVertices[i] - hitPoint).magnitude;
-            if ( ( dif < minDif ) ){ minIdx = i; minDif = dif; }
-        }
-        asteroid.meshVertices[minIdx] = asteroid.meshVertices[minIdx]*0.99f;
-        // I use the CalculateCOM f'n to get the coordinates of the new (post-shrink) COM
-        // Then shift COM (asteroid position; we always keep COM at (0,0) in local coords)
-        // And all vertices in the opposite direction to compensate the GO movement 
-        List<Vector3> tempVertexList = new List<Vector3>(asteroid.meshVertices);
-        tempVertexList = asteroid.CalculateCOM(tempVertexList);
+    //     float minDif = Mathf.Infinity;
+    //     int minIdx = -1;
+    //     for (int i = 0; i < asteroid.meshVertices.Length; i++ )
+    //     {
+    //         float dif = ((Vector2)asteroid.meshVertices[i] - hitPoint).magnitude;
+    //         if ( ( dif < minDif ) ){ minIdx = i; minDif = dif; }
+    //     }
+    //     asteroid.meshVertices[minIdx] = asteroid.meshVertices[minIdx]*0.99f;
+    //     // I use the CalculateCOM f'n to get the coordinates of the new (post-shrink) COM
+    //     // Then shift COM (asteroid position; we always keep COM at (0,0) in local coords)
+    //     // And all vertices in the opposite direction to compensate the GO movement 
+    //     List<Vector3> tempVertexList = new List<Vector3>(asteroid.meshVertices);
+    //     tempVertexList = asteroid.CalculateCOM(tempVertexList);
 
-        for ( int j = 0; j < asteroid.meshVertices.Length; j++ )
-        {
-            asteroid.meshVertices[j] -= tempVertexList[tempVertexList.Count-1];
-        }
-        asteroid.gameObject.transform.position += tempVertexList[tempVertexList.Count-1];
-        asteroid.DrawCollider(asteroid.meshVertices, asteroid.meshTriangles);
-        foreach (GameObject asteroidGO in asteroid.asteroidPack)
-        {
-            asteroidGO.GetComponent<Asteroid>().DrawMesh(asteroid.meshVertices, asteroid.meshTriangles);
-        }
-    }
+    //     for ( int j = 0; j < asteroid.meshVertices.Length; j++ )
+    //     {
+    //         asteroid.meshVertices[j] -= tempVertexList[tempVertexList.Count-1];
+    //     }
+    //     asteroid.gameObject.transform.position += tempVertexList[tempVertexList.Count-1];
+    //     asteroid.DrawCollider(asteroid.meshVertices, asteroid.meshTriangles);
+    //     foreach (GameObject asteroidGO in asteroid.asteroidPack)
+    //     {
+    //         asteroidGO.GetComponent<Asteroid>().DrawMesh(asteroid.meshVertices, asteroid.meshTriangles);
+    //     }
+         }
 }
