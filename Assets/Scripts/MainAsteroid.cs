@@ -229,6 +229,7 @@ public class MainAsteroid : Asteroid
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+//        Debug.Log(collision.gameObject.name);
         ResolveCollision(collision.gameObject, collision, null, new Vector2(0,0));
     }
 
@@ -277,8 +278,8 @@ public class MainAsteroid : Asteroid
                 if(newAstroidMeshes != null)
                 {
                     /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
-                    Debug.Log(newAstroidMeshes);
-                    Debug.Log(newAstroidMeshes.Count);
+  //                  Debug.Log(newAstroidMeshes);
+//                    Debug.Log(newAstroidMeshes.Count);
                     Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,offset);
 
                 }

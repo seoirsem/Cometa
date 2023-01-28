@@ -22,7 +22,7 @@ public class AsteroidController : MonoBehaviour
         deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
-        SpawnAsteroid(20, new Vector3(0, 11, 0), new Vector3(0, 0, 0), null, false); 
+        SpawnAsteroid(5, new Vector3(-0.3f, 0, 0), new Vector3(0, 0, 0), null, false); 
     }
 
     void Update()
@@ -66,12 +66,16 @@ public class AsteroidController : MonoBehaviour
 
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes,Vector3 offsetFromActualCollision = new Vector3())
     {
-        // Debug.Log("Asteroid splitting");
+//        Debug.Log("Asteroid splitting - in asteroid controller");
         // Debug.Log(otherObject.name);
-
+        
         DespawnAsteroid(asteroid,asteroidPack);
+
+        Debug.Log(newAstroidMeshes.Count);
         foreach(SquareMesh squareMesh in newAstroidMeshes)
         {
+            Debug.Log("hi guuuuys");
+        
             int[] numbersx = {-1,0,1,-1,1,-1,0,1};
             int[] numbersy = {1,1,1,0,0,-1,-1,-1};
             int randomIndex = Random.Range(0, 7);
