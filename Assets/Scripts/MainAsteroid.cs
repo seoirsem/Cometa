@@ -113,7 +113,7 @@ public class MainAsteroid : Asteroid
             if(CheckIfFullyOnScreen())
             {// asteroid is now fully spawned
                 spawning = false;
-                Debug.Log("Fully on");
+//                Debug.Log("Fully on");
                 foreach(KeyValuePair<Vector2,GameObject> derivedAsteroid in derivedAsteroids)
                 {
                     derivedAsteroid.Value.SetActive(true);
@@ -287,7 +287,7 @@ public class MainAsteroid : Asteroid
 
         if(collision == null)
         {
-            collisionLocation = collider.ClosestPoint(otherObject.transform.position);// - offset;
+            collisionLocation = collider.ClosestPoint(otherObject.transform.position) - offset;
         }
         else
         {
@@ -308,7 +308,7 @@ public class MainAsteroid : Asteroid
                     radius = 7f;
                 }
 
-                List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position, radius);
+                List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position - new Vector3(offset.x,offset.y,0), radius);
                 //Debug.Log(newAstroidMeshes);
                 if(newAstroidMeshes != null)
                 {

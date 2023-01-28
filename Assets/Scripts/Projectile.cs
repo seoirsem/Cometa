@@ -40,6 +40,7 @@ public class Projectile : MonoBehaviour
         go = this.gameObject;
         explosionRadiusGO = go.transform.Find("ExplosionRadius").gameObject;
         explosionRadius = explosionRadiusGO.GetComponent<ExplosionRadius>();
+//        if(explosionRadiusGO)
         this.objectPack = objectPack;
         this.screenCenter = screenCenter;
         timeFired = Time.time;
@@ -130,14 +131,16 @@ public class Projectile : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
             DestroySelf();
+            Debug.Log(collision.gameObject.name);
 
     }
     void OnTriggerEnter2D(Collider2D collider)//you need both so you can collide with triggering and non triggering objects
     {
-        if(Time.time - timeFired > 0.4f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
-        {
+        //if(Time.time - timeFired > 0.0f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
+        //{
             DestroySelf();
-        }
+            Debug.Log(collider.gameObject.name);
+     //   }
     }
     void OnCollisonExit2D(Collision2D collision)
     {
@@ -179,7 +182,7 @@ public class Projectile : MonoBehaviour
             Vector3 direction = hitCollider.gameObject.transform.position - this.transform.position;
             float distance = direction.magnitude;            
             if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
-            float explosionImpulse = 0f;
+            float explosionImpulse = 1f;
             if(projectileType == "Rocket")
             {
                 explosionImpulse = explosionSize / distance * distance;
@@ -217,7 +220,7 @@ public class Projectile : MonoBehaviour
 
         if(projectileType == "Rocket")
         {
-            Debug.Log(projectileType);
+//            Debug.Log(projectileType);
             /// perform animations etc
             Reference.animationController.SpawnExplosionAnimation(this.transform.position);
             

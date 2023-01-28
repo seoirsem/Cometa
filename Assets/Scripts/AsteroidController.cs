@@ -22,7 +22,8 @@ public class AsteroidController : MonoBehaviour
         deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
-        SpawnAsteroid(10, new Vector3(-0.3f, 0, 0), new Vector3(0, 0, 0), null, false, new Vector2(0,0)); 
+
+        SpawnAsteroid(20, new Vector3(0, worldSize.y/2 - 0.2f*20f/2, 0), new Vector3(0, 0, 0), null, false, new Vector2(0,0)); 
     }
 
     void Update()
@@ -61,18 +62,22 @@ public class AsteroidController : MonoBehaviour
         if(randomIndex == 0)
         {// up
             position = new Vector3(-worldSize.x/2 - 1.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
+            direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
         }
         if(randomIndex == 1)
         {// up
             position = new Vector3(worldSize.x/2 + 0.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
+            direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
         }
         if(randomIndex == 2)
         {// up
             position = new Vector3(-0.5f*size*Asteroid.celSize,worldSize.y/2 + 0.05f*size*Asteroid.celSize,0);
+            direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
         }
         if(randomIndex == 3)
         {// up
             position = new Vector3(-0.5f*size*Asteroid.celSize,-worldSize.y/2 - 1.05f*size*Asteroid.celSize,0);
+            direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
         }
         /// position
         //Vector3 position = new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);

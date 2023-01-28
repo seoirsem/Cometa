@@ -100,6 +100,8 @@ MonoBehaviour:
   timeFired: 0
   objectPack: []
   mainProjectile: 0
+  velocity: {x: 0, y: 0}
+  projectileType: 
 --- !u!50 &8161963152413491112
 Rigidbody2D:
   serializedVersion: 4
@@ -150,7 +152,7 @@ GameObject:
   - component: {fileID: 2491461673166607832}
   - component: {fileID: 3009643643890628048}
   - component: {fileID: 3062552204505050904}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: ExplosionRadius
   m_TagString: Untagged
   m_Icon: {fileID: 0}
