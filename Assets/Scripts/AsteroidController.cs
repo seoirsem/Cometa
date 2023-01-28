@@ -58,10 +58,21 @@ public class AsteroidController : MonoBehaviour
         Vector3 direction = -1 * magnitude*directionOrientation;
 
         Vector3 position = new Vector3(0,0,0);
-
+        if(randomIndex == 0)
+        {// up
+            position = new Vector3(-worldSize.x/2 - 1.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
+        }
+        if(randomIndex == 1)
+        {// up
+            position = new Vector3(worldSize.x/2 + 0.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
+        }
         if(randomIndex == 2)
         {// up
-            position = new Vector3(-0.5f*size*Asteroid.celSize,0,0);
+            position = new Vector3(-0.5f*size*Asteroid.celSize,worldSize.y/2 + 0.05f*size*Asteroid.celSize,0);
+        }
+        if(randomIndex == 3)
+        {// up
+            position = new Vector3(-0.5f*size*Asteroid.celSize,-worldSize.y/2 - 1.05f*size*Asteroid.celSize,0);
         }
         /// position
         //Vector3 position = new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);
@@ -80,7 +91,6 @@ public class AsteroidController : MonoBehaviour
         Debug.Log(newAstroidMeshes.Count);
         foreach(SquareMesh squareMesh in newAstroidMeshes)
         {
-            Debug.Log("hi guuuuys");
         
             int[] numbersx = {-1,0,1,-1,1,-1,0,1};
             int[] numbersy = {1,1,1,0,0,-1,-1,-1};
@@ -111,7 +121,7 @@ public class AsteroidController : MonoBehaviour
         //asteroid.ApplyImpulse(collisionDirection,1f);
     }
 
-    void DespawnAsteroid(Asteroid asteroid, List<GameObject> asteroidPack)
+    public void DespawnAsteroid(Asteroid asteroid, List<GameObject> asteroidPack)
     {
 
         if (asteroidSets.Contains(asteroidPack))

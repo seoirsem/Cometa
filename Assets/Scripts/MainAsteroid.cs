@@ -37,8 +37,11 @@ public class MainAsteroid : Asteroid
 
         if (spawning)
         {
-            this.gameObject.layer = LayerMask.NameToLayer("SpawningAsteroid");
-            this.transform.position = new Vector3(transform.position.x,transform.position.y,10);
+//            this.gameObject.layer = LayerMask.NameToLayer("SpawningAsteroid");
+            this.gameObject.layer = LayerMask.NameToLayer("Default");
+//            this.transform.position = new Vector3(transform.position.x,transform.position.y,10);
+            this.transform.position = new Vector3(transform.position.x,transform.position.y,-1);
+
         }
         else
         {
@@ -105,11 +108,11 @@ public class MainAsteroid : Asteroid
         {
             MoveSpawningAsteroid();
         }
-        if(halfSpawning)
+        if(spawning)
         {
             if(CheckIfFullyOnScreen())
             {// asteroid is now fully spawned
-                halfSpawning = false;
+                spawning = false;
                 Debug.Log("Fully on");
                 foreach(KeyValuePair<Vector2,GameObject> derivedAsteroid in derivedAsteroids)
                 {
@@ -123,6 +126,7 @@ public class MainAsteroid : Asteroid
             {//if it gets nocked offscreen again after having half spawned
                 spawning = true;
                 halfSpawning = false;
+                asteroidController.DespawnAsteroid(this,asteroidPack);
             }
 
         }
@@ -196,23 +200,22 @@ public class MainAsteroid : Asteroid
 
     bool CheckIfFullyOnScreen()
     {// says whether the central asteroid is fully on the screen
-        bool fullyOnScreen = true;
-        foreach(KeyValuePair<Vector2,GameObject> derivedAsteroid in derivedAsteroids)
+        bool fullyOnScreen = false;
+        if((this.rigid_body.position.x > -worldSize.x/2 && this.rigid_body.position.x < worldSize.x/2 - Asteroid.celSize*size) && (this.rigid_body.position.y > -worldSize.y/2 && this.rigid_body.position.y < worldSize.y/2 - Asteroid.celSize*size))
         {
-            if(backgroundCollider.TriggerList.Contains(derivedAsteroid.Value))
-            {
-                fullyOnScreen = false;
-            }
+            fullyOnScreen = true;
         }
         return fullyOnScreen;
     }
 
     bool CheckIfFullyOffScreen()
     {// says whether the central asteroid is fully off the screen
-        bool fullyOffScreen = true;
-        if(backgroundCollider.TriggerList.Contains(this.gameObject))
+        bool fullyOffScreen = false;
+        float edgeSpace = 1.05f;
+        if((this.rigid_body.position.x < -edgeSpace*worldSize.x/2 || this.rigid_body.position.x > edgeSpace*worldSize.x/2 - Asteroid.celSize*size) && (this.rigid_body.position.y < -edgeSpace*worldSize.y/2 || this.rigid_body.position.y > edgeSpace*worldSize.y/2 - Asteroid.celSize*size))
         {
-            fullyOffScreen = false;
+            Debug.Log("fully off screen");
+            fullyOffScreen = true;
         }
         
         return fullyOffScreen;
