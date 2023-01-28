@@ -265,8 +265,14 @@ public class MainAsteroid : Asteroid
             if (projectile.mainProjectile == true)
             {
                 Reference.scoreController.IncrementScore((float)size);
- 
-                List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position, 1f);
+
+                float radius = 1f;
+                if(projectile.projectileType == "Rocket")
+                {
+                    radius = 7f;
+                }
+
+                List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position, radius);
                 if(newAstroidMeshes != null)
                 {
                     /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones

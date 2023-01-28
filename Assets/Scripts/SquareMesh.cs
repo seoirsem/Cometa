@@ -78,7 +78,7 @@ public class SquareMesh
 
     public void OnSplit()
     {
-        Debug.Log("In OnSplit");
+//        Debug.Log("In OnSplit");
         List<Square> allSquares = new List<Square>();
         for ( int i = 0; i < this.squares.GetLength(0); i++ ) 
         { 
@@ -147,7 +147,7 @@ public class SquareMesh
     public List<Square> SubtractChunk(List<Square> allSquares, List<Square> asteroidChunkList)
     {
         // Debug.Log("Subtracting chunk");
-        Debug.Log(asteroidChunkList.Count);
+//        Debug.Log(asteroidChunkList.Count);
         foreach ( Square s in asteroidChunkList )
         {
             if ( allSquares.Contains(s) ) 
@@ -196,6 +196,7 @@ public class SquareMesh
 
     public List<SquareMesh> RemoveSquaresInRadius(Vector2 centre, float radius)
     {
+        Debug.Log(radius);
         List<Square> squaresToRemove = SquaresInRadius(centre, radius);
         
         if ( squaresToRemove.Count > 0 ) 
