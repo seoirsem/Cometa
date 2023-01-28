@@ -8,7 +8,7 @@ public class WorldController : MonoBehaviour
 {
     GameObject playergo;
     public Player player;
-    public Vector2 worldSize = new Vector2(20f, 16f);
+    public Vector2 worldSize;
     GameObject windowing;
     public bool isPaused = false;
     bool escPressed = false;
@@ -34,7 +34,8 @@ public class WorldController : MonoBehaviour
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
-        //worldSize = new Vector2(Screen.width)
+        worldSize = worldSize = new Vector2(20f, 12.5f);
+        Debug.Log(worldSize);
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
         rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();

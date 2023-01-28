@@ -71,7 +71,7 @@ public class AsteroidController : MonoBehaviour
 
         direction = magnitude*direction;
 
-        SpawnAsteroid(40, new Vector3(Random.Range(-worldSize.x/4,worldSize.x/4), Random.Range(-worldSize.y/4, worldSize.y/4),10), direction, null,false);    
+        SpawnAsteroid(40, new Vector3(0,0,10), direction, null,true);    
         Debug.Log("Spawning new asteroid");
     }
 
