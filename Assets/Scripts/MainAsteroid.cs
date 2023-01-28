@@ -6,16 +6,32 @@ public class MainAsteroid : Asteroid
 {
     bool spawning = false; //this is used to mark when this asteroid is spawning in
     bool halfSpawning = false;
+    Vector2 spawnDirection;
     bool callMoveSpawningAsteroid = false;
+
+    int waitFrames;
 
     public Dictionary<Vector2,GameObject> derivedAsteroids;
     BackgroundCollider backgroundCollider;
     List<GameObject> derivedOnScreen;
     List<GameObject> derivedOffScreen;
 
-
-    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, SquareMesh squareMesh, bool spawning = false)
+    public void SetSpawningDerivedAsteroid()
     {
+        if(spawnDirection == new Vector2(1,0) || spawnDirection == new Vector2(0,1))
+        {
+            derivedAsteroids[spawnDirection].gameObject.layer = LayerMask.NameToLayer("DerivedAsteroids");
+        }
+        else
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("Default");
+        }
+    }
+
+    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, SquareMesh squareMesh, bool spawning, Vector2 positionOrientation)
+    {
+        waitFrames = 0;
+        this.spawnDirection = positionOrientation;
         this.spawning = spawning;
         backgroundCollider = GameObject.Find("Background").GetComponent<BackgroundCollider>();
 
@@ -38,6 +54,7 @@ public class MainAsteroid : Asteroid
                 {
                     asteroid.layer = LayerMask.NameToLayer("SpawningDerivedAsteroid");
                 }
+                
             }
             foreach(KeyValuePair<Vector2,GameObject> kvp in derivedAsteroids)
             {
@@ -46,6 +63,17 @@ public class MainAsteroid : Asteroid
             //Vector2 velocityNorm = new Vector2(Mathf.RoundToInt(velocity.normalized.x),Mathf.RoundToInt(velocity.normalized.y));
             //Debug.Log(velocityNorm);
             //derivedAsteroids[-1*velocityNorm].gameObject.layer = LayerMask.NameToLayer("DerivedAsteroid");
+        }
+        else
+        {
+            foreach(GameObject asteroid in asteroidPack)
+            {
+                if(asteroid != this.gameObject)
+                {
+                    asteroid.layer = LayerMask.NameToLayer("DerivedAsteroids");
+                }
+                
+            }
         }
         this.mass = Mathf.Pow(size,2);
         this.size = size;
@@ -72,6 +100,7 @@ public class MainAsteroid : Asteroid
     // Update is called once per frame
     void Update()
     {
+  
         if(callMoveSpawningAsteroid)
         {
             MoveSpawningAsteroid();
@@ -84,6 +113,7 @@ public class MainAsteroid : Asteroid
                 Debug.Log("Fully on");
                 foreach(KeyValuePair<Vector2,GameObject> derivedAsteroid in derivedAsteroids)
                 {
+                    derivedAsteroid.Value.SetActive(true);
                     derivedAsteroid.Value.layer = LayerMask.NameToLayer("DerivedAsteroids");
                     derivedAsteroid.Value.gameObject.transform.position = new Vector3(
                     derivedAsteroid.Value.gameObject.transform.position.x,derivedAsteroid.Value.gameObject.transform.position.y,-1);
@@ -98,9 +128,11 @@ public class MainAsteroid : Asteroid
         }
         derivedOffScreen = DerivedAsteroidsOffScreen();
         derivedOnScreen = DerivedAsteroidsOnScreen();
-        UpdateAsteroidPosition();
-        UpdateAsteroidRotation();
-        
+        if(!spawning)
+        {
+            UpdateAsteroidPosition();
+            UpdateAsteroidRotation();
+        }
     }
 
     void NewAsteroidEnteredScreen(Vector2 side)
