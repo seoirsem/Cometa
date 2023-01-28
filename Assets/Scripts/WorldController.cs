@@ -8,7 +8,7 @@ public class WorldController : MonoBehaviour
 {
     GameObject playergo;
     public Player player;
-    public Vector2 worldSize;
+    public Vector2 worldSize = new Vector2(20f, 16f);
     GameObject windowing;
     public bool isPaused = false;
     bool escPressed = false;
@@ -30,7 +30,7 @@ public class WorldController : MonoBehaviour
     {
 
         time = Time.time;
-        worldSize = new Vector2(10f, 8f); //(1300/90, 800/90)
+         //(1300/90, 800/90)
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 

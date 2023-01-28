@@ -13,6 +13,8 @@ public class SquareMesh
     public List<Square> perimeterSquares;
     public int[] perimeterIndices;
 
+    public Vector2 centreOfMass;
+    public float mass;
 
     Asteroid asteroid;
 
@@ -32,6 +34,51 @@ public class SquareMesh
         //ScaleEdgeLength();
         ResetMesh();
         ResetColliderMesh();
+        FindCentreOfMass();
+        FindMass();
+    }
+
+    public List<SquareMesh> RemoveSquaresInRadius(Vector2 position, float radius)
+    {
+        return null;
+    }
+
+    void FindCentreOfMass()
+    {
+        int count = 0;
+        int xTotal = 0;
+        int yTotal = 0;
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                if(squares[x,y] != null)
+                {
+                    count += 1;
+                    xTotal += x;
+                    yTotal += y;
+                }
+            }
+        }
+
+        centreOfMass = new Vector2(xTotal*edgeLength/count,yTotal*edgeLength/count);
+    }
+
+    void FindMass()
+    {
+        int count = 0;
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                if(squares[x,y] != null)
+                {
+                    count += 1;
+                }
+            }
+        }
+
+        mass = count*edgeLength*edgeLength;
     }
 
     public void OnSplit()
@@ -223,9 +270,13 @@ public class SquareMesh
         UpdateNeighboursAndEdges();
     }
 
+    
+
     void UpdateNeighboursAndEdges()
     {
         //check neighbours and edges
+        FindCentreOfMass();
+        FindMass();
         for (int x = 0; x < size; x++)
         {
             for (int y = 0; y < size; y++)

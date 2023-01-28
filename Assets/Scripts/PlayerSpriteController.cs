@@ -97,8 +97,24 @@ public class PlayerSpriteController : MonoBehaviour
         go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
         go.GetComponent<PlayerEdgeVisualsController>().SetSide("right");
         go.transform.parent = this.gameObject.transform;
+        
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("upRight");
+        go.transform.parent = this.gameObject.transform;
+        
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("downRight");
+        go.transform.parent = this.gameObject.transform;
 
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("upLeft");
+        go.transform.parent = this.gameObject.transform;
+
+        go = Instantiate(Resources.Load("Prefabs/PlayerEdgeVisuals")) as GameObject;
+        go.GetComponent<PlayerEdgeVisualsController>().SetSide("downLeft");
+        go.transform.parent = this.gameObject.transform;
         //visualClones[3] = go;
+
 
     }
     void UpdatePlayerRotation()

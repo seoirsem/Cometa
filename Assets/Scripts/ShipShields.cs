@@ -71,12 +71,13 @@ public class ShipShields : MonoBehaviour
             //Rigidbody2D playerRigidBody = playerGameObject.GetComponent<Rigidbody2D>();
 
             Vector2 relativeVelocity = hitRigidBody.velocity - playerRigidBody.velocity;
-            Vector2 relativePosition = hitRigidBody.position - playerRigidBody.position;
+            Vector2 relativePosition = hitRigidBody.worldCenterOfMass - playerRigidBody.position;
 
             Vector3 closestPoint = hitCollider.ClosestPoint(playerGameObject.transform.position);
             float distance =  (closestPoint - playerGameObject.transform.position).magnitude;
-            if (distance < 0.2f){distance = 0.2f;} // this stops the applied force getting too high
-
+            if (distance < 0.25f){distance = 0.25f;} // this stops the applied force getting too high
+//            Debug.Log(distance);
+            //Debug.Break();
             //float mass = hitCollider.gameObject.GetComponent<Rigidbody2D>().mass;
             //float playerMass = playergo.GetComponent<Rigidbody2D>().mass;
            
@@ -153,9 +154,6 @@ public class ShipShields : MonoBehaviour
         lastHit = Time.time;
         shieldStrength -= shieldForceRatio*shieldForce;
         if(shieldStrength < 0){shieldStrength = 0;}
-        
-
-
     }
 
 
