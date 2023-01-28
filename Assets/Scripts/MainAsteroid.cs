@@ -249,7 +249,7 @@ public class MainAsteroid : Asteroid
             if (projectile.mainProjectile == true)
             {
                 Reference.scoreController.IncrementScore((float)size);
-                this.squareMesh.RemoveSquareAtWorldPosition(otherObject.transform.position + (Vector3)collision.relativeVelocity.normalized * squareMesh.edgeLength*0.25f);
+                this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position, 2f);
                 Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, offset);
             }
         }

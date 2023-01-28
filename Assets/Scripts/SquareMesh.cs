@@ -36,7 +36,7 @@ public class SquareMesh
 
     public void OnSplit()
     {
-
+        Debug.Log("In OnSplit");
         List<Square> allSquares = new List<Square>();
         for ( int i = 0; i < this.squares.GetLength(0); i++ ) 
         { 
@@ -47,12 +47,37 @@ public class SquareMesh
         }
         if ( allSquares.Count == 0 ) { return; }
 
+        List<SquareMesh> chunks = new List<SquareMesh>();
+
+        int safety = 0;
         while ( allSquares.Count > 0 )
         {
+            Debug.Log(allSquares.Count);
             Square startingSquare = allSquares[0];        
             List<Square> asteroidChunkList = CrawlThroughNeighbours(startingSquare); 
+            Debug.Log(asteroidChunkList.Count);
             allSquares = SubtractChunk(allSquares, asteroidChunkList);
-            SquareMesh newAsteroidChunk = MakeNewAsteroidFromChunk(asteroidChunkList);
+            // SquareMesh newAsteroidChunk = MakeNewAsteroidFromChunk(asteroidChunkList);
+            chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList) );
+            Debug.Log("Made a chunk");
+            safety += 1;
+            if (safety > 4) { break; }
+        }
+        if ( chunks.Count == 1 ) 
+        { 
+            Debug.Log("There was no split"); 
+            FindOutline();
+            ScaleEdgeLength();
+            ResetMesh();
+            ResetColliderMesh();
+        }
+        else 
+        { 
+            Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
+            FindOutline();
+            ScaleEdgeLength();
+            ResetMesh();
+            ResetColliderMesh();
         }
     }
 
@@ -67,7 +92,7 @@ public class SquareMesh
             if ( s.y < bottomCoord ) { bottomCoord = s.y; }
             if ( s.y > topCoord ) { topCoord = s.y; }
         }
-        Square[,] chunkSquaresArray = new Square[rightmostCoord - leftmostCoord + 1, topCoord - bottomCoord + 1];
+        Square[,] chunkSquaresArray = new Square[rightmostCoord - leftmostCoord, topCoord - bottomCoord];
         foreach ( Square s in chunkSquaresList )
         {
             chunkSquaresArray[s.x, s.y] = s;
@@ -79,9 +104,14 @@ public class SquareMesh
 
     public List<Square> SubtractChunk(List<Square> allSquares, List<Square> asteroidChunkList)
     {
+        Debug.Log("Subtracting chunk");
+        Debug.Log(asteroidChunkList.Count);
         foreach ( Square s in asteroidChunkList )
         {
-            if ( allSquares.Contains(s) ) { allSquares.Remove(s); }
+            if ( allSquares.Contains(s) ) 
+            { 
+                allSquares.Remove(s); 
+            }
             else { Debug.Log("allSquares did not contain the chunk's element, and I think it should?"); }
         }
         return allSquares;
@@ -89,33 +119,53 @@ public class SquareMesh
 
     public List<Square> CrawlThroughNeighbours(Square startingSquare)
     {
+        Debug.Log("Crawling through  chunk");
         List<Square> gotNeighboursOf = new List<Square>(); List<Square> chunkSquaresList = new List<Square>(); List<Square> searchForNeighbours = new List<Square>();
-        Square currentSquare = startingSquare;
-
+        Square currentSquare;
+        searchForNeighbours.Add(startingSquare);
+        int safety = 0;
         while ( searchForNeighbours.Count > 0 )
         {
             currentSquare = searchForNeighbours[0];
+            // Debug.Log("Currently at square:");
+            // Debug.Log(new Vector2( currentSquare.x, currentSquare.y ));
 
             foreach (Square s in currentSquare.neighbourSquares)
             {
                 if ( s != null )
                 {
-                    if ( gotNeighboursOf.Contains(s) == false ) { searchForNeighbours.Add(s); }
+                    if ( gotNeighboursOf.Contains(s) == false && searchForNeighbours.Contains(s) == false ) { searchForNeighbours.Add(s); }
                     if ( chunkSquaresList.Contains(s) == false ) { chunkSquaresList.Add(s); }
                 }
             }
-            gotNeighboursOf.Add(startingSquare);
+            gotNeighboursOf.Add(currentSquare);
             searchForNeighbours.Remove(currentSquare);
+            safety += 1;
+            if (safety > 100){break;}
         }
         // Square[,] chunkSquaresArray = Square[rightmostCoord - leftmostCoord + 1, topCoord - bottomCoord + 1];
         // foreach ( Square s in chunkSquaresList )
         // {
         //     chunkSquaresArray[s.x, s.y] = s;
         // }
+        Debug.Log("Finished crawling through a chunk");
         return chunkSquaresList;
     }
 
-    public void RemoveSquareAtWorldPosition(Vector3 worldPosition)
+    public void RemoveSquaresInRadius(Vector2 centre, float radius)
+    {
+        List<Square> squaresToRemove = SquaresInRadius(centre, radius);
+        
+        if ( squaresToRemove.Count > 0 ) 
+        {
+            RemoveSquares(squaresToRemove);
+            // Check for a split here?
+            Debug.Log("Hitting 'OnSplit'");
+            OnSplit();
+        }
+    }
+    
+    public void RemoveSquareAtWorldPosition(Vector2 worldPosition)
     {
         Square squareToRemove = SquareAtWorldPoint(worldPosition);
         
@@ -125,10 +175,9 @@ public class SquareMesh
             squaresToRemove.Add(squareToRemove);
             RemoveSquares(squaresToRemove);
             // Check for a split here?
-            FindOutline();
-            ScaleEdgeLength();
-            ResetMesh();
-            ResetColliderMesh();
+            Debug.Log("Hitting 'OnSplit'");
+            OnSplit();
+            
         }
     }
 
@@ -172,6 +221,46 @@ public class SquareMesh
         perimeterIndices[(meshVertices.Count)*2-1] = 0;
 
         mesh2.SetIndices(perimeterIndices, MeshTopology.Lines, 0);
+    }
+
+    public List<Square> SquaresInRadius(Vector2 collisionPoint, float radius)
+    {
+
+        Vector2 asteroidCorner = (Vector2)asteroid.gameObject.transform.position;
+        Vector2 offsetCollisionPoint = collisionPoint - asteroidCorner;
+        float asteroidRotationAngle = asteroid.gameObject.transform.rotation.eulerAngles.z * Mathf.PI/180f;
+        float rotatedX = offsetCollisionPoint.x * Mathf.Cos(-asteroidRotationAngle) - offsetCollisionPoint.y * Mathf.Sin(-asteroidRotationAngle);
+        float rotatedY = offsetCollisionPoint.x * Mathf.Sin(-asteroidRotationAngle) + offsetCollisionPoint.y * Mathf.Cos(-asteroidRotationAngle);
+
+        float asteroidFrameX = rotatedX / edgeLength;
+        float asteroidFrameY = rotatedY / edgeLength;
+
+        Vector2 collisionPointInAsteroidCoords = new Vector2(asteroidFrameX, asteroidFrameY);
+        
+        Debug.Log("Coordinates in asteroid frame are:");
+        Debug.Log(collisionPointInAsteroidCoords);
+
+        List<Square> affectedSquares = new List<Square>();
+        for (int i = 0; i < squares.GetLength(0); i++)
+        {
+            for (int j = 0; j < squares.GetLength(1); j++)
+            {
+                if ( squares[i, j] == null ) { continue; }
+                Debug.Log("Evaluating square");
+                Debug.Log(new Vector2(i,j));
+                Debug.Log("Against explosion centre:");
+                Debug.Log(new Vector2(rotatedX, rotatedY));
+                Debug.Log("And radius:");
+                Debug.Log(radius);
+                if ( Mathf.Sqrt( Mathf.Pow( (squares[i, j].x + 0.5f) - asteroidFrameX, 2) + Mathf.Pow((squares[i, j].y + 0.5f) - asteroidFrameY, 2) ) < radius)
+                {
+                    Debug.Log("Affected square added:");
+                    Debug.Log(new Vector2(i,j));
+                    affectedSquares.Add(squares[i, j]);
+                }
+            }
+        }
+        return affectedSquares;
     }
 
     public Square SquareAtWorldPoint(Vector3 worldPoint)

@@ -42,7 +42,7 @@ public class Asteroid : MonoBehaviour
         squareMesh.SetAsteroid(this);
 
         polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
-        squareMesh.GenerateMesh(20);
+        squareMesh.GenerateMesh(10);
         squareMesh.FindOutline();
         squareMesh.ScaleEdgeLength();
         squareMesh.ResetMesh();

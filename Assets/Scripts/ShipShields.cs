@@ -56,16 +56,17 @@ public class ShipShields : MonoBehaviour
     {
         foreach (Collider2D hitCollider in TriggerList)
         {
-        float projectileLife = 2f;
-        if(hitCollider.gameObject.GetComponent<Projectile>() != null)
-        {
-            projectileLife = Time.time - hitCollider.gameObject.GetComponent<Projectile>().timeFired;
-        }
 
-        if(hitCollider.gameObject.GetComponent<PlayerSpriteController>() == null && shieldStrength > 0 &&
-            projectileLife>=1f && hitCollider.isTrigger == false && hitCollider.gameObject.active && 
-            hitCollider.gameObject.layer != LayerMask.NameToLayer("SpawningAsteroid"))
-        {//exclude the player itself!
+            float projectileLife = 2f;
+            if(hitCollider.gameObject.GetComponent<Projectile>() != null)
+            {
+                projectileLife = Time.time - hitCollider.gameObject.GetComponent<Projectile>().timeFired;
+            }
+
+            if(hitCollider.gameObject.GetComponent<PlayerSpriteController>() == null && shieldStrength > 0 &&
+                projectileLife>=1f && hitCollider.isTrigger == false && hitCollider.gameObject.active && 
+                hitCollider.gameObject.layer != LayerMask.NameToLayer("SpawningAsteroid"))
+            {//exclude the player itself!
 
             Rigidbody2D hitRigidBody = hitCollider.gameObject.GetComponent<Rigidbody2D>();
             //Rigidbody2D playerRigidBody = playerGameObject.GetComponent<Rigidbody2D>();

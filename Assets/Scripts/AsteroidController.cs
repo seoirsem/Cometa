@@ -33,6 +33,7 @@ public class AsteroidController : MonoBehaviour
         // Debug.Log(angle);
         // Debug.Log(Vector3.forward);
         // Debug.Log(Vector3.Cross(b,a));
+        SpawnAsteroid(4, new Vector3(0, 0, 0), new Vector3(0, 0, 0),false); 
     }
 
     void Update()
@@ -40,7 +41,8 @@ public class AsteroidController : MonoBehaviour
         if (Reference.playerInputController.mouseClicked && !Reference.worldController.isPaused)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0),false);    
+            asteroids[0].GetComponent<MainAsteroid>().squareMesh.RemoveSquareAtWorldPosition(mousePosition);
+            // SpawnAsteroid(4, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0),false);    
         }
         if(Reference.playerInputController.o)
         { //clear screen
@@ -81,8 +83,8 @@ public class AsteroidController : MonoBehaviour
         Vector3 asteroidVelocity = asteroid.velocity;
         Vector3 collisionPoint = new Vector3(contact.x, contact.y, 0);
         // Vector3 collisionDirection = (collisionPoint - asteroidPosition).normalized;
-        Debug.Log(otherObject.name);
-        Debug.Log(otherObject.GetComponent<Projectile>().velocity);
+        // Debug.Log(otherObject.name);
+        // Debug.Log(otherObject.GetComponent<Projectile>().velocity);
         Vector3 collisionDirection = otherObject.GetComponent<Projectile>().velocity.normalized;
 
         
