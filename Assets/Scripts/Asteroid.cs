@@ -28,30 +28,31 @@ public class Asteroid : MonoBehaviour
     public AsteroidController asteroidController;
     public float[] vertexHealth;
 
-    static public float celSize = 0.1f;
-    public int size = 40;
+    static public float celSize;
+    public int size;
 
     public SquareMesh squareMesh;
+
+    private void Awake() {
+        celSize = 0.1f;
+    }
 
     public void DrawAsteroid(int size, SquareMesh squareMeshIn)
     {              
         polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
         this.size = size;
 
-//        Debug.Log(size);
-//        Debug.Log(squareMeshIn);
-
         if(squareMeshIn == null)
         {
             squareMesh = new SquareMesh();
             squareMesh.SetAsteroid(this);
-
             squareMesh.GenerateCircularMesh(size,celSize);
             squareMesh.FindOutline();
             squareMesh.ScaleEdgeLength();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
-        
+            Debug.Log(squareMesh.squares.GetLength(0));
+            Debug.Log(squareMesh.squares.GetLength(1));
         }
         else
         {

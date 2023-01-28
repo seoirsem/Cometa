@@ -10,8 +10,6 @@ public class AsteroidController : MonoBehaviour
     List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
     Vector2 worldSize;
 
-
-
     Vector3 dummy1 = new Vector3(1,1,1);
     Vector3[] dummy2 = new Vector3[1];
 
@@ -24,15 +22,7 @@ public class AsteroidController : MonoBehaviour
         deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
-        // SpawnAsteroid(4, new Vector3(0, 15f, 0), new Vector3(0,0,0));
-        //SpawnAsteroid(6, new Vector3(0, 3, 0), new Vector3(0,0,0),false);
-        Vector3 a = new Vector3(1f,0f,0f);
-        Vector3 b = new Vector3(-1f,-0.5f,0f);
-        // float angle = Vector3.SignedAngle(a,b,Vector3.forward);
-        // if ( angle < 0) { angle = 360 + angle; }
-        // Debug.Log(angle);
-        // Debug.Log(Vector3.forward);
-        // Debug.Log(Vector3.Cross(b,a));
+        SpawnAsteroid(40, new Vector3(0, 0, 0), new Vector3(0, 0, 0), null, false); 
     }
 
     void Update()
@@ -40,7 +30,6 @@ public class AsteroidController : MonoBehaviour
         if (Reference.playerInputController.mouseClicked && !Reference.worldController.isPaused)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //SpawnAsteroid(40, new Vector3(mousePosition.x,mousePosition.y,0), new Vector3(Random.Range(-1,1), Random.Range(-1, 1), 0),null,false);    
         }
         if(Reference.playerInputController.o)
         { //clear screen
@@ -135,7 +124,7 @@ public class AsteroidController : MonoBehaviour
 
 
 
-    void SpawnAsteroid(int size, Vector3 position, Vector3 velocity,SquareMesh squareMesh, bool NewAsteroid)
+    void SpawnAsteroid(int size, Vector3 position, Vector3 velocity, SquareMesh squareMesh, bool NewAsteroid)
     {
         List<GameObject> asteroidPack = new List<GameObject>();
 
