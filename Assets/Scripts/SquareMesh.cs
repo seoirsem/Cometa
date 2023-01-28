@@ -76,7 +76,7 @@ public class SquareMesh
         mass = count*edgeLength*edgeLength;
     }
 
-    public void OnSplit()
+    public List<SquareMesh> OnSplit()
     {
 //        Debug.Log("In OnSplit");
         List<Square> allSquares = new List<Square>();
@@ -87,11 +87,15 @@ public class SquareMesh
                 if ( this.squares[i,j] != null ) { allSquares.Add(this.squares[i,j]); }
             }
         }
-        if ( allSquares.Count == 0 ) { return; }
+        if ( allSquares.Count == 0 ) 
+        {
+            Debug.LogError("ASTEROID IS DESTROYED TO BE IMPLEMENTED");
+            return null;
+        }
 
         List<SquareMesh> chunks = new List<SquareMesh>();
 
-        int safety = 0;
+        //int safety = 0;
         while ( allSquares.Count > 0 )
         {
             // Debug.Log(allSquares.Count);
@@ -102,8 +106,8 @@ public class SquareMesh
             // SquareMesh newAsteroidChunk = MakeNewAsteroidFromChunk(asteroidChunkList);
             chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList) );
             // Debug.Log("Made a chunk");
-            safety += 1;
-            if (safety > 4) { break; }
+          //  safety += 1;
+            //if (safety > 4) { break; }
         }
         if ( chunks.Count == 1 ) 
         { 
@@ -112,14 +116,12 @@ public class SquareMesh
             ScaleEdgeLength();
             ResetMesh();
             ResetColliderMesh();
+            return null;
         }
         else 
         { 
             // Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
-            FindOutline();
-            ScaleEdgeLength();
-            ResetMesh();
-            ResetColliderMesh();
+            return chunks;
         }
     }
 
@@ -165,7 +167,7 @@ public class SquareMesh
         List<Square> gotNeighboursOf = new List<Square>(); List<Square> chunkSquaresList = new List<Square>(); List<Square> searchForNeighbours = new List<Square>();
         Square currentSquare;
         searchForNeighbours.Add(startingSquare);
-        int safety = 0;
+        //int safety = 0;
         while ( searchForNeighbours.Count > 0 )
         {
             currentSquare = searchForNeighbours[0];
@@ -182,8 +184,8 @@ public class SquareMesh
             }
             gotNeighboursOf.Add(currentSquare);
             searchForNeighbours.Remove(currentSquare);
-            safety += 1;
-            if (safety > 100){break;}
+          //  safety += 1;
+            //if (safety > 100){break;}
         }
         // Square[,] chunkSquaresArray = Square[rightmostCoord - leftmostCoord + 1, topCoord - bottomCoord + 1];
         // foreach ( Square s in chunkSquaresList )
@@ -198,32 +200,39 @@ public class SquareMesh
     {
         Debug.Log(radius);
         List<Square> squaresToRemove = SquaresInRadius(centre, radius);
-        
+        List<SquareMesh> squareMeshList = new List<SquareMesh>();
+        squareMeshList = null;
         if ( squaresToRemove.Count > 0 ) 
         {
             RemoveSquares(squaresToRemove);
             // Check for a split here?
             // Debug.Log("Hitting 'OnSplit'");
-            OnSplit();
+            squareMeshList = OnSplit();
+          //  Debug.Log("I am here dude");
         }
-        return null;
+        //Debug.Log(squareMeshList);
+        //Debug.Log(squareMeshList.Count);
+
+    
+
+        return squareMeshList;
     }
     
-    public void RemoveSquareAtWorldPosition(Vector2 worldPosition)
-    {
-        Square squareToRemove = SquareAtWorldPoint(worldPosition);
+    // public void RemoveSquareAtWorldPosition(Vector2 worldPosition)
+    // {
+    //     Square squareToRemove = SquareAtWorldPoint(worldPosition);
         
-        if ( squareToRemove != null ) 
-        {
-            List<Square> squaresToRemove = new List<Square>();
-            squaresToRemove.Add(squareToRemove);
-            RemoveSquares(squaresToRemove);
-            // Check for a split here?
-            // Debug.Log("Hitting 'OnSplit'");
-            OnSplit();
+    //     if ( squareToRemove != null ) 
+    //     {
+    //         List<Square> squaresToRemove = new List<Square>();
+    //         squaresToRemove.Add(squareToRemove);
+    //         RemoveSquares(squaresToRemove);
+    //         // Check for a split here?
+    //         // Debug.Log("Hitting 'OnSplit'");
+    //         OnSplit();
             
-        }
-    }
+    //     }
+    // }
 
     public void ScaleEdgeLength()
     {

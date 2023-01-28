@@ -51,8 +51,8 @@ public class Asteroid : MonoBehaviour
             squareMesh.ScaleEdgeLength();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
-            Debug.Log(squareMesh.squares.GetLength(0));
-            Debug.Log(squareMesh.squares.GetLength(1));
+  //          Debug.Log(squareMesh.squares.GetLength(0));
+//            Debug.Log(squareMesh.squares.GetLength(1));
         }
         else
         {

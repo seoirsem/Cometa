@@ -234,10 +234,10 @@ public class MainAsteroid : Asteroid
 
     public void DerivedAsteroidCollision(Collider2D collidee, GameObject collidingAsteroid, Vector2 offset, Collision2D collision)
     {
-        //Debug.Log("derived collision");
+        Debug.Log("derived collision");
         if (collidee.gameObject.GetComponent<Projectile>() != null)
         {
-            // Debug.Log("derived projectile collision");
+            Debug.Log("derived projectile collision");
 
             ResolveCollision(collidee.gameObject, collision, collidee, offset);
         }
@@ -273,9 +273,12 @@ public class MainAsteroid : Asteroid
                 }
 
                 List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position, radius);
+                //Debug.Log(newAstroidMeshes);
                 if(newAstroidMeshes != null)
                 {
                     /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
+                    Debug.Log(newAstroidMeshes);
+                    Debug.Log(newAstroidMeshes.Count);
                     Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,offset);
 
                 }
