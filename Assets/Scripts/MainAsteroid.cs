@@ -14,7 +14,7 @@ public class MainAsteroid : Asteroid
     List<GameObject> derivedOffScreen;
 
 
-    public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, bool spawning = false)
+    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, SquareMesh squareMesh, bool spawning = false)
     {
         this.spawning = spawning;
         backgroundCollider = GameObject.Find("Background").GetComponent<BackgroundCollider>();
@@ -47,7 +47,7 @@ public class MainAsteroid : Asteroid
         this.rigid_body.angularVelocity = rotationRate;
         this.rigid_body.mass = mass;
 
-        DrawAsteroid(size);
+        DrawAsteroid(size,squareMesh);
 
         //this.size = GetPolygonArea(new List<Vector3>(this.meshVertices));
     }
@@ -117,6 +117,7 @@ public class MainAsteroid : Asteroid
         //Vector2 velocity2d = new Vector2(velocity.x, velocity.y);
         //this.rigid_body.position += velocity2d * Time.deltaTime;
         //Debug.Log(velocity.magnitude);
+
 
         if (rigid_body.position.x - location.x * worldSize.x > worldSize.x / 2)
         {
@@ -229,7 +230,6 @@ public class MainAsteroid : Asteroid
 
     void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
     {
-//                squareMesh.RemoveSquareAtWorldPosition(other.gameObject.transform.position + (Vector3)other.relativeVelocity.normalized * squareMesh.edgeLength*0.25f);
 
         Vector2 collisionLocation;
 
@@ -249,8 +249,14 @@ public class MainAsteroid : Asteroid
             if (projectile.mainProjectile == true)
             {
                 Reference.scoreController.IncrementScore((float)size);
-                this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position, 2f);
-                Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, offset);
+ 
+                List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position, 1f);
+                if(newAstroidMeshes != null)
+                {
+                    /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
+                    Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,offset);
+
+                }
             }
         }
         else if (otherObject.GetComponent<PlayerSpriteController>() != null)

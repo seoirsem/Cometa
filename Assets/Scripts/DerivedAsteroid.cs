@@ -13,7 +13,7 @@ public class DerivedAsteroid : Asteroid
     Vector3 thisStepMainPosition;
     float thisStepMainRotation;
 
-    public void OnSpawn(float size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
+    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity)
     {
         DrawDerivedAsteroid();
 

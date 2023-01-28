@@ -30,11 +30,11 @@ public class WorldController : MonoBehaviour
     {
 
         time = Time.time;
-        worldSize = new Vector2(10f, 8f); //(1300/90, 800/90)
+         //(1300/90, 800/90)
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
-        //worldSize = new Vector2(Screen.width)
+        worldSize = worldSize = new Vector2(20f, 12.5f);
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
         rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();
