@@ -76,7 +76,7 @@ public class SquareMesh
         mass = count*edgeLength*edgeLength;
     }
 
-    public void OnSplit()
+    public List<SquareMesh> OnSplit()
     {
 //        Debug.Log("In OnSplit");
         List<Square> allSquares = new List<Square>();
@@ -87,39 +87,47 @@ public class SquareMesh
                 if ( this.squares[i,j] != null ) { allSquares.Add(this.squares[i,j]); }
             }
         }
-        if ( allSquares.Count == 0 ) { return; }
+        if ( allSquares.Count == 0 ) { return null; }
 
         List<SquareMesh> chunks = new List<SquareMesh>();
 
         int safety = 0;
+         
         while ( allSquares.Count > 0 )
         {
+            Square startingSquare = allSquares[0]; 
+            // Debug.Log("There are total squares: ");
             // Debug.Log(allSquares.Count);
-            Square startingSquare = allSquares[0];        
+                  
             List<Square> asteroidChunkList = CrawlThroughNeighbours(startingSquare); 
             // Debug.Log(asteroidChunkList.Count);
             allSquares = SubtractChunk(allSquares, asteroidChunkList);
+            // Debug.Log("After subtracting, there are squares: ");
+            // Debug.Log(allSquares.Count);
             // SquareMesh newAsteroidChunk = MakeNewAsteroidFromChunk(asteroidChunkList);
             chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList) );
-            // Debug.Log("Made a chunk");
+            // Debug.Log("Made a chunk with number of elements: ");
+            // Debug.Log(asteroidChunkList.Count);
             safety += 1;
-            if (safety > 4) { break; }
+            if (safety > 4) { Debug.Log( break; }
         }
         if ( chunks.Count == 1 ) 
         { 
-            // Debug.Log("There was no split"); 
+            Debug.Log("There was no split"); 
             FindOutline();
             ScaleEdgeLength();
             ResetMesh();
             ResetColliderMesh();
+            return null;
         }
         else 
         { 
-            // Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
+            Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
             FindOutline();
             ScaleEdgeLength();
             ResetMesh();
             ResetColliderMesh();
+            return chunks;
         }
     }
 
@@ -183,7 +191,7 @@ public class SquareMesh
             gotNeighboursOf.Add(currentSquare);
             searchForNeighbours.Remove(currentSquare);
             safety += 1;
-            if (safety > 100){break;}
+            if (safety > 10000){ Debug.Log("Safety break in Crawl"); break;}
         }
         // Square[,] chunkSquaresArray = Square[rightmostCoord - leftmostCoord + 1, topCoord - bottomCoord + 1];
         // foreach ( Square s in chunkSquaresList )
@@ -196,17 +204,18 @@ public class SquareMesh
 
     public List<SquareMesh> RemoveSquaresInRadius(Vector2 centre, float radius)
     {
-        Debug.Log(radius);
+        // Debug.Log(radius);
         List<Square> squaresToRemove = SquaresInRadius(centre, radius);
+        List<SquareMesh> chunks = new List<SquareMesh>();
+        chunks = null;
         
         if ( squaresToRemove.Count > 0 ) 
         {
             RemoveSquares(squaresToRemove);
-            // Check for a split here?
             // Debug.Log("Hitting 'OnSplit'");
-            OnSplit();
+            chunks = OnSplit();
         }
-        return null;
+        return chunks;
     }
     
     public void RemoveSquareAtWorldPosition(Vector2 worldPosition)

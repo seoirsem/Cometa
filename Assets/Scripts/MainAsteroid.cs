@@ -229,6 +229,7 @@ public class MainAsteroid : Asteroid
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(collision.gameObject.name);
         ResolveCollision(collision.gameObject, collision, null, new Vector2(0,0));
     }
 
