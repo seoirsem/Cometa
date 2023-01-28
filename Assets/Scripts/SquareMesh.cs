@@ -107,8 +107,8 @@ public class SquareMesh
             // Debug.Log(allSquares.Count);
             // SquareMesh newAsteroidChunk = MakeNewAsteroidFromChunk(asteroidChunkList);
             chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList) );
-            // Debug.Log("Made a chunk with number of elements: ");
-            // Debug.Log(asteroidChunkList.Count);
+            Debug.Log("Made a chunk with number of elements: ");
+            Debug.Log(asteroidChunkList.Count);
             safety += 1;
             if (safety > 4) { break; }
         }
@@ -124,10 +124,32 @@ public class SquareMesh
         else 
         { 
             Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
-            FindOutline();
-            ScaleEdgeLength();
-            ResetMesh();
-            ResetColliderMesh();
+            for ( int m = 0; m < chunks.Count; m++ )
+            {
+                Debug.Log("Doing chunk");
+                chunks[m] = UpdateNeighboursAndEdges(chunks[m]);
+                // for ( int i = 0; i < chunks[m].squares.GetLength(0); i++ )
+                // {
+                //     for ( int j = 0; j < chunks[m].squares.GetLength(1); j++ )
+                //     {
+                //         Debug.Log("Square:");
+                //         Debug.Log(new Vector2(i,j));
+                //         Debug.Log("Neighbours:");
+                //         for ( int k = 0; k < 4; k++ )
+                //         {
+                //             if ( chunks[m].squares[i,j] != null )
+                //             {
+                //                 Debug.Log(chunks[m].squares[i,j].neighbourSquares[k]);
+                //             }
+                //         }
+                //     }
+                // }
+            }
+            // FindOutline();
+            // ScaleEdgeLength();
+            // ResetMesh();
+            // ResetColliderMesh();
+            // return null;
             return chunks;
         }
     }
@@ -143,12 +165,14 @@ public class SquareMesh
             if ( s.y < bottomCoord ) { bottomCoord = s.y; }
             if ( s.y > topCoord ) { topCoord = s.y; }
         }
-        Square[,] chunkSquaresArray = new Square[rightmostCoord - leftmostCoord, topCoord - bottomCoord];
+        Square[,] chunkSquaresArray = new Square[this.size, this.size];
         foreach ( Square s in chunkSquaresList )
         {
-            chunkSquaresArray[s.x, s.y] = s;
+            Square newSquare = new Square(s.x, s.y);
+            chunkSquaresArray[newSquare.x, newSquare.y] = newSquare;
         }
         newSquareMesh.squares = chunkSquaresArray;
+        newSquareMesh.size = this.size;
         newSquareMesh.edgeLength = this.edgeLength;
         return newSquareMesh;
     }
@@ -361,90 +385,101 @@ public class SquareMesh
                 }
             }
         }
-        UpdateNeighboursAndEdges();
+        // UpdateNeighboursAndEdges();
     }
 
     
 
-    void UpdateNeighboursAndEdges()
+    public SquareMesh UpdateNeighboursAndEdges(SquareMesh sm)
     {
+        // Debug.Log(sm.squares.GetLength(0));
+        // Debug.Log(sm.squares.GetLength(1));
+        // Debug.Log(sm.size);
+        // Debug.Log(sm.squares[0,0]);
+        // Debug.Log(sm.squares[0,0].neighbourSquares[0]);
+        // Debug.Log(sm.squares[sm.size-1, sm.size-1]);
+        // Debug.Log(sm.squares[sm.size-1, sm.size-1].neighbourSquares[0]);
         //check neighbours and edges
         FindCentreOfMass();
         FindMass();
-        for (int x = 0; x < size; x++)
+        for (int x = 0; x < sm.size; x++)
         {
-            for (int y = 0; y < size; y++)
+            for (int y = 0; y < sm.size; y++)
             {
-                if(squares[x,y] == null)
+                if(sm.squares[x,y] == null)
                 {
                     continue;
                 }
                 if(y!=0)
                 {
-                    if(squares[x,y-1] == null)
+                    if(sm.squares[x,y-1] == null)
                     {
-                        squares[x,y].AddEdge(2);
+                        sm.squares[x,y].AddEdge(2);
                     }
                     else
                     {
-                        squares[x,y].neighbourSquares[2] = squares[x,y-1];
+                        sm.squares[x,y].neighbourSquares[2] = sm.squares[x,y-1];
                     }
                 }
                 else
                 {
-                    squares[x,0].AddEdge(2);
+                    sm.squares[x,0].AddEdge(2);
                 }
                 if(y!=size-1)
                 {
-                    if(squares[x,y+1] == null)
+                    if(sm.squares[x,y+1] == null)
                     {
-                        squares[x,y].AddEdge(0);
+                        sm.squares[x,y].AddEdge(0);
                     }
                     else
                     {
-                        squares[x,y].neighbourSquares[0] = squares[x,y+1];
+                        sm.squares[x,y].neighbourSquares[0] = sm.squares[x,y+1];
                     }
                 }
                 else
                 {
-                    squares[x,size-1].AddEdge(0);
+                    sm.squares[x,size-1].AddEdge(0);
                 }
                 if(x!=0)
                 {
-                    if(squares[x-1,y] == null)
+                    if(sm.squares[x-1,y] == null)
                     {
-                        squares[x,y].AddEdge(3);
+                        sm.squares[x,y].AddEdge(3);
                     }
                     else
                     {
-                        squares[x,y].neighbourSquares[3] = squares[x-1,y];
+                        sm.squares[x,y].neighbourSquares[3] = sm.squares[x-1,y];
                     }
                 }
                 else
                 {
-                    squares[0,y].AddEdge(3);
+                    sm.squares[0,y].AddEdge(3);
                 }
                 if(x!=size-1)
                 {
-                    if(squares[x+1,y] == null)
+                    if(sm.squares[x+1,y] == null)
                     {
-                        squares[x,y].AddEdge(1);
+                        sm.squares[x,y].AddEdge(1);
                     }
                     else
                     {
-                        squares[x,y].neighbourSquares[1] = squares[x+1,y];
+                        sm.squares[x,y].neighbourSquares[1] = sm.squares[x+1,y];
                     }
                 }
                 else
                 {
-                    squares[size-1,y].AddEdge(1);
+                    sm.squares[size-1,y].AddEdge(1);
                 }
                 
             }
         }
-
-
+        // Debug.Log(sm.squares[0,0]);
+        // Debug.Log(sm.squares[0,0].neighbourSquares[0]);
+        // Debug.Log(sm.squares[sm.size-1, sm.size-1]);
+        // Debug.Log(sm.squares[sm.size-1, sm.size-1].neighbourSquares[0]);
+        return sm;
     }
+
     public void GenerateSquareMesh(int size, float celSize)
     {
         this.size = size;
