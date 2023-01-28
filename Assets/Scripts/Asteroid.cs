@@ -28,7 +28,7 @@ public class Asteroid : MonoBehaviour
     public AsteroidController asteroidController;
     public float[] vertexHealth;
 
-    public float celSize = 0.1f;
+    static public float celSize = 0.1f;
     public int size = 40;
 
     public SquareMesh squareMesh;
@@ -38,8 +38,8 @@ public class Asteroid : MonoBehaviour
         polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
         this.size = size;
 
-        Debug.Log(size);
-        Debug.Log(squareMeshIn);
+//        Debug.Log(size);
+//        Debug.Log(squareMeshIn);
 
         if(squareMeshIn == null)
         {

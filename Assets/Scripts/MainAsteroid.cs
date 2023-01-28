@@ -30,7 +30,23 @@ public class MainAsteroid : Asteroid
             this.transform.position = new Vector3(transform.position.x,transform.position.y,-1);
         }
 
-
+        if(spawning)
+        {
+            foreach(GameObject asteroid in asteroidPack)
+            {
+                if(asteroid != this.gameObject)
+                {
+                    asteroid.layer = LayerMask.NameToLayer("SpawningDerivedAsteroid");
+                }
+            }
+            foreach(KeyValuePair kvp in derivedAsteroids)
+            {
+                Debug.Log(kvp.Key);
+            }
+            Vector2 velocityNorm = new Vector2(Mathf.RoundToInt(velocity.normalized.x),Mathf.RoundToInt(velocity.normalized.y));
+            Debug.Log(velocityNorm);
+            derivedAsteroids[-1*velocityNorm].gameObject.layer = LayerMask.NameToLayer("DerivedAsteroid");
+        }
         this.mass = Mathf.Pow(size,2);
         this.size = size;
         this.asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
@@ -106,7 +122,7 @@ public class MainAsteroid : Asteroid
             transform.position = new Vector3(transform.position.x,transform.position.y,-1f);
             spawning = false;
             halfSpawning = true;
-            Debug.Log("Turtling");
+//            Debug.Log("Turtling");
             //Debug.Break();
 
         }

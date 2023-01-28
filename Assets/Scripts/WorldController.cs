@@ -35,7 +35,7 @@ public class WorldController : MonoBehaviour
         windowing = GameObject.Find("Windowing");
 
         worldSize = worldSize = new Vector2(20f, 12.5f);
-        Debug.Log(worldSize);
+//        Debug.Log(worldSize);
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
         rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();

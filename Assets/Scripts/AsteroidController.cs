@@ -54,24 +54,24 @@ public class AsteroidController : MonoBehaviour
         if(Reference.playerInputController.p & Time.time - spawnCooldown > 2f)
         { //spawnn new asteroid
             spawnCooldown = Time.time;
-            SpawnNewAsteroid();
+            SpawnNewAsteroid(40);
         }
 
     }
 
-    public void SpawnNewAsteroid()
+    public void SpawnNewAsteroid(int size)
     {
-        // randomly picks one of 8 main directions (ensuring not "(0,0)")
-        int[] numbersx = {-1,0,1,-1,1,-1,0,1};
-        int[] numbersy = {1,1,1,0,0,-1,-1,-1};
-        int randomIndex = Random.Range(0, 7);
-        Vector3 direction = new Vector3(numbersx[randomIndex],numbersy[randomIndex],0);
-
+        /// velocity
+        int[] numbers = {-1,0,1,0,0,1,0,-1};
+        int randomIndex = Random.Range(0,3);
+        Vector3 directionOrientation = new Vector3(numbers[randomIndex*2],numbers[randomIndex*2+1],0);
         float magnitude = Random.Range(0.2f,1f);
+        Vector3 direction = magnitude*directionOrientation;
 
-        direction = magnitude*direction;
+        /// position
+        Vector3 position = new Vector3(-size*Asteroid.celSize/2,-size*Asteroid.celSize/2) + new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);
 
-        SpawnAsteroid(40, new Vector3(0,0,10), direction, null,true);    
+        SpawnAsteroid(size, position, direction, null,true);    
         Debug.Log("Spawning new asteroid");
     }
 
@@ -173,18 +173,15 @@ public class AsteroidController : MonoBehaviour
         asteroids.Add(asteroidgo1);
         mainAsteroid.derivedAsteroids.Add(new Vector2(1, 0),asteroidgo1);
 
-
         asteroidgo2.transform.SetParent(this.gameObject.transform);
         asteroidgo2.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo2);
         mainAsteroid.derivedAsteroids.Add(new Vector2(-1, 0),asteroidgo2);
 
-
         asteroidgo3.transform.SetParent(this.gameObject.transform);
         asteroidgo3.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo3);
         mainAsteroid.derivedAsteroids.Add(new Vector2(0, 1),asteroidgo3);
-
 
         asteroidgo4.transform.SetParent(this.gameObject.transform);
         asteroidgo4.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, -1), asteroidPack, asteroidgo, velocity);
@@ -210,7 +207,6 @@ public class AsteroidController : MonoBehaviour
         asteroidgo8.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo8);
         mainAsteroid.derivedAsteroids.Add(new Vector2(1, 1),asteroidgo8);
-
 
         asteroidSets.Add(asteroidPack);
     }
