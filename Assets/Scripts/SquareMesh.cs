@@ -28,6 +28,8 @@ public class SquareMesh
     {
         Vector2[] xyPoints = perimeterVertices.ToArray();
         asteroid.gameObject.GetComponent<PolygonCollider2D>().points = xyPoints; 
+        FindCentreOfMass();
+        
     }
 
     public void RedrawMesh()
@@ -35,8 +37,8 @@ public class SquareMesh
         //ScaleEdgeLength();
         ResetMesh();
         ResetColliderMesh();
-        FindCentreOfMass();
-        FindMass();
+        //FindCentreOfMass();
+        //FindMass();
     }
 
     void FindCentreOfMass()
@@ -58,23 +60,8 @@ public class SquareMesh
         }
 
         centreOfMass = new Vector2(xTotal*edgeLength/count,yTotal*edgeLength/count);
-    }
-
-    void FindMass()
-    {
-        int count = 0;
-        for (int x = 0; x < size; x++)
-        {
-            for (int y = 0; y < size; y++)
-            {
-                if(squares[x,y] != null)
-                {
-                    count += 1;
-                }
-            }
-        }
-
         mass = count*edgeLength*edgeLength;
+
     }
 
     public List<SquareMesh> OnSplit()
@@ -401,8 +388,7 @@ public class SquareMesh
         // Debug.Log(sm.squares[sm.size-1, sm.size-1]);
         // Debug.Log(sm.squares[sm.size-1, sm.size-1].neighbourSquares[0]);
         //check neighbours and edges
-        FindCentreOfMass();
-        FindMass();
+
         for (int x = 0; x < sm.size; x++)
         {
             for (int y = 0; y < sm.size; y++)
@@ -474,10 +460,8 @@ public class SquareMesh
                 
             }
         }
-        // Debug.Log(sm.squares[0,0]);
-        // Debug.Log(sm.squares[0,0].neighbourSquares[0]);
-        // Debug.Log(sm.squares[sm.size-1, sm.size-1]);
-        // Debug.Log(sm.squares[sm.size-1, sm.size-1].neighbourSquares[0]);
+        FindCentreOfMass();
+        //FindMass();
         return sm;
     }
 

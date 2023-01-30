@@ -25,6 +25,8 @@ public class Projectile : MonoBehaviour
     ExplosionRadius explosionRadius;
     public string projectileType;
 
+    bool awayFromPlayer = false;
+
 
     bool animationStarted = false;
     GameObject blueFlameAnimation;
@@ -47,6 +49,7 @@ public class Projectile : MonoBehaviour
         worldSize = Reference.worldController.worldSize;
         leftPlayerCollider = false;
         animationStarted = false;
+    
 
         rigid_body = go.GetComponent<Rigidbody2D>();
         if(projectileType == "Rocket")
@@ -88,7 +91,8 @@ public class Projectile : MonoBehaviour
         {
             DestroySelf();
         }
-        if(Time.time - timeFired > 0.25f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
+        
+        if(leftPlayerCollider || Time.time - timeFired > 0.3f )//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
             if(projectileType == "Rocket")
             {
@@ -98,6 +102,13 @@ public class Projectile : MonoBehaviour
             {
                 circleCollider2d.enabled = true;
             }
+            Debug.Log("Collider Enabled");
+        }
+        //Debug.Log(Vector2.Distance(rigid_body.position,Reference.playergo.GetComponent<Rigidbody2D>().position));
+        if(Vector2.Distance(rigid_body.position,Reference.playergo.GetComponent<Rigidbody2D>().position) > 0.5)
+        {
+            leftPlayerCollider = true;
+            Debug.Log("Left Player Collider");
         }
     }
     void FixedUpdate()
@@ -130,23 +141,38 @@ public class Projectile : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
+        if(leftPlayerCollider)
+        {
             DestroySelf();
             Debug.Log(collision.gameObject.name);
-
+        }
     }
     void OnTriggerEnter2D(Collider2D collider)//you need both so you can collide with triggering and non triggering objects
     {
         //if(Time.time - timeFired > 0.0f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         //{
+        if(leftPlayerCollider)
+        {
             DestroySelf();
             Debug.Log(collider.gameObject.name);
-     //   }
+        }
+    }
+    void OnTriggerExit2D(Collider2D collider)
+    {   
+        Debug.Log(collider.gameObject.name);
+        if(collider.gameObject.name == "ShipShields")
+        {
+            leftPlayerCollider = true;
+        }
     }
     void OnCollisonExit2D(Collision2D collision)
     {
-        //Debug.Log("Successfully fired");
-        leftPlayerCollider = true;
-        //capsuleCollider2D.enabled = true;
+        
+        Debug.Log(collision.gameObject.name);
+        if(collision.gameObject.name == "ShipShields")
+        {
+            leftPlayerCollider = true;
+        }
 
     }
     void UpdateMotion()

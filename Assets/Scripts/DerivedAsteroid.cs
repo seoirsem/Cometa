@@ -25,6 +25,7 @@ public class DerivedAsteroid : Asteroid
         //asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
         mainAsteroidClass = mainAsteroid.GetComponent<MainAsteroid>();
         rigid_body = this.GetComponent<Rigidbody2D>();
+//        Debug.Log(rigid_body);
         this.asteroidPack = asteroidPack;
         asteroidgo = this.gameObject;
         this.velocity = velocity;
@@ -62,9 +63,8 @@ public class DerivedAsteroid : Asteroid
     public void CloneAsteroidGeometry(GameObject mainAsteroid)
     {
         Asteroid mainAst = mainAsteroid.GetComponent<Asteroid>();
-        List<Vector2> perimeterVertices = mainAst.squareMesh.perimeterVertices;
         //Debug.Log(this.squareMesh);
-        this.squareMesh.perimeterVertices = perimeterVertices; 
+        this.squareMesh.perimeterVertices = mainAst.squareMesh.perimeterVertices;
         this.squareMesh.RedrawMesh();
         //DrawMesh(meshVertices, meshTriangles);
         //DrawCollider(meshVertices, meshTriangles);

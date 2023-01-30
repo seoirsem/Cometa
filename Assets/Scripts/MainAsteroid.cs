@@ -270,8 +270,8 @@ public class MainAsteroid : Asteroid
 
     public void DerivedAsteroidCollision(Collider2D collidee, GameObject collidingAsteroid, Vector2 offset, Collision2D collision)
     {
-        Debug.Log("derived collision");
-        Debug.Break();
+        //Debug.Log("derived collision");
+        //Debug.Break();
         if (collidee.gameObject.GetComponent<Projectile>() != null)
         {
             Debug.Log("derived projectile collision");
