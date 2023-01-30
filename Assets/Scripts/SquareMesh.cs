@@ -107,8 +107,8 @@ public class SquareMesh
             // Debug.Log(allSquares.Count);
             // SquareMesh newAsteroidChunk = MakeNewAsteroidFromChunk(asteroidChunkList);
             chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList) );
-            Debug.Log("Made a chunk with number of elements: ");
-            Debug.Log(asteroidChunkList.Count);
+  //          Debug.Log("Made a chunk with number of elements: ");
+//            Debug.Log(asteroidChunkList.Count);
             safety += 1;
             if (safety > 4) { break; }
         }
@@ -124,6 +124,7 @@ public class SquareMesh
         else 
         { 
             Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
+            //Debug.Break();
             for ( int m = 0; m < chunks.Count; m++ )
             {
                 Debug.Log("Doing chunk");

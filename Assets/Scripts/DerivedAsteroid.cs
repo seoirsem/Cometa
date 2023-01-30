@@ -36,7 +36,7 @@ public class DerivedAsteroid : Asteroid
         offset = new Vector2(location.x * worldSize.x, location.y * worldSize.y);
         CloneAsteroidGeometry(mainAsteroid);
         gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, -1);
-        thisStepMainPosition = mainAsteroidClass.rigid_body.position;
+        thisStepMainPosition = mainAsteroidClass.rigid_body.position + offset;
         thisStepMainRotation = mainAsteroidClass.rigid_body.rotation;
 
     }

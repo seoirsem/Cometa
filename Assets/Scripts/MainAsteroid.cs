@@ -271,6 +271,7 @@ public class MainAsteroid : Asteroid
     public void DerivedAsteroidCollision(Collider2D collidee, GameObject collidingAsteroid, Vector2 offset, Collision2D collision)
     {
         Debug.Log("derived collision");
+        Debug.Break();
         if (collidee.gameObject.GetComponent<Projectile>() != null)
         {
             Debug.Log("derived projectile collision");
@@ -282,6 +283,8 @@ public class MainAsteroid : Asteroid
 
     void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
     {
+        // Debug.Log(otherObject.name);
+        // Debug.Break();
 
         Vector2 collisionLocation;
 

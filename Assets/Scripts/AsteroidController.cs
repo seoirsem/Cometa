@@ -23,7 +23,7 @@ public class AsteroidController : MonoBehaviour
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
 
-        SpawnAsteroid(30, new Vector3(-1.5f, 0, 0), new Vector3(0, 0, 0), null, false, new Vector2(0,0)); 
+        SpawnAsteroid(20, new Vector3(-1.5f, 0, 0), new Vector3(0, 0, 0), null, false, new Vector2(0,0)); 
     }
 
     void Update()
@@ -171,7 +171,7 @@ public class AsteroidController : MonoBehaviour
         GameObject asteroidgo7 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*7,0,0), new Quaternion(0, 0, 0, 0));
         GameObject asteroidgo8 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*8,0,0), new Quaternion(0, 0, 0, 0));
 
-    
+        //Debug.Break();
         asteroidPack.Add(asteroidgo);
         asteroidPack.Add(asteroidgo1);
         asteroidPack.Add(asteroidgo2);
