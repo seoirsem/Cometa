@@ -108,7 +108,7 @@ public class AsteroidController : MonoBehaviour
             }
             else 
             {
-                Debug.Log("The asteroid has been completely destroyed");
+                Debug.Log("This asteroid chunk has been completely destroyed");
             }
             
         }

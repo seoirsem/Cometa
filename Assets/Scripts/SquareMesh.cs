@@ -16,7 +16,7 @@ public class SquareMesh
     public Vector2 centreOfMass;
     public float mass;
 
-    List<List<Vector2>> cracks;
+    List<Crack> cracks;
 
     public Asteroid asteroid;
 
@@ -65,7 +65,8 @@ public class SquareMesh
 
     public List<SquareMesh> OnSplit()
     {
-        List<Square> allSquares = new List<Square>();
+        // Create a master list of squares that need to be sorted into asteroid chunks
+        HashSet<Square> allSquares = new HashSet<Square>();
         for ( int i = 0; i < this.squares.GetLength(0); i++ ) 
         { 
             for ( int j = 0; j < this.squares.GetLength(1); j++ )
@@ -73,68 +74,57 @@ public class SquareMesh
                 if ( this.squares[i,j] != null ) { allSquares.Add(this.squares[i,j]); }
             }
         }
-    
+        // Initialize a container for the asteroid chunks
         List<SquareMesh> chunks = new List<SquareMesh>();
 
         // If there were no squares in the mesh that has 'split', pass null for SquareMesh
         // This means the entire mesh (split or not) has been destroyed
         if ( allSquares.Count == 0 ) { chunks.Add(null); return chunks; }
 
+        // Useful debugging syntax:
+        // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+        // stopwatch.Start();
+        // stopwatch.Stop();
+        // Debug.Log ("Time taken: "+(stopwatch.Elapsed));
+        // stopwatch.Reset();
+
         int safety = 0;
-        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-        
         while ( allSquares.Count > 0 )
         {
-            Square startingSquare = allSquares[0]; 
-            
-            // stopwatch.Start();
-
-            List<Square> asteroidChunkList = CrawlThroughNeighbours(startingSquare); 
-
-            // stopwatch.Stop();
-            // Debug.Log ("Time taken: "+(stopwatch.Elapsed));
-            // stopwatch.Reset();
-
-            // stopwatch.Start();
-
+            Square startingSquare = null;
+            // This foreach is a hack to get an element out of a HashSet (which is not indexed so can't go hashSet[i])
+            foreach ( Square s in allSquares )
+            {
+                startingSquare = s;
+                break;
+            }
+            // Traverse squares via adjacent neighbours until all neighbours visited; stash traversed squares
+            HashSet<Square> asteroidChunkList = CrawlThroughNeighbours(startingSquare); 
+            // Remove stashed quares from the master list
             allSquares = SubtractChunk(allSquares, asteroidChunkList);
 
-            // stopwatch.Stop();
-            // Debug.Log ("Time taken: "+(stopwatch.Elapsed));
-            // stopwatch.Reset();
-
-            // stopwatch.Start();
-            // If the chunk contains no squares (i.e. is destroyed), pass null for SquareMesh
+            
             if ( asteroidChunkList.Count == 0 ) 
             {
+                // If the chunk contains no squares (i.e. is destroyed), pass null for SquareMesh
                 chunks.Add(null);
             }
-            else
+            else if( allSquares.Count != 0 )
             {
-                // In the future, I may want to only make a new chunk if there was a split
-                // Else just re-use the squares from the original mesh, or actually not even do this at all 
-                chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList) );
+                // Only make a new chunk if there was a split
+                chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList));
             }
-
-            // stopwatch.Stop();
-            // Debug.Log ("Time taken: "+(stopwatch.Elapsed));
-            // stopwatch.Reset();
 
             safety += 1;
             if (safety > 4) { Debug.Log("Couldn't resolve all squares into chunks - tripped anti-infinity-loop safety"); break; }
         }
-        stopwatch.Stop();
-        Debug.Log ("Time taken: "+(stopwatch.Elapsed));
-        stopwatch.Reset();
-        if ( chunks.Count == 1 ) 
+
+        if ( chunks.Count <= 1 ) 
         { 
-            // stopwatch.Start();
             FindOutline();
             ScaleEdgeLength();
             ResetMesh();
             ResetColliderMesh();
-            // stopwatch.Stop();
-            // Debug.Log ("Time taken: "+(stopwatch.Elapsed));
             chunks = null;
         }
         else 
@@ -149,7 +139,7 @@ public class SquareMesh
         return chunks;
     }
 
-    public SquareMesh MakeNewAsteroidFromChunk(List<Square> chunkSquaresList)
+    public SquareMesh MakeNewAsteroidFromChunk(HashSet<Square> chunkSquaresList)
     {
         SquareMesh newSquareMesh = new SquareMesh();
         int leftmostCoord = -1; int rightmostCoord = -1; int topCoord = -1; int bottomCoord = -1;
@@ -172,32 +162,36 @@ public class SquareMesh
         return newSquareMesh;
     }
 
-    public List<Square> SubtractChunk(List<Square> allSquares, List<Square> asteroidChunkList)
+    public HashSet<Square> SubtractChunk(HashSet<Square> allSquares, HashSet<Square> asteroidChunkList)
     {
-        // Debug.Log("Subtracting chunk");
-//        Debug.Log(asteroidChunkList.Count);
         foreach ( Square s in asteroidChunkList )
         {
             if ( allSquares.Contains(s) ) 
             { 
                 allSquares.Remove(s); 
             }
-            // else { Debug.Log("allSquares did not contain the chunk's element, and I think it should?"); }
         }
         return allSquares;
     }
 
-    public List<Square> CrawlThroughNeighbours(Square startingSquare)
+    public HashSet<Square> CrawlThroughNeighbours(Square startingSquare)
     {
-        // Debug.Log("Crawling through  chunk");
-        List<Square> gotNeighboursOf = new List<Square>(); List<Square> chunkSquaresList = new List<Square>(); List<Square> searchForNeighbours = new List<Square>();
-        Square currentSquare;
+        HashSet<Square> gotNeighboursOf = new HashSet<Square>(); 
+        HashSet<Square> chunkSquaresList = new HashSet<Square>(); 
+        HashSet<Square> searchForNeighbours = new HashSet<Square>();
+
+        Square currentSquare = null;
         searchForNeighbours.Add(startingSquare);
         chunkSquaresList.Add(startingSquare);
         int safety = 0;
         while ( searchForNeighbours.Count > 0 )
         {
-            currentSquare = searchForNeighbours[0];
+            // This foreach is a hack to get an element out of a HashSet (which is not indexed so can't go hashSet[i])
+            foreach ( Square s in searchForNeighbours )
+            {
+                currentSquare = s;
+                break;
+            }
 
             foreach (Square s in currentSquare.neighbourSquares)
             {
@@ -217,7 +211,6 @@ public class SquareMesh
 
     public List<SquareMesh> RemoveSquaresInRadius(Vector2 centre, float radius)
     {
-        // Debug.Log(radius);
         List<Square> squaresToRemove = SquaresInRadius(centre, radius);
         List<SquareMesh> chunks = new List<SquareMesh>();
         chunks = null;
@@ -225,7 +218,6 @@ public class SquareMesh
         if ( squaresToRemove.Count > 0 ) 
         {
             RemoveSquares(squaresToRemove);
-            // Debug.Log("Hitting 'OnSplit'");
             chunks = OnSplit();
         }
         return chunks;
@@ -742,6 +734,25 @@ public class SquareMesh
                 if ( perimeterSquares.Contains(s.neighbourSquares[3]) == false ){ perimeterSquares.Add(s.neighbourSquares[3]); }
             }
             this.squares[s.x, s.y] = null;
+
+            // int numberOfAdjacentCracks = 0;
+            // foreach ( List<Vector2> crack in this.cracks )
+            // {
+            //     for ( int i = -1; i <= 1; i++ )
+            //     {
+            //         for ( int j = -1; j <= 1; j++ )
+            //         {
+            //             if ( crack.elements.Contains( new Vector2(i, j) ) )
+            //             {
+            //                 crack.elements.Add( new Vector2(x, y) );
+            //                 numberOfAdjacentCracks += 1;
+            //             }
+            //         }
+            //     }
+            // }
+            // Crack newCrack = new Crack();
+            // newCrack.Add( new Vector2(x, y) );
+            // this.cracks.Add(newCrack);
         }
     }
 

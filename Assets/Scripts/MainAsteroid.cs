@@ -283,9 +283,6 @@ public class MainAsteroid : Asteroid
 
     void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
     {
-        // Debug.Log(otherObject.name);
-        // Debug.Break();
-
         Vector2 collisionLocation;
 
         if(collision == null)
@@ -312,12 +309,11 @@ public class MainAsteroid : Asteroid
                 }
 
                 List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position - new Vector3(offset.x,offset.y,0), radius);
-                //Debug.Log(newAstroidMeshes);
+
                 if(newAstroidMeshes != null)
                 {
                     /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
                     Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,offset);
-
                 }
             }
         }
