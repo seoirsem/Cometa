@@ -55,7 +55,7 @@ public class MainAsteroid : Asteroid
             {
                 if(asteroid != this.gameObject)
                 {
-                    asteroid.layer = LayerMask.NameToLayer("SpawningDerivedAsteroid");
+                    asteroid.layer = LayerMask.NameToLayer("NoInteractions");
                 }
                 
             }
