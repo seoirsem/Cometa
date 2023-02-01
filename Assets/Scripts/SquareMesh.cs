@@ -104,14 +104,22 @@ public class SquareMesh
             allSquares = SubtractChunk(allSquares, asteroidChunkList);
 
             
-            if ( asteroidChunkList.Count == 0 ) 
+            // if ( asteroidChunkList.Count == 0 ) 
+            // {
+            //     // If the chunk contains no squares (i.e. is destroyed), pass null for SquareMesh
+            //     chunks.Add(null);
+            // }
+            // else 
+            if( allSquares.Count == 0 && chunks.Count == 0)
             {
-                // If the chunk contains no squares (i.e. is destroyed), pass null for SquareMesh
-                chunks.Add(null);
+                // If depleted allSquares while traversing first chunk, this means there's only one chunk
+                // This does not need to return anything -> handled below for chunks.Count <= 1 case
+                
             }
-            else if( allSquares.Count != 0 )
+            else
             {
-                // Only make a new chunk if there was a split
+                // Else, this either is the first chunk with some squares still to be sorted into other chunks,
+                // so it should be added, or this is the second chunk and should also be added
                 chunks.Add( MakeNewAsteroidFromChunk(asteroidChunkList));
             }
 
