@@ -23,7 +23,7 @@ public class AsteroidController : MonoBehaviour
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
 
-        SpawnAsteroid(20, new Vector3(-1.5f, 0, 0), new Vector3(0, 0, 0), null, false, new Vector2(0,0)); 
+        SpawnAsteroid(40, new Vector3(-0.6f, 0, 0), new Vector3(0, 0, 0), null, false, new Vector2(0,0)); 
     }
 
     void Update()
@@ -88,26 +88,29 @@ public class AsteroidController : MonoBehaviour
 
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes,Vector3 offsetFromActualCollision = new Vector3())
     {
-//        Debug.Log("Asteroid splitting - in asteroid controller");
-        // Debug.Log(otherObject.name);
         
         Vector3 preSplitPosition = asteroid.gameObject.transform.position;
         Vector3 preSplitVelocity = (Vector3)asteroid.rigid_body.velocity;
 
         DespawnAsteroid(asteroid,asteroidPack);
-
-        // Debug.Log(newAstroidMeshes.Count);
         foreach(SquareMesh squareMesh in newAstroidMeshes)
-        {
-        
+        {        
             // int[] numbersx = {-1,0,1,-1,1,-1,0,1};
             // int[] numbersy = {1,1,1,0,0,-1,-1,-1};
             // int randomIndex = Random.Range(0, 7);
             // Vector3 direction = new Vector3(numbersx[randomIndex],numbersy[randomIndex],0);
             // float magnitude = Random.Range(0.2f,1f);
             // direction = magnitude*direction;
-
-            SpawnAsteroid(40, preSplitPosition, preSplitVelocity, squareMesh,false, new Vector2(0,0));
+            if ( squareMesh != null )
+            {
+                Debug.Log("Received a non-null mesh from asteroid splitter");
+                SpawnAsteroid(40, preSplitPosition, preSplitVelocity, squareMesh, false, new Vector2(0,0));
+            }
+            else 
+            {
+                Debug.Log("The asteroid has been completely destroyed");
+            }
+            
         }
     }
     

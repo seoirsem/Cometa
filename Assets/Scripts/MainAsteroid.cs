@@ -316,8 +316,6 @@ public class MainAsteroid : Asteroid
                 if(newAstroidMeshes != null)
                 {
                     /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
-  //                  Debug.Log(newAstroidMeshes);
-//                    Debug.Log(newAstroidMeshes.Count);
                     Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,offset);
 
                 }
