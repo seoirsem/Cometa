@@ -24,20 +24,23 @@ public class Projectile : MonoBehaviour
     Rigidbody2D rigid_body;
     ExplosionRadius explosionRadius;
     public string projectileType;
+    float explosionImpulse = 100f;
+
 
     bool awayFromPlayer = false;
-
+    bool colliderEnabled;
 
     bool animationStarted = false;
     GameObject blueFlameAnimation;
 
     void Start()
     {
-        
+        colliderEnabled = false;
     }
 
     public void OnFired(Vector2 screenCenter, List<GameObject> objectPack, string projectileType)
     {
+        colliderEnabled = false;
         this.projectileType = projectileType;
         go = this.gameObject;
         explosionRadiusGO = go.transform.Find("ExplosionRadius").gameObject;
@@ -92,20 +95,22 @@ public class Projectile : MonoBehaviour
             DestroySelf();
         }
         
-        if(leftPlayerCollider || Time.time - timeFired > 0.3f )//Only use the collider if 0.1s has elapsed to avoid interactions with the player
+        if( (leftPlayerCollider || Time.time - timeFired > 0.3f) && colliderEnabled == false )//Only use the collider if 0.1s has elapsed to avoid interactions with the player
         {
             if(projectileType == "Rocket")
             {
                 capsuleCollider2D.enabled = true;
+                colliderEnabled = true;
             }
             else if(projectileType == "Bullet")
             {
                 circleCollider2d.enabled = true;
+                colliderEnabled = true;
             }
             // Debug.Log("Collider Enabled");
         }
         //Debug.Log(Vector2.Distance(rigid_body.position,Reference.playergo.GetComponent<Rigidbody2D>().position));
-        if(Vector2.Distance(rigid_body.position,Reference.playergo.GetComponent<Rigidbody2D>().position) > 0.5)
+        if(Vector2.Distance(rigid_body.position,Reference.playergo.GetComponent<Rigidbody2D>().position) > 0.5 && !leftPlayerCollider)
         {
             leftPlayerCollider = true;
             // Debug.Log("Left Player Collider");
@@ -208,7 +213,6 @@ public class Projectile : MonoBehaviour
             Vector3 direction = hitCollider.gameObject.transform.position - this.transform.position;
             float distance = direction.magnitude;            
             if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
-            float explosionImpulse = 1f;
             if(projectileType == "Rocket")
             {
                 explosionImpulse = explosionSize / distance * distance;
