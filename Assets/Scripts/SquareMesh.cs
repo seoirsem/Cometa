@@ -44,18 +44,18 @@ public class SquareMesh
 
     void FindCentreOfMass()
     {
-        int count = 0;
-        int xTotal = 0;
-        int yTotal = 0;
+        float count = 0;
+        float xTotal = 0;
+        float yTotal = 0;
         for (int x = 0; x < size; x++)
         {
             for (int y = 0; y < size; y++)
             {
                 if(squares[x,y] != null)
                 {
-                    count += 1;
-                    xTotal += x;
-                    yTotal += y;
+                    count += 1f;
+                    xTotal += (float)x + 0.5f;
+                    yTotal += (float)y + 0.5f;
                 }
             }
         }
@@ -129,14 +129,19 @@ public class SquareMesh
 
         if ( chunks.Count <= 1 ) 
         { 
-            FindOutline();
-            ScaleEdgeLength();
-            ResetMesh();
-            ResetColliderMesh();
+            // There was no split
+            // All this ideally should be done from the asteroid level, but leavuing here for now
+            // FindOutline();
+            // ScaleEdgeLength();
+            // ResetMesh();
+            // ResetColliderMesh();
+            // FindCentreOfMass();
+            this.asteroid.ReDrawAsteroid();
             chunks = null;
         }
         else 
         { 
+            // There was a split
             Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
             for ( int m = 0; m < chunks.Count; m++ )
             {

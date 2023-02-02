@@ -18,7 +18,7 @@ public class PlayerSpriteController : MonoBehaviour
     float bulletCooldownTimer;
     float rocketCooldownTimer;
     float rocketCooldown = 0.75f;//s
-    float bulletCooldown = 0.3f;
+    float bulletCooldown = 0.1f;
     public Rigidbody2D rigid_body;
     
 

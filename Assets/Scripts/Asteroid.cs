@@ -37,6 +37,17 @@ public class Asteroid : MonoBehaviour
         celSize = 0.1f;
     }
 
+    public void ReDrawAsteroid()
+    {
+        squareMesh.FindOutline();
+        squareMesh.ScaleEdgeLength();
+        squareMesh.ResetMesh();
+        squareMesh.ResetColliderMesh();
+        rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
+        rigid_body.centerOfMass = squareMesh.centreOfMass;
+        rigid_body.mass = squareMesh.mass;
+    }
+
     public void DrawAsteroid(int size, SquareMesh squareMeshIn)
     {              
         polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
@@ -51,8 +62,6 @@ public class Asteroid : MonoBehaviour
             squareMesh.ScaleEdgeLength();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
-  //          Debug.Log(squareMesh.squares.GetLength(0));
-//            Debug.Log(squareMesh.squares.GetLength(1));
         }
         else
         {

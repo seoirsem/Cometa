@@ -23,7 +23,7 @@ public class AsteroidController : MonoBehaviour
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
 
-        SpawnAsteroid(20, new Vector3(-0.6f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
+        SpawnAsteroid(20, new Vector3(-1f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
     }
 
     void Update()
