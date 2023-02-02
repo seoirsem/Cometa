@@ -23,7 +23,7 @@ public class AsteroidController : MonoBehaviour
         worldSize = Reference.worldController.worldSize;
         spawnCooldown = Time.time;
 
-        SpawnAsteroid(20, new Vector3(-1.5f, 0, 0), new Vector3(0, 0, 0), null, false, new Vector2(0,0)); 
+        SpawnAsteroid(20, new Vector3(-0.6f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
     }
 
     void Update()
@@ -82,32 +82,35 @@ public class AsteroidController : MonoBehaviour
         /// position
         //Vector3 position = new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);
 
-        SpawnAsteroid(size, position, direction, null, true, directionOrientation);    
-        Debug.Log("Spawning new asteroid");
+        SpawnAsteroid(size, position, direction, new Vector3(0, 0, 0), 0f, null, true, directionOrientation);    
     }
 
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes,Vector3 offsetFromActualCollision = new Vector3())
     {
-//        Debug.Log("Asteroid splitting - in asteroid controller");
-        // Debug.Log(otherObject.name);
         
         Vector3 preSplitPosition = asteroid.gameObject.transform.position;
         Vector3 preSplitVelocity = (Vector3)asteroid.rigid_body.velocity;
+        Vector3 preSplitEulerAngles = asteroid.gameObject.transform.eulerAngles;
+        float preSplitAngularVelocity = asteroid.rigid_body.angularVelocity;
 
         DespawnAsteroid(asteroid,asteroidPack);
-
-        // Debug.Log(newAstroidMeshes.Count);
         foreach(SquareMesh squareMesh in newAstroidMeshes)
-        {
-        
+        {        
             // int[] numbersx = {-1,0,1,-1,1,-1,0,1};
             // int[] numbersy = {1,1,1,0,0,-1,-1,-1};
             // int randomIndex = Random.Range(0, 7);
             // Vector3 direction = new Vector3(numbersx[randomIndex],numbersy[randomIndex],0);
             // float magnitude = Random.Range(0.2f,1f);
             // direction = magnitude*direction;
-
-            SpawnAsteroid(40, preSplitPosition, preSplitVelocity, squareMesh,false, new Vector2(0,0));
+            if ( squareMesh != null )
+            {
+                SpawnAsteroid(40, preSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
+            }
+            else 
+            {
+                Debug.Log("This asteroid chunk has been completely destroyed");
+            }
+            
         }
     }
     
@@ -152,26 +155,28 @@ public class AsteroidController : MonoBehaviour
 
 
 
-    void SpawnAsteroid(int size, Vector3 position, Vector3 velocity, SquareMesh squareMesh, bool NewAsteroid, Vector2 positionOrientation )
+    void SpawnAsteroid(int size, Vector3 position, Vector3 velocity, Vector3 eulerAngles, float angularVelocity, SquareMesh squareMesh, bool NewAsteroid, Vector2 positionOrientation )
     {
         List<GameObject> asteroidPack = new List<GameObject>();
 
-        GameObject asteroidgo = SimplePool.Spawn(mainAsteroidPrefab, position, new Quaternion(0,0,0,0));//spawns the first asteroid
+        float d = 2*worldSize.x;
+        Quaternion rotation = Quaternion.Euler(eulerAngles.x, eulerAngles.y, eulerAngles.z);
+
+        GameObject asteroidgo = SimplePool.Spawn(mainAsteroidPrefab, position, rotation);//spawns the first asteroid
         asteroidgo.transform.position = new Vector3(asteroidgo.transform.position.x,asteroidgo.transform.position.y,10);
         MainAsteroid mainAsteroid = asteroidgo.GetComponent<MainAsteroid>();
         mainAsteroid.derivedAsteroids = new Dictionary<Vector2,GameObject>();
-        float d = 2*worldSize.x;
-        GameObject asteroidgo1 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*1,0,0), new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo2 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*2,0,0), new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo3 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*3,0,0), new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo4 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*4,0,0), new Quaternion(0, 0, 0, 0));
+        
+        GameObject asteroidgo1 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*1,0,0), rotation);
+        GameObject asteroidgo2 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*2,0,0), rotation);
+        GameObject asteroidgo3 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*3,0,0), rotation);
+        GameObject asteroidgo4 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*4,0,0), rotation);
 
-        GameObject asteroidgo5 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*5,0,0), new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo6 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*6,0,0), new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo7 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*7,0,0), new Quaternion(0, 0, 0, 0));
-        GameObject asteroidgo8 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*8,0,0), new Quaternion(0, 0, 0, 0));
+        GameObject asteroidgo5 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*5,0,0), rotation);
+        GameObject asteroidgo6 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*6,0,0), rotation);
+        GameObject asteroidgo7 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*7,0,0), rotation);
+        GameObject asteroidgo8 = SimplePool.Spawn(deriveAsteroidPrefab,position + new Vector3(d*8,0,0), rotation);
 
-        //Debug.Break();
         asteroidPack.Add(asteroidgo);
         asteroidPack.Add(asteroidgo1);
         asteroidPack.Add(asteroidgo2);
@@ -184,7 +189,7 @@ public class AsteroidController : MonoBehaviour
 
 
         asteroidgo.transform.SetParent(this.gameObject.transform);
-        asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, squareMesh, NewAsteroid, positionOrientation);
+        asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, angularVelocity, squareMesh, NewAsteroid, positionOrientation);
         asteroids.Add(asteroidgo);
 
         asteroidgo1.transform.SetParent(this.gameObject.transform);

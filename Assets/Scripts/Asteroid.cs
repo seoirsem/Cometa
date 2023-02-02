@@ -16,7 +16,7 @@ public class Asteroid : MonoBehaviour
     public int[] meshIndices;
     public float mass;
     public Vector3 rotation;
-    public float rotationRate;
+    // public float rotationRate;
     public GameObject asteroidgo;
     public Vector3 velocity;
     public Vector2 worldSize;
@@ -34,7 +34,7 @@ public class Asteroid : MonoBehaviour
     public SquareMesh squareMesh;
 
     private void Awake() {
-        celSize = 0.2f;
+        celSize = 0.1f;
     }
 
     public void DrawAsteroid(int size, SquareMesh squareMeshIn)

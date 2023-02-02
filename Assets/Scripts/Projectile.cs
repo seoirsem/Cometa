@@ -107,13 +107,13 @@ public class Projectile : MonoBehaviour
                 circleCollider2d.enabled = true;
                 colliderEnabled = true;
             }
-            //Debug.Log("Collider Enabled");
+            // Debug.Log("Collider Enabled");
         }
         //Debug.Log(Vector2.Distance(rigid_body.position,Reference.playergo.GetComponent<Rigidbody2D>().position));
         if(Vector2.Distance(rigid_body.position,Reference.playergo.GetComponent<Rigidbody2D>().position) > 0.5 && !leftPlayerCollider)
         {
             leftPlayerCollider = true;
-//            Debug.Log("Left Player Collider");
+            // Debug.Log("Left Player Collider");
         }
     }
     void FixedUpdate()
@@ -149,7 +149,7 @@ public class Projectile : MonoBehaviour
         if(leftPlayerCollider)
         {
             DestroySelf();
-            Debug.Log(collision.gameObject.name);
+            // Debug.Log(collision.gameObject.name);
         }
     }
     void OnTriggerEnter2D(Collider2D collider)//you need both so you can collide with triggering and non triggering objects
