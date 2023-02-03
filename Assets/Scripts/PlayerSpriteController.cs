@@ -187,7 +187,9 @@ public class PlayerSpriteController : MonoBehaviour
 
     public void ApplyExplosionImpulse(Vector3 direction, float magnitude)
     {
-
+        Debug.Log(magnitude);
+        Debug.Log(direction);
+        rigid_body.AddForce(magnitude*direction,ForceMode2D.Impulse);
     }
 
 

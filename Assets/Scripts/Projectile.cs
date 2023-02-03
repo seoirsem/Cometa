@@ -10,7 +10,6 @@ public class Projectile : MonoBehaviour
     float lifespan = 2;//s
     Vector2 worldSize;
     float projectileSpeed = 11;
-    float explosionSize = 0f; // to modulate how much explosion thrust is applied to surrounding objects
     float minExplosionRadius = 0.25f; //to avoid huge impulses near the explosion 
     float thrust = 1f;
     public List<GameObject> objectPack;
@@ -24,7 +23,8 @@ public class Projectile : MonoBehaviour
     Rigidbody2D rigid_body;
     ExplosionRadius explosionRadius;
     public string projectileType;
-    float explosionImpulse = 100f;
+    float explosionSize = 2f; // to modulate how much explosion thrust is applied to surrounding objects
+    float explosionImpulse;
 
 
     bool awayFromPlayer = false;
@@ -207,45 +207,47 @@ public class Projectile : MonoBehaviour
     void DestroySelf()
     {   /// add thrust to nearby objects due to explosion
         // a helpful note: the prefab for the projectile has a disabled sprite renderer. This shows the radius of explosion
-
         foreach (Collider2D hitCollider in explosionRadius.TriggerList)
         {
-            Vector3 direction = hitCollider.gameObject.transform.position - this.transform.position;
-            float distance = direction.magnitude;            
-            if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
-            if(projectileType == "Rocket")
-            {
-                explosionImpulse = explosionSize / distance * distance;
-            }
-            else if(projectileType == "Bullet")
-            {
-                explosionImpulse = explosionSize / (distance * distance * 10f);
-            }
-
-
-            if (hitCollider.gameObject.GetComponent<Asteroid>() != null)
-            {
-                // this is janky repeating code which can probably be fixed by using derived classes better oh well
-                // we will also want to damage nearby asteroids in the radius too
-                if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
+            if(hitCollider.gameObject.GetComponent<Rigidbody2D>() != null)    
                 {
-                    MainAsteroid asteroid = hitCollider.gameObject.GetComponent<MainAsteroid>();
-                    asteroid.ApplyExplosionImpulse(direction, explosionImpulse);
-
-                }
-                else
+                Vector3 direction = hitCollider.gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass - this.rigid_body.worldCenterOfMass;
+                float distance = direction.magnitude;            
+                if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
+                if(projectileType == "Rocket")
                 {
-                    DerivedAsteroid asteroid = hitCollider.gameObject.GetComponent<DerivedAsteroid>();
-                    asteroid.ApplyExplosionImpulse(direction, explosionImpulse);
+                    explosionImpulse = explosionSize / distance * distance;
                 }
-            }
-            else if (hitCollider.gameObject.GetComponent<PlayerSpriteController>() != null)
-            {
-                hitCollider.gameObject.GetComponent<PlayerSpriteController>().ApplyExplosionImpulse(direction,explosionImpulse);
-            }
+                else if(projectileType == "Bullet")
+                {
+                    explosionImpulse = explosionSize / (distance * distance * 10f);
+                }
+                //Debug.Log(explosionImpulse);
+                Vector3 position = this.rigid_body.position;
+                if (hitCollider.gameObject.GetComponent<Asteroid>() != null)
+                {
+                    // this is janky repeating code which can probably be fixed by using derived classes better oh well
+                    // we will also want to damage nearby asteroids in the radius too
+                    if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
+                    {
+                        MainAsteroid asteroid = hitCollider.gameObject.GetComponent<MainAsteroid>();
+                        asteroid.ApplyExplosionImpulse(direction, position, explosionImpulse);
+                        //Debug.Log("Main Asteroid in explosion radius");
+                    }
+                    else
+                    {
+                        DerivedAsteroid asteroid = hitCollider.gameObject.GetComponent<DerivedAsteroid>();
+                        asteroid.ApplyExplosionImpulse(direction, position, explosionImpulse);
+                    }
+                }
+                else if (hitCollider.gameObject.GetComponent<PlayerSpriteController>() != null)
+                {
+                    hitCollider.gameObject.GetComponent<PlayerSpriteController>().ApplyExplosionImpulse(direction,explosionImpulse);
+                }
 
+            }
         }
-        
+            
 
 
         if(projectileType == "Rocket")
