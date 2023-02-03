@@ -339,7 +339,7 @@ public class MainAsteroid : Asteroid
 
 
 
-    public void ApplyExplosionImpulse(Vector3 direction, float explosionImpulse)
+    public void ApplyExplosionImpulse(Vector3 direction, Vector2 position, float explosionImpulse)
     {
         ApplyImpulse(direction, explosionImpulse);
     }
