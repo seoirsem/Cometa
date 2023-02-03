@@ -302,7 +302,7 @@ public class MainAsteroid : Asteroid
             {
                 Reference.scoreController.IncrementScore((float)size);
 
-                float radius = 2f;
+                float radius = 1f;
                 if(projectile.projectileType == "Rocket")
                 {
                     radius = 5f;

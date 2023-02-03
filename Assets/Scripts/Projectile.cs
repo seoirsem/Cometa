@@ -164,7 +164,7 @@ public class Projectile : MonoBehaviour
     }
     void OnTriggerExit2D(Collider2D collider)
     {   
-        Debug.Log(collider.gameObject.name);
+        // Debug.Log(collider.gameObject.name);
         if(collider.gameObject.name == "ShipShields")
         {
             leftPlayerCollider = true;
@@ -173,7 +173,7 @@ public class Projectile : MonoBehaviour
     void OnCollisonExit2D(Collision2D collision)
     {
         
-        Debug.Log(collision.gameObject.name);
+        // Debug.Log(collision.gameObject.name);
         if(collision.gameObject.name == "ShipShields")
         {
             leftPlayerCollider = true;
