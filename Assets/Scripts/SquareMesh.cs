@@ -63,7 +63,7 @@ public class SquareMesh
             }
         }
         centreOfMass = new Vector2(xTotal*edgeLength/count,yTotal*edgeLength/count);
-        mass = count*edgeLength*edgeLength;
+        mass = count*edgeLength*edgeLength * 999f;
     }
 
     public List<SquareMesh> OnSplit()
@@ -175,7 +175,7 @@ public class SquareMesh
         Square[,] bL = new Square[(int)Mathf.Ceil(sm.squares.GetLength(0)/2f), (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)];
         bool isEmptyBL = true;
         SquareMesh botRight = new SquareMesh();
-        Square[,] bR = new Square[(int)Mathf.Ceil(sm.squares.GetLength(0)/2f), (int)(sm.squares.GetLength(1)/2f)];
+        Square[,] bR = new Square[(int)(sm.squares.GetLength(0)/2f), (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)];
         bool isEmptyBR = true;
 
         for ( int x = 0; x < sm.squares.GetLength(0); x++ )
