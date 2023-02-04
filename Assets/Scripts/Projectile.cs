@@ -220,7 +220,7 @@ public class Projectile : MonoBehaviour
                 }
                 else if(projectileType == "Bullet")
                 {
-                    explosionImpulse = explosionSize / (distance * distance * 10f);
+                    explosionImpulse = explosionSize / (distance * distance * 100f);
                 }
                 //Debug.Log(explosionImpulse);
                 Vector3 position = this.rigid_body.position;
