@@ -25,6 +25,7 @@ public class Projectile : MonoBehaviour
     public string projectileType;
     float explosionSize = 2f; // to modulate how much explosion thrust is applied to surrounding objects
     float explosionImpulse;
+    float playerMassImpulseAdjustment;
 
 
     bool awayFromPlayer = false;
@@ -40,6 +41,7 @@ public class Projectile : MonoBehaviour
 
     public void OnFired(Vector2 screenCenter, List<GameObject> objectPack, string projectileType)
     {
+        playerMassImpulseAdjustment = Reference.playergo.GetComponent<Rigidbody2D>().mass;
         colliderEnabled = false;
         this.projectileType = projectileType;
         go = this.gameObject;
@@ -216,11 +218,11 @@ public class Projectile : MonoBehaviour
                 if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
                 if(projectileType == "Rocket")
                 {
-                    explosionImpulse = explosionSize / distance * distance;
+                    explosionImpulse = playerMassImpulseAdjustment*explosionSize / distance * distance;
                 }
                 else if(projectileType == "Bullet")
                 {
-                    explosionImpulse = explosionSize / (distance * distance * 100f);
+                    explosionImpulse = playerMassImpulseAdjustment*explosionSize / (distance * distance * 100f);
                 }
                 //Debug.Log(explosionImpulse);
                 Vector3 position = this.rigid_body.position;

@@ -15,7 +15,7 @@ public class ShipShields : MonoBehaviour
     float lastHit;
     float lastPulse;
     float pulseCooldown = 1.5f;
-    
+    float shieldForceMultiplier;
     SpriteRenderer spriteRenderer;
 
     float shieldRechargeRate = 5f; //per second
@@ -32,6 +32,7 @@ public class ShipShields : MonoBehaviour
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         lastHit = Time.time;
         lastPulse = Time.time;
+        shieldForceMultiplier = playerRigidBody.mass;
 
     }
 
@@ -92,14 +93,14 @@ public class ShipShields : MonoBehaviour
     public void CollisionCalculation(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Rigidbody2D hitRigidBody)
     {
         // Debug.Log(hitRigidBody.gameObject.name);
-        float shieldAppliedForce = (1/distance) * (1/distance) * relativeVelocity.magnitude * Time.deltaTime;
-        if(shieldAppliedForce > 50){shieldAppliedForce = 50f;}
+        float shieldAppliedForce = (1/distance) * (1/distance) * relativeVelocity.magnitude * Time.deltaTime * shieldForceMultiplier;
+        if(shieldAppliedForce > 50*shieldForceMultiplier){shieldAppliedForce = 50f*shieldForceMultiplier;}
 
         Vector2 shieldForceVector = shieldAppliedForce * relativePosition;
-
+        Debug.Log(shieldForceMultiplier);
         playerRigidBody.AddForce(-1 * shieldForceVector, ForceMode2D.Impulse);
         hitRigidBody.AddForce(shieldForceVector, ForceMode2D.Impulse);
-        OnHit(shieldAppliedForce);
+        OnHit(shieldAppliedForce/shieldForceMultiplier);
         
     }
 
@@ -120,7 +121,7 @@ public class ShipShields : MonoBehaviour
         if (Time.time - lastPulse > pulseCooldown)
         {
             this.spriteRenderer.color = tmp;
-            float stregnthFraction = shieldStrength/maxShieldStrength;
+            float strengthFraction = shieldStrength/maxShieldStrength;
             lastPulse = Time.time;
             float scale = 1.15f;
 
@@ -131,19 +132,19 @@ public class ShipShields : MonoBehaviour
             LeanTween.rotate(this.gameObject, new Vector3(0f,0f,180f), pulseCooldown/2f);
             LeanTween.rotate(this.gameObject, new Vector3(0f,0f,360f), pulseCooldown/2f).setDelay(pulseCooldown/2f);
 
-            if (stregnthFraction < 0.5f)
+            if (strengthFraction < 0.5f)
             {
-                if (stregnthFraction < 0.25f){strengthRange = 0.25f;}
+                if (strengthFraction < 0.25f){strengthRange = 0.25f;}
                 else{strengthRange = 0.5f;}
                 tmp.a = strengthRange;
                 this.spriteRenderer.color = tmp;
                 float part = 12f;
                 float randFrac = (float)Random.Range(1,(int)part);
-                if (Random.Range(0f, 0.5f) > stregnthFraction)
+                if (Random.Range(0f, 0.5f) > strengthFraction)
                 {
-                    LeanTween.alpha(this.gameObject, stregnthFraction, pulseCooldown/part);
+                    LeanTween.alpha(this.gameObject, strengthFraction, pulseCooldown/part);
                     LeanTween.alpha(this.gameObject, strengthRange, pulseCooldown/part).setDelay(pulseCooldown/part);
-                    LeanTween.alpha(this.gameObject, stregnthFraction, pulseCooldown/part).setDelay(pulseCooldown*randFrac/part);
+                    LeanTween.alpha(this.gameObject, strengthFraction, pulseCooldown/part).setDelay(pulseCooldown*randFrac/part);
                     LeanTween.alpha(this.gameObject, strengthRange, pulseCooldown/part).setDelay(pulseCooldown*(1+randFrac)/part);
                 }
             }
