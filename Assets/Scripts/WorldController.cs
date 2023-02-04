@@ -101,7 +101,7 @@ public class WorldController : MonoBehaviour
             //// ToDo: Warn the player of incoming a few seconds before spawning    
              //spawnn new asteroid
             spawnCooldown = Time.time;
-            //Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18));
+            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18));
         }
 
     }

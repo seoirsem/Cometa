@@ -135,7 +135,7 @@ public class SquareMesh
             // There was no split
             if ( VoidThresholdExceeded() == true )
             {
-                Debug.Log("Splitting to quarters");
+//                Debug.Log("Splitting to quarters");
                 chunks = SplitIntoQuarters(this);
                 for ( int m = 0; m < chunks.Count; m++ )
                 {
@@ -152,7 +152,7 @@ public class SquareMesh
         else 
         { 
             // There was a split
-            Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
+//            Debug.Log("Split! Need to make some new asteroids and pass chunks out."); 
             for ( int m = 0; m < chunks.Count; m++ )
             {
                 if ( chunks[m] == null ) { continue; }

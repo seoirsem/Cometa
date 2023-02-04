@@ -97,6 +97,14 @@ public class ShipShields : MonoBehaviour
                 hitCollider.gameObject.GetComponent<DerivedAsteroid>().DerivedAsteroidHitShields(distance, relativeVelocity, relativePosition, new Vector2(closestPoint.x,closestPoint.y), shieldDamageRadiusToAsteroids);
 
             }
+            else if(hitCollider.gameObject.GetComponent<Projectile>() != null)
+            {
+                Projectile projectile = hitCollider.gameObject.GetComponent<Projectile>();
+                if(projectile.colliderEnabled)
+                {
+                    projectile.DestroySelf();
+                }
+            }
 
             }
         }
@@ -104,9 +112,17 @@ public class ShipShields : MonoBehaviour
     public void ShieldsDestroyedAsteroidSquares(int numberOfSquaresLost)
     {
         //A shield penalty when the shields destroy asteroid matter
-//        Debug.Log(numberOfSquaresLost * matterDestroyedShieldPenalty);
-
         OnHit(numberOfSquaresLost * matterDestroyedShieldPenalty/shieldForceRatio);
+    }
+    public void ShieldsInExplosionRadius(float explosionImpulse, Projectile projectile)
+    {   
+        Debug.Log(explosionImpulse);
+        // /Debug.Log(explosionImpulse/(shieldForceRatio*7));
+        if(explosionImpulse/(shieldForceRatio*400) > 5f)
+        {
+            OnHit(explosionImpulse/(shieldForceRatio*400));
+
+        }
     }
 
     public void CollisionCalculation(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Rigidbody2D hitRigidBody)
@@ -180,9 +196,11 @@ public class ShipShields : MonoBehaviour
     }
     void OnHit(float shieldForce)
     {
-        //Debug.Log(shieldForce);
+
         lastHit = Time.time;
         shieldStrength -= shieldForceRatio*shieldForce;
+//        Debug.Log(shieldForceRatio*shieldForce);
+
         if(shieldStrength < 0){shieldStrength = 0;}
     }
 

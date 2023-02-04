@@ -28,12 +28,12 @@ public class Projectile : MonoBehaviour
     float playerMassImpulseAdjustment;
 
     public float explosionRadiusDiameter;
-    float rocketRadius = 10f;
+    float rocketRadius = 6f;
     float bulletRadius = 1.5f;
 
 
     bool awayFromPlayer = false;
-    bool colliderEnabled;
+    public bool colliderEnabled;
 
     bool animationStarted = false;
     GameObject blueFlameAnimation;
@@ -161,24 +161,7 @@ public class Projectile : MonoBehaviour
             // Debug.Log(collision.gameObject.name);
         }
     }
-    void OnTriggerEnter2D(Collider2D collider)//you need both so you can collide with triggering and non triggering objects
-    {
-        //if(Time.time - timeFired > 0.0f)//Only use the collider if 0.1s has elapsed to avoid interactions with the player
-        //{
-        if(leftPlayerCollider)
-        {
-            DestroySelf();
-            Debug.Log(collider.gameObject.name);
-        }
-    }
-    void OnTriggerExit2D(Collider2D collider)
-    {   
-        // Debug.Log(collider.gameObject.name);
-        if(collider.gameObject.name == "ShipShields")
-        {
-            leftPlayerCollider = true;
-        }
-    }
+
     void OnCollisonExit2D(Collision2D collision)
     {
         
@@ -213,47 +196,66 @@ public class Projectile : MonoBehaviour
 
     }
 
-    void DestroySelf()
+    public void DestroySelf()
     {   /// add thrust to nearby objects due to explosion
         // a helpful note: the prefab for the projectile has a disabled sprite renderer. This shows the radius of explosion
-        foreach (Collider2D hitCollider in explosionRadius.TriggerList)
+        List<Collider2D> hitList = new List<Collider2D>(explosionRadius.TriggerList);
+
+        foreach (Collider2D hitCollider in hitList)
         {
-            if(hitCollider.gameObject.GetComponent<Rigidbody2D>() != null)    
-                {
-                Vector3 direction = hitCollider.gameObject.GetComponent<Rigidbody2D>().worldCenterOfMass - this.rigid_body.worldCenterOfMass;
+            if(hitCollider.gameObject.GetComponent<Rigidbody2D>() != null)
+            {       
+                Vector2 direction = hitCollider.ClosestPoint(this.rigid_body.worldCenterOfMass) - this.rigid_body.worldCenterOfMass;
                 float distance = direction.magnitude;            
+                if(distance<0.15f){distance = 0.15f;}
+                //Vector2 closestPoint = hitCollider.ClosestPoint(this.rigid_body.worldCenterOfMass);
+
                 if (distance < minExplosionRadius){distance = minExplosionRadius;} // to avoid very huge impulses
                 if(projectileType == "Rocket")
                 {
-                    explosionImpulse = playerMassImpulseAdjustment*explosionSize / distance * distance;
+
+                    explosionImpulse = playerMassImpulseAdjustment*explosionSize / (distance * distance);
+
                 }
                 else if(projectileType == "Bullet")
                 {
                     explosionImpulse = playerMassImpulseAdjustment*explosionSize / (distance * distance * 100f);
                 }
-                //Debug.Log(explosionImpulse);
-                Vector3 position = this.rigid_body.position;
-                if (hitCollider.gameObject.GetComponent<Asteroid>() != null)
-                {
-                    // this is janky repeating code which can probably be fixed by using derived classes better oh well
-                    // we will also want to damage nearby asteroids in the radius too
-                    if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
+                if(hitCollider.gameObject.GetComponent<Rigidbody2D>() != null)    
                     {
-                        MainAsteroid asteroid = hitCollider.gameObject.GetComponent<MainAsteroid>();
-                        asteroid.ApplyExplosionImpulse(direction, position, explosionImpulse);
-                        //Debug.Log("Main Asteroid in explosion radius");
-                    }
-                    else
+                    
+                    //Debug.Log(explosionImpulse);
+                    Vector3 position = this.rigid_body.position;
+                    if (hitCollider.gameObject.GetComponent<Asteroid>() != null)
                     {
-                        DerivedAsteroid asteroid = hitCollider.gameObject.GetComponent<DerivedAsteroid>();
-                        asteroid.ApplyExplosionImpulse(direction, position, explosionImpulse);
+                        
+                        // this is janky repeating code which can probably be fixed by using derived classes better oh well
+                        // we will also want to damage nearby asteroids in the radius too
+                        if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
+                        {
+                            MainAsteroid asteroid = hitCollider.gameObject.GetComponent<MainAsteroid>();
+                            asteroid.ApplyExplosionImpulse(direction, position, explosionImpulse, this);
+                            //Debug.Log("Main Asteroid in explosion radius");
+                        }
+                        else
+                        {
+                            DerivedAsteroid asteroid = hitCollider.gameObject.GetComponent<DerivedAsteroid>();
+                            asteroid.ApplyExplosionImpulse(direction, position, explosionImpulse, this);
+                        }
                     }
-                }
-                else if (hitCollider.gameObject.GetComponent<PlayerSpriteController>() != null)
-                {
-                    hitCollider.gameObject.GetComponent<PlayerSpriteController>().ApplyExplosionImpulse(direction,explosionImpulse);
-                }
+                    else if (hitCollider.gameObject.GetComponent<PlayerSpriteController>() != null)
+                    {
+                        hitCollider.gameObject.GetComponent<PlayerSpriteController>().ApplyExplosionImpulse(direction,explosionImpulse);
+                    }
 
+
+                }
+                if(hitCollider.gameObject.name == "ShipShields")
+                {
+//                                Debug.Log(distance);
+
+                    Reference.shipShields.ShieldsInExplosionRadius(explosionImpulse, this);
+                }
             }
         }
             

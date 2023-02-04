@@ -351,10 +351,24 @@ public class MainAsteroid : Asteroid
 
 
 
-    public void ApplyExplosionImpulse(Vector3 direction, Vector2 position, float explosionImpulse)
+    public void ApplyExplosionImpulse(Vector3 direction, Vector2 position, float explosionImpulse, Projectile projectile)
     {
         ApplyImpulse(direction, explosionImpulse);
+
+        int numberOfSquaresInAsteroid = squareMesh.NumberOfSquaresInMesh();
+        if (projectile.mainProjectile == true)
+        {
+            float radius = projectile.explosionRadiusDiameter;
+            //Reference.scoreController.IncrementScore((float)size);
+            List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(position, radius);
+            if(newAstroidMeshes != null)
+            {
+                /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
+                Reference.asteroidController.AsteroidHit(this, position, projectile.gameObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,new Vector2(0,0));
+            }
+        }
     }
+    
 
     public void HitByProjectile()
     {
