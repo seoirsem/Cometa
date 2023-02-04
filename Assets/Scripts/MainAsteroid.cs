@@ -33,7 +33,6 @@ public class MainAsteroid : Asteroid
 
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, float rotationRate, SquareMesh squareMesh, bool spawning, Vector2 positionOrientation)
     {
-
         this.timeAlive = Time.time;
 
         waitFrames = 0;
@@ -99,6 +98,9 @@ public class MainAsteroid : Asteroid
         // this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 0;//random rotation rate
         this.rigid_body.angularVelocity = rotationRate;
         this.rigid_body.mass = mass;
+        this.rigidBodyVelocity = rigid_body.velocity;
+
+        
 
         float timeAlive; // set in asteroid controller on spawn
 
@@ -111,6 +113,8 @@ public class MainAsteroid : Asteroid
     // Update is called once per frame
     void Update()
     {
+        this.rigidBodyVelocity = rigid_body.velocity;
+
 
         if(rigid_body.velocity.magnitude > maximumVelocity)
         {
@@ -332,10 +336,27 @@ public class MainAsteroid : Asteroid
         {
             //Debug.Log("Asteroid hit player");
         }
-        else
+        else if(otherObject.GetComponent<Asteroid>() != null)
         {//if you have collided with another asteroid
+        //REMEMBER TO ALWAYS LOOK FOR MAIN ASTEROID RIGID BODY VELOCITY
             Asteroid otherAsteroid = otherObject.GetComponent<Asteroid>();
             Reference.asteroidController.AsteroidAstroidCollision(this, collisionLocation, asteroidPack);
+            Vector2 relativeVelocity = rigidBodyVelocity - otherAsteroid.rigidBodyVelocity;
+            Vector2 relativeMomentum = rigidBodyVelocity*mass - otherAsteroid.rigidBodyVelocity*otherAsteroid.mass;
+            //Debug.Log(relativeMomentum);
+            if(relativeMomentum.magnitude > 200f)
+            {
+                float radius = relativeMomentum.magnitude/450f;
+                Debug.Log($"Mass: {mass}, Other Object mass: {otherAsteroid.mass} Relative momentum: {relativeMomentum.magnitude}, radius: {radius}");
+ 
+                List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(collision.contacts[0].point, radius);
+                if(newAstroidMeshes != null)
+                {
+                    /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
+                    Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,offset);
+                }
+
+            }
             //Debug.Log("Asteroid hit other asteroid");
 
         }
@@ -378,8 +399,6 @@ public class MainAsteroid : Asteroid
     }
     public void MainAsteroidHitShields(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Vector2 closestPoint, float shieldDamage)
     {
-//        Debug.Log("Asteroid hit shields");
-//        Debug.Log(relativeVelocity.magnitude);
             
         if(relativeVelocity.magnitude > 4f)
         {

@@ -45,6 +45,7 @@ public class DerivedAsteroid : Asteroid
     // Update is called once per frame
     void Update()
     {
+        this.rigidBodyVelocity = mainAsteroidClass.rigid_body.velocity;
         UpdateAsteroidPosition();
     }
 

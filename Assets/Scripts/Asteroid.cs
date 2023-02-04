@@ -28,7 +28,9 @@ public class Asteroid : MonoBehaviour
     public AsteroidController asteroidController;
     public float[] vertexHealth;
 
-    static public float celSize;
+    public Vector2 rigidBodyVelocity;
+
+    static public float celSize = 0.15f;
     public int size;
 
     public SquareMesh squareMesh;
@@ -46,6 +48,7 @@ public class Asteroid : MonoBehaviour
         squareMesh.FindCentreOfMass();
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.centerOfMass = squareMesh.centreOfMass;
+        this.mass = squareMesh.mass;
         rigid_body.mass = squareMesh.mass;
     }
 
@@ -78,6 +81,7 @@ public class Asteroid : MonoBehaviour
 
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.centerOfMass = squareMesh.centreOfMass;
+        this.mass = squareMesh.mass;
         rigid_body.mass = squareMesh.mass;
 
     }
@@ -90,6 +94,7 @@ public class Asteroid : MonoBehaviour
         polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.centerOfMass = squareMesh.centreOfMass;
+        this.mass = squareMesh.mass;
         rigid_body.mass = squareMesh.mass;
     }
 
