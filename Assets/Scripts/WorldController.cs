@@ -26,6 +26,9 @@ public class WorldController : MonoBehaviour
 
     float colliderThickness = 0.01f;
 
+    float spawnCooldown;
+
+
     void Awake()
     {
 
@@ -57,6 +60,14 @@ public class WorldController : MonoBehaviour
     {
         playergo = Reference.playergo;
         player = new Player(playergo);
+        spawnCooldown = Time.time;
+
+        int randomSize = Random.Range(7,13);
+        //Debug.Log(randomSize);
+        Reference.asteroidController.SpawnNewAsteroid(randomSize);
+
+
+
     }
 
     // Update is called once per frame
@@ -84,6 +95,13 @@ public class WorldController : MonoBehaviour
             UnPauseGame();
             escPressed = true;
 
+        }
+        if(((Reference.playerInputController.p & Time.time - spawnCooldown > 2f) || Time.time - spawnCooldown > 10f )&& !isPaused)
+        {
+            //// ToDo: Warn the player of incoming a few seconds before spawning    
+             //spawnn new asteroid
+            spawnCooldown = Time.time;
+            //Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18));
         }
 
     }

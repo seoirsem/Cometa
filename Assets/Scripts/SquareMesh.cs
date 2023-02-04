@@ -220,7 +220,7 @@ public class SquareMesh
         botLeft.bottomSplitCoord = 0;
 
         botLeft.UpdateSquaresInQuartersCount();
-        Debug.Log(botLeft.topLeftCount);
+//        Debug.Log(botLeft.topLeftCount);
 
         topLeft.leftmostSplitCoord = 0;
         topLeft.bottomSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(1)/2f);
@@ -384,8 +384,6 @@ public class SquareMesh
 
     public void ResetMesh()
     {
-  //      Debug.Log(asteroid);
-//        Debug.Log(asteroid.gameObject);
         MeshFilter meshFilter = asteroid.gameObject.GetComponent<MeshFilter>();
         Mesh mesh2 = new Mesh();
         meshFilter.mesh = mesh2;
@@ -403,7 +401,6 @@ public class SquareMesh
         meshFilter.mesh = mesh2;
 
         perimeterIndices = new int[2*meshVertices.Count];
-
         for (int i = 0; i < meshVertices.Count; i++)
         {
             perimeterIndices[2*i] = i;    
@@ -419,6 +416,7 @@ public class SquareMesh
     {
 
         Vector2 asteroidCorner = (Vector2)asteroid.gameObject.transform.position;
+       // Debug.Log(asteroidCorner);
         Vector2 offsetCollisionPoint = collisionPoint - asteroidCorner;
         float asteroidRotationAngle = asteroid.gameObject.transform.rotation.eulerAngles.z * Mathf.PI/180f;
         float rotatedX = offsetCollisionPoint.x * Mathf.Cos(-asteroidRotationAngle) - offsetCollisionPoint.y * Mathf.Sin(-asteroidRotationAngle);
@@ -444,6 +442,7 @@ public class SquareMesh
                 }
             }
         }
+        //Debug.Log(affectedSquares.Count);
         return affectedSquares;
     }
 
@@ -485,13 +484,18 @@ public class SquareMesh
                 }
             }
         }
-        // UpdateNeighboursAndEdges();
+        UpdateNeighboursAndEdges(null);
     }
 
     
 
     public SquareMesh UpdateNeighboursAndEdges(SquareMesh sm)
     {
+        if(sm == null)
+        {
+            sm = new SquareMesh();
+            sm.squares = this.squares;
+        }
         for (int x = 0; x < sm.squares.GetLength(0); x++)
         {
             for (int y = 0; y < sm.squares.GetLength(1); y++)
@@ -565,7 +569,24 @@ public class SquareMesh
         }
         FindCentreOfMass();
         //FindMass();
+        this.squares = sm.squares;
         return sm;
+    }
+
+    public int NumberOfSquaresInMesh()
+    {
+        int count = 0;
+        for (int x = 0; x < squares.GetLength(0); x++)
+        {
+            for (int y = 0; y < squares.GetLength(1); y++)
+            {
+                if(squares[x,y] != null)
+                {
+                    count += 1;
+                }
+            }
+        }
+        return count;
     }
 
     void UpdateSquaresInQuartersCount()

@@ -15,6 +15,9 @@ public class MainAsteroid : Asteroid
     BackgroundCollider backgroundCollider;
     List<GameObject> derivedOnScreen;
     List<GameObject> derivedOffScreen;
+    float timeAlive;
+
+    float maximumVelocity = 20f;
 
     public void SetSpawningDerivedAsteroid()
     {
@@ -30,6 +33,9 @@ public class MainAsteroid : Asteroid
 
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, float rotationRate, SquareMesh squareMesh, bool spawning, Vector2 positionOrientation)
     {
+
+        this.timeAlive = Time.time;
+
         waitFrames = 0;
         this.spawnDirection = positionOrientation;
         this.spawning = spawning;
@@ -94,6 +100,8 @@ public class MainAsteroid : Asteroid
         this.rigid_body.angularVelocity = rotationRate;
         this.rigid_body.mass = mass;
 
+        float timeAlive; // set in asteroid controller on spawn
+
         DrawAsteroid(size,squareMesh);
 
         //this.size = GetPolygonArea(new List<Vector3>(this.meshVertices));
@@ -103,6 +111,11 @@ public class MainAsteroid : Asteroid
     // Update is called once per frame
     void Update()
     {
+
+        if(rigid_body.velocity.magnitude > maximumVelocity)
+        {
+            rigid_body.velocity = rigid_body.velocity.normalized * maximumVelocity;
+        }
   
         if(callMoveSpawningAsteroid)
         {
@@ -128,6 +141,7 @@ public class MainAsteroid : Asteroid
                 halfSpawning = false;
                 asteroidController.DespawnAsteroid(this,asteroidPack);
             }
+
 
         }
         derivedOffScreen = DerivedAsteroidsOffScreen();
@@ -169,7 +183,7 @@ public class MainAsteroid : Asteroid
         //Vector2 velocity2d = new Vector2(velocity.x, velocity.y);
         //this.rigid_body.position += velocity2d * Time.deltaTime;
         //Debug.Log(velocity.magnitude);
-
+        Vector2 velocity = rigid_body.velocity;
 
         if (rigid_body.position.x - location.x * worldSize.x > worldSize.x / 2)
         {
@@ -196,6 +210,7 @@ public class MainAsteroid : Asteroid
             this.rigid_body.position  = new Vector2(rigid_body.position.x, rigid_body.position.y + worldSize.y);
             callMoveSpawningAsteroid = true;
         }
+        rigid_body.velocity = velocity;
     }
 
     bool CheckIfFullyOnScreen()
@@ -283,6 +298,7 @@ public class MainAsteroid : Asteroid
 
     void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
     {
+        int numberOfSquaresInAsteroid = squareMesh.NumberOfSquaresInMesh();
         Vector2 collisionLocation;
 
         if(collision == null)
@@ -300,19 +316,15 @@ public class MainAsteroid : Asteroid
             Projectile projectile = otherObject.GetComponent<Projectile>();
             if (projectile.mainProjectile == true)
             {
-                Reference.scoreController.IncrementScore((float)size);
+                float radius = projectile.explosionRadiusDiameter;
+                //Reference.scoreController.IncrementScore((float)size);
 
-                float radius = 1f;
-                if(projectile.projectileType == "Rocket")
-                {
-                    radius = 5f;
-                }
 
                 List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position - new Vector3(offset.x,offset.y,0), radius);
                 if(newAstroidMeshes != null)
                 {
                     /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
-                    Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,offset);
+                    Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,offset);
                 }
             }
         }
@@ -349,6 +361,21 @@ public class MainAsteroid : Asteroid
 
 
 
+    }
+    public void MainAsteroidHitShields(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Vector2 closestPoint, float shieldDamage)
+    {
+//        Debug.Log("Asteroid hit shields");
+//        Debug.Log(relativeVelocity.magnitude);
+            
+        if(relativeVelocity.magnitude > 4f)
+        {
+            int numberOfSquaresInAsteroid = this.squareMesh.NumberOfSquaresInMesh();
+            List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(closestPoint,shieldDamage);
+            if(newAstroidMeshes != null)
+            {
+                Reference.asteroidController.AsteroidHit(this, closestPoint, Reference.shipShields.gameObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,new Vector2(0,0));
+            }
+        }
     }
 
 }

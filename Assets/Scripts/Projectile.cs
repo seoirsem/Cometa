@@ -27,6 +27,10 @@ public class Projectile : MonoBehaviour
     float explosionImpulse;
     float playerMassImpulseAdjustment;
 
+    public float explosionRadiusDiameter;
+    float rocketRadius = 10f;
+    float bulletRadius = 1.5f;
+
 
     bool awayFromPlayer = false;
     bool colliderEnabled;
@@ -61,15 +65,18 @@ public class Projectile : MonoBehaviour
         {
             this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
             capsuleCollider2D.enabled = false;
+            this.explosionRadiusDiameter = rocketRadius;
         }
         else if(projectileType == "Bullet")
         {
             this.circleCollider2d = go.GetComponent<CircleCollider2D>();
             circleCollider2d.enabled = false;
+            this.explosionRadiusDiameter = bulletRadius;
         }
         rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
         rigid_body.rotation = rotationalPosition + 90f;
 
+    
         Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), true);
 
 

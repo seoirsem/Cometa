@@ -84,4 +84,9 @@ public class DerivedAsteroid : Asteroid
     {// any nearby explosions are simply handed up to the parent
         mainAsteroidClass.ApplyExplosionImpulse(direction, position + offset, explosionSize);
     }
+
+    public void DerivedAsteroidHitShields(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Vector2 closestPoint, float shieldDamage)
+    {
+        mainAsteroidClass.MainAsteroidHitShields(distance, relativeVelocity, relativePosition, closestPoint - offset, shieldDamage);
+    }
 }

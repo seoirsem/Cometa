@@ -13,7 +13,6 @@ public class AsteroidController : MonoBehaviour
     Vector3 dummy1 = new Vector3(1,1,1);
     Vector3[] dummy2 = new Vector3[1];
 
-    float spawnCooldown;
 
 
     void Start()
@@ -21,9 +20,8 @@ public class AsteroidController : MonoBehaviour
         mainAsteroidPrefab = Resources.Load("Prefabs/MainAsteroid") as GameObject;
         deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
-        spawnCooldown = Time.time;
 
-        SpawnAsteroid(32, new Vector3(-0.155f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
+        //SpawnAsteroid(32, new Vector3(-0.155f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
     }
 
     void Update()
@@ -41,11 +39,7 @@ public class AsteroidController : MonoBehaviour
                 List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
             }
         }
-        if(Reference.playerInputController.p & Time.time - spawnCooldown > 2f)
-        { //spawnn new asteroid
-            spawnCooldown = Time.time;
-            SpawnNewAsteroid(10);
-        }
+
 
     }
 
@@ -85,9 +79,9 @@ public class AsteroidController : MonoBehaviour
         SpawnAsteroid(size, position, direction, new Vector3(0, 0, 0), 0f, null, true, directionOrientation);    
     }
 
-    public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes,Vector3 offsetFromActualCollision = new Vector3())
+    public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes, int numberOfSquaresInAsteroid, Vector3 offsetFromActualCollision = new Vector3())
     {
-        
+        int numberOfSquaresLost = numberOfSquaresInAsteroid;
         Vector3 preSplitPosition = asteroid.gameObject.transform.position;
         Vector3 preSplitVelocity = (Vector3)asteroid.rigid_body.velocity;
         Vector3 preSplitEulerAngles = asteroid.gameObject.transform.eulerAngles;
@@ -106,11 +100,19 @@ public class AsteroidController : MonoBehaviour
                 Vector3 splitOffset = new Vector3(rotatedSplitOffsetX, rotatedSplitOffsetY, 0f);
                 Vector3 postSplitPosition = preSplitPosition + splitOffset;
                 SpawnAsteroid(40, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
+                numberOfSquaresLost -= squareMesh.NumberOfSquaresInMesh();
+                
             }
             else 
             {
-                Debug.Log("This asteroid chunk has been completely destroyed");
+                //Debug.Log("This asteroid chunk has been completely destroyed");
             }
+        }
+        Reference.scoreController.IncrementScore((float)numberOfSquaresLost);
+        if(otherObject.GetComponent<ShipShields>() != null)
+        {
+//            Debug.Log("Shield Penalty");
+            otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost);
         }
     }
     
@@ -246,7 +248,7 @@ public class AsteroidController : MonoBehaviour
             asteroidgo8.SetActive(false);
         }
 
-        //mainAsteroid.SetSpawningDerivedAsteroid();
+        //Debug.Log(mainAsteroid.squareMesh.NumberOfSquaresInMesh());
     }
 
     // void SpawnSplitAsteroid(int size, Vector3 position, Vector3 velocity, Asteroid asteroidData)

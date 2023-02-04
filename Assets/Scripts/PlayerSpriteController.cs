@@ -17,8 +17,8 @@ public class PlayerSpriteController : MonoBehaviour
     List<GameObject> visualClones;
     float bulletCooldownTimer;
     float rocketCooldownTimer;
-    float rocketCooldown = 0.75f;//s
-    float bulletCooldown = 0.3f;
+    float rocketCooldown = 2f;//s
+    float bulletCooldown = 0.15f;
     public Rigidbody2D rigid_body;
     
     void Awake()
@@ -192,8 +192,8 @@ public class PlayerSpriteController : MonoBehaviour
 
     public void ApplyExplosionImpulse(Vector3 direction, float magnitude)
     {
-        Debug.Log(magnitude);
-        Debug.Log(direction);
+        //Debug.Log(magnitude);
+        //Debug.Log(direction);
         rigid_body.AddForce(magnitude*direction,ForceMode2D.Impulse);
     }
 
