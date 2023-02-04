@@ -8,7 +8,7 @@ public class PlayerSpriteController : MonoBehaviour
     GameObject playergo;
     float rotationRate = 500; 
     float engineForce = 8; 
-    float mass = 1;
+    float mass = 500;
     Reference reference;
     float rotation = 0;
     public Vector3 velocity = new Vector3(0, 0, 0);
@@ -17,10 +17,17 @@ public class PlayerSpriteController : MonoBehaviour
     List<GameObject> visualClones;
     float bulletCooldownTimer;
     float rocketCooldownTimer;
-    float rocketCooldown = 0.75f;//s
-    float bulletCooldown = 0.3f;
+    float rocketCooldown = 2f;//s
+    float bulletCooldown = 0.15f;
     public Rigidbody2D rigid_body;
     
+    void Awake()
+    {
+
+        rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
+        rigid_body.mass = mass;
+
+    }
 
     void Start()
     {
@@ -29,8 +36,6 @@ public class PlayerSpriteController : MonoBehaviour
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
-        rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
-        rigid_body.mass = mass;
         bulletCooldownTimer = Time.time;
         rocketCooldownTimer = Time.time;
         SpawnVisualClones();
@@ -67,7 +72,7 @@ public class PlayerSpriteController : MonoBehaviour
         }
         if (Reference.playerInputController.r)
         {
-            if (Time.time - rocketCooldownTimer > bulletCooldown)
+            if (Time.time - rocketCooldownTimer > rocketCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 rocketCooldownTimer = Time.time;
 
@@ -143,11 +148,11 @@ public class PlayerSpriteController : MonoBehaviour
         float playerInputImpulse = 0;
         if (Reference.playerInputController.upKey)
         {
-            playerInputImpulse += 1;
+            playerInputImpulse += 1*mass;
         }
         if (Reference.playerInputController.downKey)
         {
-            playerInputImpulse -= 1;
+            playerInputImpulse -= 1*mass;
         }
 
         
@@ -187,8 +192,8 @@ public class PlayerSpriteController : MonoBehaviour
 
     public void ApplyExplosionImpulse(Vector3 direction, float magnitude)
     {
-        Debug.Log(magnitude);
-        Debug.Log(direction);
+        //Debug.Log(magnitude);
+        //Debug.Log(direction);
         rigid_body.AddForce(magnitude*direction,ForceMode2D.Impulse);
     }
 

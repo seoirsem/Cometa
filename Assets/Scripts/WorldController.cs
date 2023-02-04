@@ -15,6 +15,7 @@ public class WorldController : MonoBehaviour
     string mainMenuScene = "Scenes/MainMenu";
     string loadingScene = "Scenes/LoadingScene";
     string gameScene = "Scenes/GameScene";
+    GameObject warningPrefab;
     float asteroidSpawnInterval = 100f;
     float time;
     bool gameOver = false;
@@ -25,6 +26,17 @@ public class WorldController : MonoBehaviour
     BoxCollider2D bottomEdgeCollider;
 
     float colliderThickness = 0.01f;
+
+    float freqOfNewAsteroids = 10f;
+    float warningLifespan = 3f;
+    int newAsteroidDirection;
+    Vector3 asteroidPositionOffset;
+
+    bool warningOff = true;
+
+
+    float spawnCooldown;
+
 
     void Awake()
     {
@@ -57,6 +69,14 @@ public class WorldController : MonoBehaviour
     {
         playergo = Reference.playergo;
         player = new Player(playergo);
+        spawnCooldown = Time.time;
+
+        int randomSize = Random.Range(7,13);
+        //Debug.Log(randomSize);
+        warningPrefab = Resources.Load("Prefabs/WarningSymbol") as GameObject;
+        //Reference.asteroidController.SpawnNewAsteroid(randomSize,2, new Vector3(0,0,0));
+        Reference.asteroidController.SpawnRandomAsteroid(20, new Vector3(0,2.5f,0));
+        
     }
 
     // Update is called once per frame
@@ -85,8 +105,49 @@ public class WorldController : MonoBehaviour
             escPressed = true;
 
         }
+        if(Time.time - spawnCooldown > freqOfNewAsteroids - warningLifespan && warningOff)
+        {
+            warningOff = false;
+            
+            newAsteroidDirection = Random.Range(0,4); //left, right, up, down
+            
+            int[] numbers = {-1,0,1,0,0,1,0,-1};
+            Vector3 spawnPosition = new Vector3(numbers[newAsteroidDirection*2]*worldSize.x/2,numbers[newAsteroidDirection*2+1]*worldSize.y/2,0) + 
+                                    new Vector3(numbers[newAsteroidDirection*2]*-0.5f,numbers[newAsteroidDirection*2+1]*-0.5f,0);
+            asteroidPositionOffset = GenerateAsteroidPositionOffset(newAsteroidDirection);
+            GameObject warningSymbol = Instantiate(warningPrefab,spawnPosition + asteroidPositionOffset,Quaternion.identity);
+            warningSymbol.GetComponent<WarningSymbol>().OnSpawn(warningLifespan,1f);
+        }
+        if(Time.time - spawnCooldown > freqOfNewAsteroids && !isPaused)
+        {
+            //// ToDo: Warn the player of incoming a few seconds before spawning    
+             //spawnn new asteroid
+            spawnCooldown = Time.time;
+            warningOff = true;
+            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18),newAsteroidDirection, asteroidPositionOffset);
+        }
+
+        if ((Reference.playerInputController.p && Time.time - spawnCooldown > 2f) && !isPaused)
+        {
+            spawnCooldown = Time.time;
+            int randomInt = Random.Range(0,3);
+            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18), randomInt, GenerateAsteroidPositionOffset(randomInt));   
+        }
 
     }
+    Vector3 GenerateAsteroidPositionOffset(int direction)
+    {
+        if(direction == 0 || direction == 1)
+        { //left or right
+            return new Vector3(0,Random.Range(-worldSize.y/2.5f,worldSize.y/2.5f),0);
+        }
+        else
+        { // up or down
+            return new Vector3(Random.Range(-worldSize.x/2.5f,worldSize.x/2.5f),0,0);
+        }
+    }
+
+
     public void PlayerDead()
     {
         if(!gameOver)

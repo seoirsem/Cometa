@@ -49,7 +49,7 @@ public class ScoreController : MonoBehaviour
             formatter = new BinaryFormatter();
             stream = new FileStream(highScoresPath, FileMode.Open);
             highScoreEntryList = formatter.Deserialize(stream) as List<HighScoreEntry>;
-            Debug.Log(highScoreEntryList[0].dateAchieved);
+//            Debug.Log(highScoreEntryList[0].dateAchieved);
             stream.Close();
         }
 
@@ -58,7 +58,7 @@ public class ScoreController : MonoBehaviour
         stream = new FileStream(highScoresPath, FileMode.Create);
         formatter.Serialize(stream, highScoreEntryList);
         stream.Close();
-        Debug.Log("Saved high score to file");
+//        Debug.Log("Saved high score to file");
     }
 
 

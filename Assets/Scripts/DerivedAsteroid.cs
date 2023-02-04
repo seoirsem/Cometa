@@ -80,8 +80,13 @@ public class DerivedAsteroid : Asteroid
 
     }
 
-    public void ApplyExplosionImpulse(Vector3 direction, Vector2 position, float explosionSize)
+    public void ApplyExplosionImpulse(Vector3 direction, Vector2 position, float explosionSize, Projectile projectile)
     {// any nearby explosions are simply handed up to the parent
-        mainAsteroidClass.ApplyExplosionImpulse(direction, position + offset, explosionSize);
+        mainAsteroidClass.ApplyExplosionImpulse(direction, position + offset, explosionSize, projectile);
+    }
+
+    public void DerivedAsteroidHitShields(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Vector2 closestPoint, float shieldDamage)
+    {
+        mainAsteroidClass.MainAsteroidHitShields(distance, relativeVelocity, relativePosition, closestPoint - offset, shieldDamage);
     }
 }
