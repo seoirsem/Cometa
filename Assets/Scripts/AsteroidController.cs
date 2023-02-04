@@ -42,41 +42,48 @@ public class AsteroidController : MonoBehaviour
 
 
     }
+    
 
-    public void SpawnNewAsteroid(int size)
+
+    public void SpawnNewAsteroid(int size, int directionIndex, Vector3 asteroidPositionOffset)
     {
         /// velocity
         int[] numbers = {-1,0,1,0,0,1,0,-1};
-        int randomIndex = Random.Range(0,3);
-        Vector3 directionOrientation = new Vector3(numbers[randomIndex*2],numbers[randomIndex*2+1],0);
+//        int directionIndex = Random.Range(0,3);
+        Vector3 directionOrientation = new Vector3(numbers[directionIndex*2],numbers[directionIndex*2+1],0);
         float magnitude = Random.Range(1f,5f);
         Vector3 direction = -1 * magnitude*directionOrientation;
 
         Vector3 position = new Vector3(0,0,0);
-        if(randomIndex == 0)
-        {// up
+        if(directionIndex == 0)
+        {// left
             position = new Vector3(-worldSize.x/2 - 1.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
             direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
         }
-        if(randomIndex == 1)
-        {// up
+        if(directionIndex == 1)
+        {// right
             position = new Vector3(worldSize.x/2 + 0.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
             direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
         }
-        if(randomIndex == 2)
+        if(directionIndex == 2)
         {// up
             position = new Vector3(-0.5f*size*Asteroid.celSize,worldSize.y/2 + 0.05f*size*Asteroid.celSize,0);
             direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
         }
-        if(randomIndex == 3)
-        {// up
+        if(directionIndex == 3)
+        {// down
             position = new Vector3(-0.5f*size*Asteroid.celSize,-worldSize.y/2 - 1.05f*size*Asteroid.celSize,0);
             direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
         }
         /// position
         //Vector3 position = new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);
 
-        SpawnAsteroid(size, position, direction, new Vector3(0, 0, 0), 0f, null, true, directionOrientation);    
+        SpawnAsteroid(size, position + asteroidPositionOffset, direction, new Vector3(0, 0, 0), GaussianRandom.generateNormalRandom(0,30f), null, true, directionOrientation);    
+    }
+
+    public void SpawnRandomAsteroid(int size, Vector3 position)
+    {
+        SpawnAsteroid(size, position, new Vector3(0,0,0), new Vector3(0, 0, 0), Random.Range(-20f,20f), null, false, new Vector2(0,0));    
     }
 
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes, int numberOfSquaresInAsteroid, Vector3 offsetFromActualCollision = new Vector3())

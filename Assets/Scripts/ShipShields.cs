@@ -34,7 +34,7 @@ public class ShipShields : MonoBehaviour
         rigid_body = gameObject.GetComponent<Rigidbody2D>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         lastHit = Time.time;
-        lastPulse = Time.time;
+        lastPulse = Time.time-pulseCooldown;
         shieldForceMultiplier = playerRigidBody.mass;
 
     }
@@ -58,7 +58,9 @@ public class ShipShields : MonoBehaviour
 
     void UpdateCollisions()
     {
-        foreach (Collider2D hitCollider in TriggerList)
+        List<Collider2D> hitList = new List<Collider2D>(TriggerList);
+
+        foreach (Collider2D hitCollider in hitList)
         {
 
             float projectileLife = 2f;
@@ -116,7 +118,7 @@ public class ShipShields : MonoBehaviour
     }
     public void ShieldsInExplosionRadius(float explosionImpulse, Projectile projectile)
     {   
-        Debug.Log(explosionImpulse);
+//        Debug.Log(explosionImpulse);
         // /Debug.Log(explosionImpulse/(shieldForceRatio*7));
         if(explosionImpulse/(shieldForceRatio*400) > 5f)
         {

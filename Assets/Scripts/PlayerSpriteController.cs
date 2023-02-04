@@ -72,7 +72,7 @@ public class PlayerSpriteController : MonoBehaviour
         }
         if (Reference.playerInputController.r)
         {
-            if (Time.time - rocketCooldownTimer > bulletCooldown)
+            if (Time.time - rocketCooldownTimer > rocketCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 rocketCooldownTimer = Time.time;
 

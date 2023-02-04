@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hashCode: -2113993494
   material: {fileID: 21704438749789640}
-  materialHashCode: 1205767201
+  materialHashCode: -630713078
   m_Version: 1.1.0
   m_SourceFontFileGUID: 09f5f6f2c59fdf2449740899f95946b9
   m_SourceFontFile_EditorRef: {fileID: 0}
@@ -28,7 +28,7 @@ MonoBehaviour:
     m_LineHeight: 104.625
     m_AscentLine: 76.25
     m_CapLine: 52.75
-    m_MeanLine: 0
+    m_MeanLine: 41.875
     m_Baseline: 0
     m_DescentLine: -28.375
     m_SuperscriptOffset: 76.25
@@ -1809,6 +1809,7 @@ MonoBehaviour:
   m_AtlasTextures:
   - {fileID: 28858486761876356}
   m_AtlasTextureIndex: 0
+  m_IsMultiAtlasTexturesEnabled: 0
   m_UsedGlyphRects: []
   m_FreeGlyphRects: []
   m_fontInfo:
@@ -2801,7 +2802,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Rajdhani-Bold SDF Material
   m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2841,6 +2842,7 @@ Material:
     - _BumpFace: 0
     - _BumpOutline: 0
     - _ColorMask: 15
+    - _CullMode: 0
     - _Diffuse: 0.5
     - _FaceDilate: 0
     - _FaceUVSpeedX: 0
@@ -2865,6 +2867,7 @@ Material:
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
+    - _Sharpness: 0
     - _SpecularPower: 2
     - _Stencil: 0
     - _StencilComp: 8
@@ -2912,6 +2915,7 @@ Texture2D:
   m_MipCount: 1
   m_IsReadable: 0
   m_IgnoreMasterTextureLimit: 0
+  m_IsPreProcessed: 0
   m_StreamingMipmaps: 0
   m_StreamingMipmapsPriority: 0
   m_AlphaIsTransparency: 0

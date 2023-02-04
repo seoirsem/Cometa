@@ -289,7 +289,7 @@ public class MainAsteroid : Asteroid
         //Debug.Break();
         if (collidee.gameObject.GetComponent<Projectile>() != null)
         {
-            Debug.Log("derived projectile collision");
+//            Debug.Log("derived projectile collision");
 
             ResolveCollision(collidee.gameObject, collision, collidee, offset);
         }
