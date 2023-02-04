@@ -63,7 +63,7 @@ public class SquareMesh
             }
         }
         centreOfMass = new Vector2(xTotal*edgeLength/count,yTotal*edgeLength/count);
-        mass = count*edgeLength*edgeLength*9f;
+        mass = count*edgeLength*edgeLength*99f;
     }
 
     public List<SquareMesh> OnSplit()
@@ -137,10 +137,13 @@ public class SquareMesh
             {
 //                Debug.Log("Splitting to quarters");
                 chunks = SplitIntoQuarters(this);
-                for ( int m = 0; m < chunks.Count; m++ )
-                {
-                    if ( chunks[m] == null ) { continue; }
-                    chunks[m] = UpdateNeighboursAndEdges(chunks[m]);
+                if ( chunks != null ) 
+                { 
+                    for ( int m = 0; m < chunks.Count; m++ )
+                    {
+                        if ( chunks[m] == null ) { continue; }
+                        chunks[m] = UpdateNeighboursAndEdges(chunks[m]);
+                    }
                 }
             }
             else

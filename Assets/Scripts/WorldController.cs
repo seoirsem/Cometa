@@ -27,7 +27,7 @@ public class WorldController : MonoBehaviour
 
     float colliderThickness = 0.01f;
 
-    float freqOfNewAsteroids = 10f;
+    float freqOfNewAsteroids = 30f;
     float warningLifespan = 3f;
     int newAsteroidDirection;
     Vector3 asteroidPositionOffset;

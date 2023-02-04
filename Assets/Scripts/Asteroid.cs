@@ -58,7 +58,7 @@ public class Asteroid : MonoBehaviour
         {
             squareMesh = new SquareMesh();
             squareMesh.SetAsteroid(this);
-            squareMesh.GenerateCircularMesh(size,celSize);
+            squareMesh.GenerateSquareMesh(size,celSize);
             squareMesh.FindOutline();
             squareMesh.ScaleEdgeLength();
             squareMesh.ResetMesh();

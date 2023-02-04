@@ -39,8 +39,6 @@ public class AsteroidController : MonoBehaviour
                 List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
             }
         }
-
-
     }
     
 
