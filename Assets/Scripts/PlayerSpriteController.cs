@@ -8,7 +8,7 @@ public class PlayerSpriteController : MonoBehaviour
     GameObject playergo;
     float rotationRate = 500; 
     float engineForce = 8; 
-    float mass = 500;
+    float mass = 15;
     Reference reference;
     float rotation = 0;
     public Vector3 velocity = new Vector3(0, 0, 0);
