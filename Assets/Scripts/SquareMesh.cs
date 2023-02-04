@@ -63,7 +63,7 @@ public class SquareMesh
             }
         }
         centreOfMass = new Vector2(xTotal*edgeLength/count,yTotal*edgeLength/count);
-        mass = count*edgeLength*edgeLength * 999f;
+        mass = count*edgeLength*edgeLength*9f;
     }
 
     public List<SquareMesh> OnSplit()
