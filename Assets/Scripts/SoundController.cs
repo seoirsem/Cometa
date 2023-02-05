@@ -15,6 +15,9 @@ public class SoundController : MonoBehaviour
     AudioClip explosion;
     AudioClip music;
     AudioClip playerDeadSound;
+    AudioClip music80s;
+
+    static int choice = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +27,8 @@ public class SoundController : MonoBehaviour
         playerDeadSound = Resources.Load<AudioClip>("Sounds/player_dead_sound");
         explosion = Resources.Load<AudioClip>("Sounds/explosion");
         music = Resources.Load<AudioClip>("Sounds/song_pixabay");
+        music80s = Resources.Load<AudioClip>("Sounds/80s_song_pixabay");
+        
         InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
 
         //ToDo: menu and game music. Music ramps up as you play
@@ -38,7 +43,18 @@ public class SoundController : MonoBehaviour
 
     void StartMusic()
     {
-        musicSource.clip = music;
+        //int musicChoice = Random.Range(0,2);
+        //Debug.Log($"Music choice: {musicChoice}");
+        if(choice == 0)
+        {
+            choice = 1;
+            musicSource.clip = music;
+        }
+        else
+        {
+            choice = 0;
+            musicSource.clip = music80s;
+        }
         musicSource.loop = true;
         musicSource.Play();
     }
