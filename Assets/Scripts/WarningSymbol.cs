@@ -19,6 +19,7 @@ public class WarningSymbol : MonoBehaviour
 
     Color red;
     Color yellow;
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -41,9 +42,11 @@ public class WarningSymbol : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Time.time - timeAwake > timeActive - timeRed)
+        if(Time.time - timeAwake > timeActive - timeRed && !redWarning)
         {
+            redWarning = true;
             sr.color = red;
+            Reference.soundController.PlayWarning();
         }
         if(Time.time - timeAwake > timeActive)
         {

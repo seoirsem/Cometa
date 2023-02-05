@@ -97,6 +97,7 @@ public class AsteroidController : MonoBehaviour
         Vector3 preSplitVelocity = (Vector3)asteroid.rigid_body.velocity;
         Vector3 preSplitEulerAngles = asteroid.gameObject.transform.eulerAngles;
         float preSplitAngularVelocity = asteroid.rigid_body.angularVelocity;
+        Reference.soundController.RockDestroy();
 
         DespawnAsteroid(asteroid,asteroidPack);
         foreach(SquareMesh squareMesh in newAstroidMeshes)

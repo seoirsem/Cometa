@@ -323,10 +323,10 @@ public class MainAsteroid : Asteroid
                 float radius = projectile.explosionRadiusDiameter;
                 //Reference.scoreController.IncrementScore((float)size);
 
-
                 List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position - new Vector3(offset.x,offset.y,0), radius);
                 if(newAstroidMeshes != null)
                 {
+
                     /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
                     Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,offset);
                 }
@@ -344,6 +344,7 @@ public class MainAsteroid : Asteroid
             Vector2 relativeVelocity = rigidBodyVelocity - otherAsteroid.rigidBodyVelocity;
             Vector2 relativeMomentum = rigidBodyVelocity*mass - otherAsteroid.rigidBodyVelocity*otherAsteroid.mass;
             //Debug.Log(relativeMomentum);
+            //Debug.Log($"Relative {relativeVelocity.magnitude}, size {mass}");
             if(relativeMomentum.magnitude > 200f)
             {
                 float radius = relativeMomentum.magnitude/450f;
@@ -356,6 +357,15 @@ public class MainAsteroid : Asteroid
                     Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,offset);
                 }
 
+            }
+            else if(mass < 3 && relativeVelocity.magnitude > 3f)
+            {//chance to be destroyed if it is a small asteroid
+                // This is an attempt at crowd control
+                float random = Random.Range(0,1);
+                if(random<0.15f)
+                {
+                    asteroidController.DespawnAsteroid(this,asteroidPack);
+                }
             }
             //Debug.Log("Asteroid hit other asteroid");
 
