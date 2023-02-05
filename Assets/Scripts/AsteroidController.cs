@@ -123,7 +123,7 @@ public class AsteroidController : MonoBehaviour
         if(otherObject.GetComponent<ShipShields>() != null)
         {
 //            Debug.Log("Shield Penalty");
-            otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost);
+            otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost,contact);
         }
     }
     

@@ -17,7 +17,7 @@ public class DerivedAsteroid : Asteroid
     {
         DrawDerivedAsteroid();
 
-        this.mass = Mathf.Pow(size,2);
+        //this.mass = Mathf.Pow(size,2);
         // Update this in future to calculate based on the area of the shape formed by the mesh
         this.location = location;
         this.size = size;
@@ -66,7 +66,13 @@ public class DerivedAsteroid : Asteroid
         Asteroid mainAst = mainAsteroid.GetComponent<Asteroid>();
         //Debug.Log(this.squareMesh);
         this.squareMesh.perimeterVertices = mainAst.squareMesh.perimeterVertices;
+        squareMesh.squares = mainAst.squareMesh.squares;
+        squareMesh.FindOutline();
+        squareMesh.ScaleEdgeLength();
+
         this.squareMesh.RedrawMesh();
+        squareMesh.FindCentreOfMass();
+
         //DrawMesh(meshVertices, meshTriangles);
         //DrawCollider(meshVertices, meshTriangles);
         

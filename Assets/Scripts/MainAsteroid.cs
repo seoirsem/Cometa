@@ -83,7 +83,7 @@ public class MainAsteroid : Asteroid
                 
             }
         }
-        this.mass = Mathf.Pow(size,2);
+        //this.mass = Mathf.Pow(size,2);
         this.size = size;
         this.asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
         //this.asteroidOutlines = this.gameObject.transform.Find("AsteroidOutline").gameObject;
@@ -348,7 +348,7 @@ public class MainAsteroid : Asteroid
             {
                 float radius = relativeMomentum.magnitude/450f;
                 Debug.Log($"Mass: {mass}, Other Object mass: {otherAsteroid.mass} Relative momentum: {relativeMomentum.magnitude}, radius: {radius}");
- 
+                if(otherAsteroid.mass == 1600){Debug.Log(otherAsteroid.gameObject.name); Debug.Break();}
                 List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(collision.contacts[0].point, radius);
                 if(newAstroidMeshes != null)
                 {

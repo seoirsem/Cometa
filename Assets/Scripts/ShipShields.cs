@@ -111,10 +111,11 @@ public class ShipShields : MonoBehaviour
             }
         }
     }
-    public void ShieldsDestroyedAsteroidSquares(int numberOfSquaresLost)
+    public void ShieldsDestroyedAsteroidSquares(int numberOfSquaresLost, Vector3 collisionPoint)
     {
         //A shield penalty when the shields destroy asteroid matter
         OnHit(numberOfSquaresLost * matterDestroyedShieldPenalty/shieldForceRatio);
+        Reference.animationController.SpawnShieldExplosionAnimation(collisionPoint, gameObject);
     }
     public void ShieldsInExplosionRadius(float explosionImpulse, Projectile projectile)
     {   
