@@ -19,6 +19,7 @@ public class Reference
     public static WorldController worldController;
     public static ShipShields shipShields;
     public static SoundController soundController;
+    public static ShakeCamera shakeCamera;
     // public static ShipShieldVisuals;
     
     
@@ -41,6 +42,7 @@ public class Reference
         scoreController = GameObject.Find("ScoreController").GetComponent<ScoreController>();
         worldController = GameObject.Find("WorldController").GetComponent<WorldController>();
         shipShields = GameObject.Find("ShipShields").GetComponent<ShipShields>();
+        shakeCamera = GameObject.Find("Main Camera").GetComponent<ShakeCamera>();
 
     }
 

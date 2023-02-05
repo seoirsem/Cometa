@@ -358,11 +358,11 @@ public class MainAsteroid : Asteroid
                 }
 
             }
-            else if(mass < 3 && relativeVelocity.magnitude > 3f)
+            else if(mass < 3 && relativeVelocity.magnitude > 3f && otherAsteroid.mass > 10)
             {//chance to be destroyed if it is a small asteroid
                 // This is an attempt at crowd control
                 float random = Random.Range(0,1);
-                if(random<0.15f)
+                if(random<0.2f)
                 {
                     asteroidController.DespawnAsteroid(this,asteroidPack);
                 }

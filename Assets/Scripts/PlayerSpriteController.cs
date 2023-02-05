@@ -87,6 +87,8 @@ public class PlayerSpriteController : MonoBehaviour
                 bulletCooldownTimer = Time.time;
                 Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Bullet");
                 Reference.soundController.FireBullet();
+                Reference.shakeCamera.StartShake(0.05f,0.05f);
+
             }
         }
         if (Reference.playerInputController.r)

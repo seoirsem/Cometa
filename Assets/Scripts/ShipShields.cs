@@ -119,6 +119,7 @@ public class ShipShields : MonoBehaviour
         OnHit(numberOfSquaresLost * matterDestroyedShieldPenalty/shieldForceRatio);
         Reference.animationController.SpawnShieldExplosionAnimation(collisionPoint, gameObject);
         Reference.soundController.ShieldCollisionSound();
+        Reference.shakeCamera.StartShake(0.05f,0.15f);
     }
     public void ShieldsInExplosionRadius(float explosionImpulse, Projectile projectile)
     {   

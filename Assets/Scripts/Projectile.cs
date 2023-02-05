@@ -266,6 +266,8 @@ public class Projectile : MonoBehaviour
 //            Debug.Log(projectileType);
             /// perform animations etc
             Reference.animationController.SpawnExplosionAnimation(this.transform.position);
+            Reference.shakeCamera.StartShake(0.15f,0.2f);
+
             
             if(blueFlameAnimation != null)
             {
