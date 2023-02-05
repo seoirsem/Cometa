@@ -7,6 +7,7 @@ public class SoundController : MonoBehaviour
  
     AudioSource audioSource;
     AudioSource musicSource;
+    AudioSource bulletAudioSource;
 
     public float masterVolume;
     public float musicVolume;
@@ -15,19 +16,51 @@ public class SoundController : MonoBehaviour
     AudioClip explosion;
     AudioClip music;
     AudioClip playerDeadSound;
+    AudioClip blasterMultiple;
+    AudioClip music80s;
+    AudioClip shieldBeginCharge;
+    AudioClip laserShoot;
+    AudioClip laserSingleShot;
+    AudioClip rockDestroy;
+    AudioClip beepWarning;
+    static int choice = 1;
+
+    float musicMaxVolume = 0.45f;
+
+    float asteroidCollisionCooldown = 0.5f;
+    float lastAsteroidCollision;
+
+
     // Start is called before the first frame update
     void Start()
     {
+
         audioSource = GetComponent<AudioSource>();
         musicSource = transform.Find("MusicController").GetComponent<AudioSource>();
+        bulletAudioSource = transform.Find("BulletAudioSource").GetComponent<AudioSource>();
         asteroidCollision = Resources.Load<AudioClip>("Sounds/rockImpact");
         playerDeadSound = Resources.Load<AudioClip>("Sounds/player_dead_sound");
-        explosion = Resources.Load<AudioClip>("Sounds/explosion");
+        explosion = Resources.Load<AudioClip>("Sounds/explosion_big");
         music = Resources.Load<AudioClip>("Sounds/song_pixabay");
-        InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
+        music80s = Resources.Load<AudioClip>("Sounds/80s_song_pixabay");
+        blasterMultiple = Resources.Load<AudioClip>("Sounds/blaster_multiple");
+        shieldBeginCharge = Resources.Load<AudioClip>("Sounds/shield_charge");
+        laserShoot = Resources.Load<AudioClip>("Sounds/firing_many");
 
+        laserSingleShot = Resources.Load<AudioClip>("Sounds/single_shot");
+        rockDestroy = Resources.Load<AudioClip>("Sounds/rock_destroy");
+        beepWarning = Resources.Load<AudioClip>("Sounds/beep_warning");
+        
+        InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
         //ToDo: menu and game music. Music ramps up as you play
         StartMusic();
+
+        lastAsteroidCollision = Time.time;
+
+        bulletAudioSource.clip = laserShoot;
+
+
+
     }
 
     // Update is called once per frame
@@ -38,7 +71,18 @@ public class SoundController : MonoBehaviour
 
     void StartMusic()
     {
-        musicSource.clip = music;
+        //int musicChoice = Random.Range(0,2);
+        //Debug.Log($"Music choice: {musicChoice}");
+        if(choice == 0)
+        {
+            choice = 1;
+            musicSource.clip = music;
+        }
+        else
+        {
+            choice = 0;
+            musicSource.clip = music80s;
+        }
         musicSource.loop = true;
         musicSource.Play();
     }
@@ -52,10 +96,10 @@ public class SoundController : MonoBehaviour
 
     public void InitialiseVolumes(float musicVolumeSet, float masterVolumeSet)
     {
-        if(musicVolumeSet >= 1)
+        if(musicVolumeSet >= musicMaxVolume)
         {
-            musicVolume = 1;
-            musicSource.volume = 1;
+            musicVolume = musicMaxVolume;
+            musicSource.volume = musicMaxVolume;
             OptionsParameters.MusicVolume = 1;
         }
         else if(musicVolumeSet <= 0)
@@ -66,8 +110,8 @@ public class SoundController : MonoBehaviour
         }
         else
         {
-            musicVolume = musicVolumeSet;
-            musicSource.volume = musicVolumeSet;
+            musicVolume = musicVolumeSet*musicMaxVolume;
+            musicSource.volume = musicVolumeSet*musicMaxVolume;
             OptionsParameters.MusicVolume = musicVolumeSet;
         }
         if(masterVolumeSet >= 1)
@@ -91,12 +135,46 @@ public class SoundController : MonoBehaviour
     }
     public void asteroidCollisionSound()
     {
-        audioSource.PlayOneShot(asteroidCollision);
+        if(Time.time - lastAsteroidCollision > asteroidCollisionCooldown)
+        {
+            audioSource.PlayOneShot(asteroidCollision);
+            lastAsteroidCollision = Time.time;
+        }
     }
 
     public void playExplosionSound()
     {
         audioSource.PlayOneShot(explosion);
+    }
+
+    public void playBeginShieldCharge()
+    {
+        AudioClip charge = MakeSubclip(shieldBeginCharge,3f,3.5f);
+        audioSource.PlayOneShot(shieldBeginCharge,audioSource.volume/0.75f);
+    }
+
+    public void StartShootingBullets()
+    {
+        bulletAudioSource.Play();
+    }
+
+    public void StopShootingBullets()
+    {
+        bulletAudioSource.Pause();
+    }
+
+    public void FireBullet()
+    {
+        bulletAudioSource.PlayOneShot(laserSingleShot);
+    }
+    public void PlayWarning()
+    {
+        audioSource.PlayOneShot(beepWarning);
+    }
+
+    public void RockDestroy()
+    {
+        audioSource.PlayOneShot(rockDestroy,audioSource.volume/5f);
     }
 
 
@@ -105,9 +183,9 @@ public class SoundController : MonoBehaviour
         if(volume >= 1)
         {
             masterVolume = 1;
-            musicVolume = 1;
+            musicVolume = musicMaxVolume;
             audioSource.volume = 1;
-            musicSource.volume = 1;
+            musicSource.volume = musicMaxVolume;
             OptionsParameters.MasterVolume = 1;
             OptionsParameters.MusicVolume = 1;
         }
@@ -133,9 +211,9 @@ public class SoundController : MonoBehaviour
 
     public void SetMusicVolume(float volume)
     {//a float between 0 and 1
-        if(volume >= 1)
+        if(volume >= musicMaxVolume)
         {
-            musicVolume = 1;
+            musicVolume = musicMaxVolume;
             musicSource.volume = 1;
             OptionsParameters.MusicVolume = 1;
         }
@@ -147,10 +225,40 @@ public class SoundController : MonoBehaviour
         }
         else
         {
-            musicVolume = volume;
+            musicVolume = volume*musicMaxVolume;
             musicSource.volume = volume;
             OptionsParameters.MusicVolume = volume;
         }
+    }
+
+    public void ShieldCollisionSound()
+    { 
+        int randomShot = Random.Range(0,11);
+        AudioClip blaster = MakeSubclip(blasterMultiple,3f*randomShot + 0.1f,3f*randomShot + 1.4f);
+        audioSource.PlayOneShot(blaster);
+    }
+
+
+     /**
+  * Creates a sub clip from an audio clip based off of the start time
+  * and the stop time. The new clip will have the same frequency as
+  * the original.
+  */
+    private AudioClip MakeSubclip(AudioClip clip, float start, float stop)
+    {
+        /* Create a new audio clip */
+        int frequency = clip.frequency;
+        float timeLength = stop - start;
+        int samplesLength = (int)(frequency * timeLength);
+        AudioClip newClip = AudioClip.Create(clip.name + "-sub", samplesLength, 1, frequency, false);
+        /* Create a temporary buffer for the samples */
+        float[] data = new float[samplesLength];
+        /* Get the data from the original clip */
+        clip.GetData(data, (int)(frequency * start));
+        /* Transfer the data to the new clip */
+        newClip.SetData(data, 0);
+        /* Return the sub clip */
+        return newClip;
     }
 
 

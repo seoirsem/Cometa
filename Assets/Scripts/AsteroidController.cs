@@ -95,6 +95,7 @@ public class AsteroidController : MonoBehaviour
         Vector3 preSplitVelocity = (Vector3)asteroid.rigid_body.velocity;
         Vector3 preSplitEulerAngles = asteroid.gameObject.transform.eulerAngles;
         float preSplitAngularVelocity = asteroid.rigid_body.angularVelocity;
+        Reference.soundController.RockDestroy();
 
         DespawnAsteroid(asteroid,asteroidPack);
         foreach(SquareMesh squareMesh in newAstroidMeshes)
@@ -121,7 +122,7 @@ public class AsteroidController : MonoBehaviour
         if(otherObject.GetComponent<ShipShields>() != null)
         {
 //            Debug.Log("Shield Penalty");
-            otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost);
+            otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost,contact);
         }
     }
     

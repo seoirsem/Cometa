@@ -20,12 +20,14 @@ public class PlayerSpriteController : MonoBehaviour
     float rocketCooldown = 2f;//s
     float bulletCooldown = 0.15f;
     public Rigidbody2D rigid_body;
+    bool spaceDown = false;
     
     void Awake()
     {
 
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.mass = mass;
+        spaceDown = false;
 
     }
 
@@ -52,7 +54,10 @@ public class PlayerSpriteController : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     { // A collision with the ship's hull has occurred! This is game over (for the time being)
 //        Debug.Log(collision.gameObject.name);
-        Reference.worldController.PlayerDead();
+        if(collision.gameObject.GetComponent<Projectile>() == null)
+        {
+            Reference.worldController.PlayerDead();
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -61,13 +66,29 @@ public class PlayerSpriteController : MonoBehaviour
     }
     void UpdatePlayerShooting()
     {
+        // Debug.Log($"Variable {Reference.playerInputController.spaceBar}, key {Input.GetKeyDown("space")}");
+
+        // if(Reference.playerInputController.spaceBar && !spaceDown)
+        // {
+        //     spaceDown = true;
+        //     Reference.soundController.StartShootingBullets();
+        // }
+        // else if(!Reference.playerInputController.spaceBar && spaceDown)
+        // {
+        //     Debug.Log("stopping");
+        //     spaceDown = false;
+        //     Reference.soundController.StopShootingBullets();
+        // }
+
         if (Reference.playerInputController.spaceBar)
         {
             if (Time.time - bulletCooldownTimer > bulletCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 bulletCooldownTimer = Time.time;
-
                 Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Bullet");
+                Reference.soundController.FireBullet();
+                Reference.shakeCamera.StartShake(0.05f,0.05f);
+
             }
         }
         if (Reference.playerInputController.r)

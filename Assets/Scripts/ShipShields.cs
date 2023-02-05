@@ -25,6 +25,8 @@ public class ShipShields : MonoBehaviour
     float shieldDamageRadiusToAsteroids = 1.5f;
     float matterDestroyedShieldPenalty = 5f;
 
+    bool shieldNotOnCooldown = false;
+
     void Start()
     {
         shieldStrength = 100f;
@@ -111,10 +113,13 @@ public class ShipShields : MonoBehaviour
             }
         }
     }
-    public void ShieldsDestroyedAsteroidSquares(int numberOfSquaresLost)
+    public void ShieldsDestroyedAsteroidSquares(int numberOfSquaresLost, Vector3 collisionPoint)
     {
         //A shield penalty when the shields destroy asteroid matter
         OnHit(numberOfSquaresLost * matterDestroyedShieldPenalty/shieldForceRatio);
+        Reference.animationController.SpawnShieldExplosionAnimation(collisionPoint, gameObject);
+        Reference.soundController.ShieldCollisionSound();
+        Reference.shakeCamera.StartShake(0.05f,0.15f);
     }
     public void ShieldsInExplosionRadius(float explosionImpulse, Projectile projectile)
     {   
@@ -144,10 +149,17 @@ public class ShipShields : MonoBehaviour
     
     void UpdateCharge(float dt)
     {   
+        if(shieldNotOnCooldown && Time.time - lastHit > shieldChargeDelay)
+        {
+            Reference.soundController.playBeginShieldCharge();
+            shieldNotOnCooldown = false;
+        }
+
         if(Time.time - lastHit > shieldChargeDelay)
         {
             shieldStrength += shieldRechargeRate*dt;
             if(shieldStrength > maxShieldStrength){shieldStrength = maxShieldStrength;}
+
         }
         if(shieldStrength == 0f)
         {
@@ -156,8 +168,6 @@ public class ShipShields : MonoBehaviour
             tmp.a = 0;
             this.spriteRenderer.color = tmp; 
         }
-        // Debug.Log(Time.time - lastShimmer);
-        // Debug.Log(Time.time);
         else
             {
             float strengthRange = 1f;
@@ -201,6 +211,8 @@ public class ShipShields : MonoBehaviour
 
         lastHit = Time.time;
         shieldStrength -= shieldForceRatio*shieldForce;
+        shieldNotOnCooldown = true;
+
 //        Debug.Log(shieldForceRatio*shieldForce);
 
         if(shieldStrength < 0){shieldStrength = 0;}
