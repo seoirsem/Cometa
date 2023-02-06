@@ -23,6 +23,9 @@ public class PlayerSpriteController : MonoBehaviour
     bool spaceDown = false;
     float rocketForce = 0.5f;
 
+    bool playingRocketSound = false;
+    bool playingTurningSound = false;
+
 
 
     void Awake()
@@ -149,10 +152,25 @@ public class PlayerSpriteController : MonoBehaviour
         if (Reference.playerInputController.leftKey)
         {
             playerInputRotation += 1;
+            if(!playingTurningSound)
+            {
+                Reference.soundController.StartTurningRocketBoost();
+                playingTurningSound = true;
+            }
         }
         if (Reference.playerInputController.rightKey)
         {
             playerInputRotation -= 1;
+            if(!playingTurningSound)
+            {
+                Reference.soundController.StartTurningRocketBoost();
+                playingTurningSound = true;
+            }
+        }
+        if(playerInputRotation == 0 && playingTurningSound)
+        {
+            Reference.soundController.StopTurningRocketBoost();
+            playingTurningSound = false;
         }
 //        float frameRotation = Time.deltaTime *playerInputRotation*rotationRate;
         //float torque = Time.deltaTime *playerInputRotation*rotationRate;
@@ -169,12 +187,28 @@ public class PlayerSpriteController : MonoBehaviour
         if (Reference.playerInputController.upKey)
         {
             playerInputImpulse += 1*mass;
+            if(!playingRocketSound)
+            {
+                Reference.soundController.StartRocketBoost();
+                playingRocketSound = true;
+            }
         }
         if (Reference.playerInputController.downKey)
         {
             playerInputImpulse -= 1*mass;
+            if(!playingRocketSound)
+            {// todo - make reverse sound different?
+                Reference.soundController.StartRocketBoost();
+                playingRocketSound = true;
+            }
         }
+        
+        if(playerInputImpulse == 0 && playingRocketSound)
+        {
 
+            Reference.soundController.StopRocketBoost();
+            playingRocketSound = false;
+        }
         
         //Vector3 impulse = transform.up * playerInputImpulse * engineForce / player.mass;
         //velocity += Time.deltaTime*impulse;

@@ -9,6 +9,8 @@ public class SoundController : MonoBehaviour
     AudioSource musicSource;
     AudioSource bulletAudioSource;
     AudioSource rocketAudioSource;
+    AudioSource playerAudioSource;
+    AudioSource playerTurningAudioSource;
 
     public float masterVolume;
     public float musicVolume;
@@ -28,6 +30,9 @@ public class SoundController : MonoBehaviour
     AudioClip shortWhoosh;
     AudioClip rocketShoot;
     AudioClip shieldImpact;
+    AudioClip rocketBoostLow;
+    AudioClip rocketMedium;
+    AudioClip rocketMediumLow;
     static int choice = 1;
 
     float musicMaxVolume = 0.45f;
@@ -47,6 +52,8 @@ public class SoundController : MonoBehaviour
         musicSource = transform.Find("MusicController").GetComponent<AudioSource>();
         bulletAudioSource = transform.Find("BulletAudioSource").GetComponent<AudioSource>();
         rocketAudioSource = transform.Find("RocketAudioSource").GetComponent<AudioSource>();
+        playerTurningAudioSource = transform.Find("PlayerTurningAudioSource").GetComponent<AudioSource>();
+        playerAudioSource = GameObject.Find("Player").GetComponent<AudioSource>();
         asteroidCollision = Resources.Load<AudioClip>("Sounds/rockImpact");
         playerDeadSound = Resources.Load<AudioClip>("Sounds/player_dead_sound");
         explosion = Resources.Load<AudioClip>("Sounds/explosion_big");
@@ -63,6 +70,9 @@ public class SoundController : MonoBehaviour
         shortWhoosh = Resources.Load<AudioClip>("Sounds/short_whoosh");
         rocketShoot = Resources.Load<AudioClip>("Sounds/rocket_shoot");
         shieldImpact = Resources.Load<AudioClip>("Sounds/shield_impact");
+        rocketBoostLow = Resources.Load<AudioClip>("Sounds/rocket_boost_low");
+        rocketMedium = Resources.Load<AudioClip>("Sounds/rocket_medium");
+        rocketMediumLow = Resources.Load<AudioClip>("Sounds/rocket_medium_low");
         
         InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
         //ToDo: menu and game music. Music ramps up as you play
@@ -179,6 +189,36 @@ public class SoundController : MonoBehaviour
             lastShieldImpact = Time.time;
             audioSource.PlayOneShot(shieldImpact);
         }
+    }
+
+    public void StartRocketBoost()
+    {
+        if(playerAudioSource.clip != rocketMedium)
+        {
+            playerAudioSource.clip = rocketMedium;
+            playerAudioSource.volume = 0.55f*masterVolume;
+        }
+        playerAudioSource.Play();
+    }
+
+    public void StopRocketBoost()
+    {
+        playerAudioSource.Pause();
+    }
+
+    public void StartTurningRocketBoost()
+    {
+        if(playerTurningAudioSource.clip != rocketMedium)
+        {
+            playerTurningAudioSource.clip = rocketMedium;
+            playerTurningAudioSource.volume = 0.35f*masterVolume;
+        }
+        playerTurningAudioSource.Play();
+    }
+
+    public void StopTurningRocketBoost()
+    {
+        playerTurningAudioSource.Pause();
     }
 
     public void StopShootingBullets()
