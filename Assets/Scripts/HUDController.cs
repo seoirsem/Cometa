@@ -44,6 +44,8 @@ public class HUDController : MonoBehaviour
         this.scorego = Reference.hud.transform.Find("Score").gameObject;
         this.shieldBar = Reference.hud.transform.Find("ShieldBar").gameObject;
         
+        //this.score.transform.position = 
+
         pauseMenuPath = "Prefabs/PauseMenu";
         pauseMenuPrefab = Resources.Load(pauseMenuPath) as GameObject;
 

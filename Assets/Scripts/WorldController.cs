@@ -126,7 +126,7 @@ public class WorldController : MonoBehaviour
              //spawnn new asteroid
             spawnCooldown = Time.time;
             warningOff = true;
-            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18),newAsteroidDirection, asteroidPositionOffset,new Vector3(0,0,0));
+            //Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18),newAsteroidDirection, asteroidPositionOffset,new Vector3(0,0,0));
         }
 
         if ((Reference.playerInputController.p && Time.time - spawnCooldown > 2f) && !isPaused)

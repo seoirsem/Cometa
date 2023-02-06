@@ -94,10 +94,13 @@ public class ShipShields : MonoBehaviour
 
             if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
             {
+                Reference.soundController.PlayshieldImpact();
+
                 hitCollider.gameObject.GetComponent<MainAsteroid>().MainAsteroidHitShields(distance, relativeVelocity, relativePosition, new Vector2(closestPoint.x,closestPoint.y), shieldDamageRadiusToAsteroids);
             }
             else if(hitCollider.gameObject.GetComponent<DerivedAsteroid>() != null)
             {
+                Reference.soundController.PlayshieldImpact();
                 hitCollider.gameObject.GetComponent<DerivedAsteroid>().DerivedAsteroidHitShields(distance, relativeVelocity, relativePosition, new Vector2(closestPoint.x,closestPoint.y), shieldDamageRadiusToAsteroids);
 
             }
@@ -106,6 +109,7 @@ public class ShipShields : MonoBehaviour
                 Projectile projectile = hitCollider.gameObject.GetComponent<Projectile>();
                 if(projectile.colliderEnabled)
                 {
+                    Reference.soundController.PlayshieldImpact();
                     projectile.DestroySelf();
                 }
             }

@@ -21,7 +21,10 @@ public class PlayerSpriteController : MonoBehaviour
     float bulletCooldown = 0.15f;
     public Rigidbody2D rigid_body;
     bool spaceDown = false;
-    
+    float rocketForce = 0.5f;
+
+
+
     void Awake()
     {
 
@@ -66,19 +69,7 @@ public class PlayerSpriteController : MonoBehaviour
     }
     void UpdatePlayerShooting()
     {
-        // Debug.Log($"Variable {Reference.playerInputController.spaceBar}, key {Input.GetKeyDown("space")}");
 
-        // if(Reference.playerInputController.spaceBar && !spaceDown)
-        // {
-        //     spaceDown = true;
-        //     Reference.soundController.StartShootingBullets();
-        // }
-        // else if(!Reference.playerInputController.spaceBar && spaceDown)
-        // {
-        //     Debug.Log("stopping");
-        //     spaceDown = false;
-        //     Reference.soundController.StopShootingBullets();
-        // }
 
         if (Reference.playerInputController.spaceBar)
         {
@@ -100,6 +91,14 @@ public class PlayerSpriteController : MonoBehaviour
                 Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Rocket");
             }
         }
+    }
+
+    public void ApplyRocketLaunchImpulse()
+    {
+        Vector2 direction = new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y);
+        Vector2 impulse = direction * rocketForce * mass;
+
+        rigid_body.AddForce(-1*impulse,ForceMode2D.Impulse);
     }
 
     void SpawnVisualClones()
