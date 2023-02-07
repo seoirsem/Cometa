@@ -60,12 +60,6 @@ public class WarningSymbol : MonoBehaviour
             LeanTween.scaleX(this.gameObject, tweenScale, pulseCooldown/2f).setDelay(pulseCooldown/2f);
             LeanTween.scaleY(this.gameObject, 1f/tweenScale, pulseCooldown/2f);
             LeanTween.scaleY(this.gameObject, tweenScale, pulseCooldown/2f).setDelay(pulseCooldown/2f);
-            // if(sr.color == yellow)
-            // {
-            //     LeanTween.color(this.gameObject,red,pulseCooldown/2f);//.setDelay(pulseCooldown/4f);
-            //     LeanTween.color(this.gameObject,yellow,pulseCooldown/2f).setDelay(pulseCooldown/2f);
-            // }
-        
         }
     }
 }

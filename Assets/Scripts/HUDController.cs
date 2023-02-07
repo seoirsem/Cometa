@@ -18,6 +18,8 @@ public class HUDController : MonoBehaviour
     GameObject gameOverScreen;
     GameObject gameOverScreenPrefab;
 
+    GameObject pointScoreIndicatorPrefab;
+
     SoundController soundController;
 
     /// Options Buttons
@@ -54,6 +56,10 @@ public class HUDController : MonoBehaviour
 
         gameOverPath = "Prefabs/GameOverScreen";
         gameOverScreenPrefab = Resources.Load(gameOverPath) as GameObject;
+
+        pointScoreIndicatorPrefab = Resources.Load("Prefabs/PointScoreIndicator") as GameObject;
+        //SimplePool.Preload(pointScoreIndicatorPrefab, 1);
+        
         
         soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
 
@@ -79,6 +85,7 @@ public class HUDController : MonoBehaviour
         options.onClick.AddListener(Options);
         exitToMenu.onClick.AddListener(EscapeToMenu);        
     }
+
     void UnloadPauseMenu()
     {
         Destroy(pauseMenu);
@@ -89,12 +96,21 @@ public class HUDController : MonoBehaviour
         gameOverScreen.transform.SetParent(this.transform);
         gameOverScreen.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
         gameOverScreen.GetComponent<RectTransform>().localPosition = new Vector3(0,0,-3);
-
         gameOverScreen.GetComponent<FinalScoreFadeIn>().SetScore(finalScore);
 
 
     }
 
+    public void ScoreText(Vector3 position, float points, Color color)
+    {
+        Debug.Log("score text");
+        GameObject obj = SimplePool.Spawn(pointScoreIndicatorPrefab,position,Quaternion.identity);
+        obj.transform.SetParent(this.gameObject.transform);
+        //obj.transform.position = position;
+        PointScoreIndicator pointScoreIndicator = obj.GetComponent<PointScoreIndicator>();
+        pointScoreIndicator.SpawnText(points,position, color);
+
+    }
 
     void LoadOptionsMenu()
     {

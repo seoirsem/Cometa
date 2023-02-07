@@ -120,6 +120,7 @@ public class WorldController : MonoBehaviour
             GameObject warningSymbol = Instantiate(warningPrefab,spawnPosition + asteroidPositionOffset,Quaternion.identity);
             warningSymbol.GetComponent<WarningSymbol>().OnSpawn(warningLifespan,1f);
         }
+        /// ToDo increase the freuency of asteroid spawns as the player gets further and further
         if(Time.time - spawnCooldown > freqOfNewAsteroids && !isPaused)
         {
             //// ToDo: Warn the player of incoming a few seconds before spawning    
