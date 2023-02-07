@@ -29,6 +29,7 @@ public class ScoreController : MonoBehaviour
     {
         this.totalScore += increment;
         Reference.hudController.UpdateOnScreenScore(this.totalScore);
+        Reference.soundController.ScorePoints();
     }
 
     public void SaveHighScore()

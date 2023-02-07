@@ -26,6 +26,7 @@ public class ShipShields : MonoBehaviour
     float matterDestroyedShieldPenalty = 5f;
 
     bool shieldNotOnCooldown = false;
+    bool shieldFullyCharged = true;
 
     void Start()
     {
@@ -38,6 +39,7 @@ public class ShipShields : MonoBehaviour
         lastHit = Time.time;
         lastPulse = Time.time-pulseCooldown;
         shieldForceMultiplier = playerRigidBody.mass;
+        shieldFullyCharged = true;
 
     }
 
@@ -159,10 +161,15 @@ public class ShipShields : MonoBehaviour
             shieldNotOnCooldown = false;
         }
 
-        if(Time.time - lastHit > shieldChargeDelay)
+        if(Time.time - lastHit > shieldChargeDelay && !shieldFullyCharged)
         {
             shieldStrength += shieldRechargeRate*dt;
-            if(shieldStrength > maxShieldStrength){shieldStrength = maxShieldStrength;}
+            if(shieldStrength > maxShieldStrength)
+            {
+                shieldStrength = maxShieldStrength;
+                shieldFullyCharged = true;
+                Reference.soundController.ShieldFullyCharged();
+            }
 
         }
         if(shieldStrength == 0f)
@@ -216,6 +223,7 @@ public class ShipShields : MonoBehaviour
         lastHit = Time.time;
         shieldStrength -= shieldForceRatio*shieldForce;
         shieldNotOnCooldown = true;
+        shieldFullyCharged = false;
 
 //        Debug.Log(shieldForceRatio*shieldForce);
 
