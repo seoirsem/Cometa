@@ -37,7 +37,9 @@ public class SoundController : MonoBehaviour
     AudioClip points;
     AudioClip shieldCharged;
     AudioClip coinDrop;
- 
+    AudioClip success;
+    AudioClip doorSound;
+    AudioClip snare;
     static int choice = 1;
 
     float musicMaxVolume = 0.45f;
@@ -47,6 +49,9 @@ public class SoundController : MonoBehaviour
 
     float shieldImpactCooldown = 0.19f;
     float lastShieldImpact;
+
+    float lastPointScored;
+    float pointScoreCooldown = 0.19f;
 
 
     // Start is called before the first frame update
@@ -90,6 +95,9 @@ public class SoundController : MonoBehaviour
         shieldCharged = Resources.Load<AudioClip>("Sounds/fully_charged");
         points = Resources.Load<AudioClip>("Sounds/points");
         coinDrop = Resources.Load<AudioClip>("Sounds/coin_drop");
+        success = Resources.Load<AudioClip>("Sounds/success");
+        doorSound = Resources.Load<AudioClip>("Sounds/door_sound");
+        snare = Resources.Load<AudioClip>("Sounds/snare");
         
         InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
         //ToDo: menu and game music. Music ramps up source you play
@@ -97,6 +105,7 @@ public class SoundController : MonoBehaviour
 
         lastAsteroidCollision = Time.time;
         lastShieldImpact = Time.time;
+        lastPointScored = Time.time;
 
         bulletAudioSource.clip = laserShoot;
 
@@ -142,8 +151,7 @@ public class SoundController : MonoBehaviour
 
     public void PlayerDeadSound()
     {
-        musicSource.Stop();
-        audioSource.Stop();
+        GameOver();
         audioSource.PlayOneShot(playerDeadSound);
     }
 
@@ -200,8 +208,15 @@ public class SoundController : MonoBehaviour
     }
     public void ScorePoints()
     {
+        if(Time.time - lastPointScored > pointScoreCooldown)
+        {
+            lastPointScored = pointScoreCooldown;
 //        audioSource.PlayOneShot(points);
-        audioSource.PlayOneShot(coinDrop);
+            audioSource.PlayOneShot(coinDrop,masterVolume*0.65f);
+//        audioSource.PlayOneShot(success);
+//        audioSource.PlayOneShot(doorSound);
+            audioSource.PlayOneShot(snare,masterVolume*0.65f);
+        }
     }
 
     public void playExplosionSound()
@@ -354,6 +369,13 @@ public class SoundController : MonoBehaviour
         audioSource.PlayOneShot(blaster);
     }
 
+    public void GameOver()
+    {
+        foreach(AudioSource source in audioSourceList)
+        {
+            source.Pause();
+        }
+    }
 
      /**
   * Creates a sub clip from an audio clip based off of the start time
