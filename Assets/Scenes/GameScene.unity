@@ -960,7 +960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e32fbf7a47cc7409b1c9e52fddb5a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldSize: {x: 0, y: 0}
+  worldSize: {x: 20, y: 15}
   isPaused: 0
 --- !u!1 &620657608
 GameObject:

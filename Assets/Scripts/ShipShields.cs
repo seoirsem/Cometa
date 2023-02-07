@@ -27,6 +27,7 @@ public class ShipShields : MonoBehaviour
 
     bool shieldNotOnCooldown = false;
     bool shieldFullyCharged = true;
+    bool shieldBroken = false;
 
     void Start()
     {
@@ -40,6 +41,7 @@ public class ShipShields : MonoBehaviour
         lastPulse = Time.time-pulseCooldown;
         shieldForceMultiplier = playerRigidBody.mass;
         shieldFullyCharged = true;
+        shieldBroken = false;
 
     }
 
@@ -226,8 +228,20 @@ public class ShipShields : MonoBehaviour
         shieldFullyCharged = false;
 
 //        Debug.Log(shieldForceRatio*shieldForce);
+        if(shieldStrength > 0 && shieldBroken)
+        {
+            shieldBroken = false;
+        }
+        if(shieldStrength < 0)
+        {
+            shieldStrength = 0;
+            if(!shieldBroken)
+            {
+                shieldBroken = true;
+                Reference.soundController.ShieldBroken();
+            }
+        }
 
-        if(shieldStrength < 0){shieldStrength = 0;}
     }
 
 

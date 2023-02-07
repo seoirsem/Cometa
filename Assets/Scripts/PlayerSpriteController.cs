@@ -44,8 +44,8 @@ public class PlayerSpriteController : MonoBehaviour
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
-        bulletCooldownTimer = Time.time;
-        rocketCooldownTimer = Time.time;
+        bulletCooldownTimer = Time.time - bulletCooldown;
+        rocketCooldownTimer = Time.time - rocketCooldown;
         SpawnVisualClones();
     }
 

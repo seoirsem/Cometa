@@ -40,6 +40,7 @@ public class SoundController : MonoBehaviour
     AudioClip success;
     AudioClip doorSound;
     AudioClip snare;
+    AudioClip glassBreak;
     static int choice = 1;
 
     float musicMaxVolume = 0.45f;
@@ -98,6 +99,7 @@ public class SoundController : MonoBehaviour
         success = Resources.Load<AudioClip>("Sounds/success");
         doorSound = Resources.Load<AudioClip>("Sounds/door_sound");
         snare = Resources.Load<AudioClip>("Sounds/snare");
+        glassBreak = Resources.Load<AudioClip>("Sounds/glass_break");
         
         InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
         //ToDo: menu and game music. Music ramps up source you play
@@ -197,6 +199,10 @@ public class SoundController : MonoBehaviour
     public void ShieldFullyCharged()
     {
         audioSource.PlayOneShot(shieldCharged);
+    }
+    public void ShieldBroken()
+    {
+        audioSource.PlayOneShot(glassBreak);
     }
     public void asteroidCollisionSound()
     {
