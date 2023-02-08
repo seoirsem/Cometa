@@ -6,6 +6,9 @@ public class PlayerSpriteController : MonoBehaviour
 {
     Player player;
     GameObject playergo;
+    GameObject blueFlamePrefab;
+    GameObject blueFlame;
+
     float rotationRate = 500; 
     float engineForce = 8; 
     float mass = 15;
@@ -26,6 +29,9 @@ public class PlayerSpriteController : MonoBehaviour
     bool playingRocketSound = false;
     bool playingTurningSound = false;
 
+    BlueFlameFunction blueFlameFunction;
+
+    
 
 
     void Awake()
@@ -34,6 +40,15 @@ public class PlayerSpriteController : MonoBehaviour
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.mass = mass;
         spaceDown = false;
+
+        blueFlamePrefab = Resources.Load("Prefabs/Blue_Flame") as GameObject;
+
+
+
+        blueFlame = Instantiate(blueFlamePrefab);
+        blueFlame.transform.SetParent(this.gameObject.transform);
+        blueFlameFunction = blueFlame.GetComponent<BlueFlameFunction>();
+        //blueFlameFunction.StartJet();
 
     }
 
@@ -47,6 +62,8 @@ public class PlayerSpriteController : MonoBehaviour
         bulletCooldownTimer = Time.time - bulletCooldown;
         rocketCooldownTimer = Time.time - rocketCooldown;
         SpawnVisualClones();
+        //blueFlame.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -191,6 +208,8 @@ public class PlayerSpriteController : MonoBehaviour
             {
                 Reference.soundController.StartRocketBoost();
                 playingRocketSound = true;
+                blueFlame.SetActive(true);
+                blueFlameFunction.StartJet();
             }
         }
         if (Reference.playerInputController.downKey)
@@ -200,6 +219,7 @@ public class PlayerSpriteController : MonoBehaviour
             {// todo - make reverse sound different?
                 Reference.soundController.StartRocketBoost();
                 playingRocketSound = true;
+                
             }
         }
         
@@ -208,6 +228,9 @@ public class PlayerSpriteController : MonoBehaviour
 
             Reference.soundController.StopRocketBoost();
             playingRocketSound = false;
+            blueFlameFunction.StopJet();
+            blueFlame.SetActive(false);
+
         }
         
         //Vector3 impulse = transform.up * playerInputImpulse * engineForce / player.mass;

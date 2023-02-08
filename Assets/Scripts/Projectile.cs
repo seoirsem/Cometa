@@ -38,6 +38,10 @@ public class Projectile : MonoBehaviour
     bool animationStarted = false;
     GameObject blueFlameAnimation;
 
+    void Awake()
+    {
+    }
+
     void Start()
     {
         colliderEnabled = false;
@@ -66,6 +70,9 @@ public class Projectile : MonoBehaviour
             this.capsuleCollider2D = go.GetComponent<CapsuleCollider2D>();
             capsuleCollider2D.enabled = false;
             this.explosionRadiusDiameter = rocketRadius;
+            blueFlameAnimation = this.gameObject.transform.Find("Flame").gameObject;
+            blueFlameAnimation.GetComponent<BlueFlameFunction>().StartJet();
+            //blueFlameAnimation.SetActive(false);
         }
         else if(projectileType == "Bullet")
         {
@@ -139,7 +146,8 @@ public class Projectile : MonoBehaviour
             if (Time.time - timeFired > 0.5f && !animationStarted)
             {
                 Vector3 tailLocation = this.gameObject.transform.position -0.15f*this.gameObject.transform.right + 0.01f*this.gameObject.transform.up;
-                blueFlameAnimation = Reference.animationController.SpawnBlueFlameAnimation(tailLocation, this.gameObject);
+                //blueFlameAnimation = Reference.animationController.SpawnBlueFlameAnimation(tailLocation, this.gameObject);
+                blueFlameAnimation.SetActive(true);
                 /// this does nothing yet but may do in the future
                 /// blueFlameAnimation.GetComponent<BlueFlameFunction>().TransitionToFullJet();
                 animationStarted = true;
@@ -271,7 +279,7 @@ public class Projectile : MonoBehaviour
             
             if(blueFlameAnimation != null)
             {
-                blueFlameAnimation.GetComponent<BlueFlameFunction>().DestroyAnimationGO();
+                //blueFlameAnimation.GetComponent<BlueFlameFunction>().DestroyAnimationGO();
             }
         }
         Reference.projectileController.DespawnProjectile(go,objectPack);
