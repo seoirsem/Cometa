@@ -8,6 +8,8 @@ public class PlayerSpriteController : MonoBehaviour
     GameObject playergo;
     GameObject blueFlamePrefab;
     GameObject blueFlame;
+    GameObject blueFlameLeftgo;
+    GameObject blueFlameRightgo;
 
     float rotationRate = 500; 
     float engineForce = 8; 
@@ -30,8 +32,10 @@ public class PlayerSpriteController : MonoBehaviour
     bool playingTurningSound = false;
 
     BlueFlameFunction blueFlameFunction;
+    BlueFlameFunction blueFlameLeft;
+    BlueFlameFunction blueFlameRight;
 
-    
+
 
 
     void Awake()
@@ -43,11 +47,16 @@ public class PlayerSpriteController : MonoBehaviour
 
         blueFlamePrefab = Resources.Load("Prefabs/Blue_Flame") as GameObject;
 
+        blueFlameLeftgo = this.gameObject.transform.Find("LeftExhaust").gameObject;
+        blueFlameRightgo = this.gameObject.transform.Find("RightExhaust").gameObject;
 
+        
 
         blueFlame = Instantiate(blueFlamePrefab);
         blueFlame.transform.SetParent(this.gameObject.transform);
         blueFlameFunction = blueFlame.GetComponent<BlueFlameFunction>();
+        blueFlameLeft = blueFlameLeftgo.GetComponent<BlueFlameFunction>();
+        blueFlameRight = blueFlameRightgo.GetComponent<BlueFlameFunction>();
         //blueFlameFunction.StartJet();
 
     }
@@ -173,6 +182,9 @@ public class PlayerSpriteController : MonoBehaviour
             {
                 Reference.soundController.StartTurningRocketBoost();
                 playingTurningSound = true;
+                blueFlameRightgo.SetActive(true);
+                blueFlameRight.StartJet();
+
             }
         }
         if (Reference.playerInputController.rightKey)
@@ -182,12 +194,18 @@ public class PlayerSpriteController : MonoBehaviour
             {
                 Reference.soundController.StartTurningRocketBoost();
                 playingTurningSound = true;
+                blueFlameLeftgo.SetActive(true);
+                blueFlameLeft.StartJet();
+
             }
         }
         if(playerInputRotation == 0 && playingTurningSound)
         {
             Reference.soundController.StopTurningRocketBoost();
             playingTurningSound = false;
+            blueFlameLeftgo.SetActive(false);
+            blueFlameRightgo.SetActive(false);
+
         }
 //        float frameRotation = Time.deltaTime *playerInputRotation*rotationRate;
         //float torque = Time.deltaTime *playerInputRotation*rotationRate;
