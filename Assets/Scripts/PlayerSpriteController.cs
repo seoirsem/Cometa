@@ -6,10 +6,11 @@ public class PlayerSpriteController : MonoBehaviour
 {
     Player player;
     GameObject playergo;
-    GameObject blueFlamePrefab;
     GameObject blueFlame;
     GameObject blueFlameLeftgo;
     GameObject blueFlameRightgo;
+    GameObject blueFlameReverseLeft;
+    GameObject blueFlameReverseRight;
 
     float rotationRate = 500; 
     float engineForce = 8; 
@@ -44,16 +45,11 @@ public class PlayerSpriteController : MonoBehaviour
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.mass = mass;
         spaceDown = false;
-
-        blueFlamePrefab = Resources.Load("Prefabs/Blue_Flame") as GameObject;
-
         blueFlameLeftgo = this.gameObject.transform.Find("LeftExhaust").gameObject;
         blueFlameRightgo = this.gameObject.transform.Find("RightExhaust").gameObject;
-
-        
-
-        blueFlame = Instantiate(blueFlamePrefab);
-        blueFlame.transform.SetParent(this.gameObject.transform);
+        blueFlame = this.gameObject.transform.Find("Blue_Flame").gameObject;
+        blueFlameReverseLeft = GameObject.Find("LeftReverse");
+        blueFlameReverseRight = GameObject.Find("RightReverse");
         blueFlameFunction = blueFlame.GetComponent<BlueFlameFunction>();
         blueFlameLeft = blueFlameLeftgo.GetComponent<BlueFlameFunction>();
         blueFlameRight = blueFlameRightgo.GetComponent<BlueFlameFunction>();
@@ -237,6 +233,8 @@ public class PlayerSpriteController : MonoBehaviour
             {// todo - make reverse sound different?
                 Reference.soundController.StartRocketBoost();
                 playingRocketSound = true;
+                blueFlameReverseLeft.SetActive(true);
+                blueFlameReverseRight.SetActive(true);
                 
             }
         }
@@ -248,6 +246,8 @@ public class PlayerSpriteController : MonoBehaviour
             playingRocketSound = false;
             blueFlameFunction.StopJet();
             blueFlame.SetActive(false);
+            blueFlameReverseLeft.SetActive(false);
+            blueFlameReverseRight.SetActive(false);
 
         }
         
