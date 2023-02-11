@@ -144,6 +144,8 @@ public class AsteroidController : MonoBehaviour
         }
 
         Reference.scoreController.IncrementScore((float)numberOfSquaresLost);
+        Reference.hudController.ScoreText(contact, numberOfSquaresLost, new Color(255,215,0));
+        Debug.Log("Scored");
         if(otherObject.GetComponent<ShipShields>() != null)
         {
             otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost,contact);

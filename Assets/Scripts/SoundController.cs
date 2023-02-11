@@ -5,9 +5,13 @@ using UnityEngine;
 public class SoundController : MonoBehaviour
 {
  
+    List<AudioSource> audioSourceList;
     AudioSource audioSource;
     AudioSource musicSource;
     AudioSource bulletAudioSource;
+    AudioSource rocketAudioSource;
+    AudioSource playerAudioSource;
+    AudioSource playerTurningAudioSource;
 
     public float masterVolume;
     public float musicVolume;
@@ -23,6 +27,20 @@ public class SoundController : MonoBehaviour
     AudioClip laserSingleShot;
     AudioClip rockDestroy;
     AudioClip beepWarning;
+    AudioClip longWhoosh;
+    AudioClip shortWhoosh;
+    AudioClip rocketShoot;
+    AudioClip shieldImpact;
+    AudioClip rocketBoostLow;
+    AudioClip rocketMedium;
+    AudioClip rocketMediumLow;
+    AudioClip points;
+    AudioClip shieldCharged;
+    AudioClip coinDrop;
+    AudioClip success;
+    AudioClip doorSound;
+    AudioClip snare;
+    AudioClip glassBreak;
     static int choice = 1;
 
     float musicMaxVolume = 0.45f;
@@ -30,14 +48,33 @@ public class SoundController : MonoBehaviour
     float asteroidCollisionCooldown = 0.5f;
     float lastAsteroidCollision;
 
+    float shieldImpactCooldown = 0.19f;
+    float lastShieldImpact;
+
+    float lastPointScored;
+    float pointScoreCooldown = 0.19f;
+
 
     // Start is called before the first frame update
     void Start()
     {
-
+        audioSourceList = new List<AudioSource>();
         audioSource = GetComponent<AudioSource>();
+        audioSourceList.Add(audioSource);
         musicSource = transform.Find("MusicController").GetComponent<AudioSource>();
+        audioSourceList.Add(musicSource);
         bulletAudioSource = transform.Find("BulletAudioSource").GetComponent<AudioSource>();
+        audioSourceList.Add(bulletAudioSource);
+        rocketAudioSource = transform.Find("RocketAudioSource").GetComponent<AudioSource>();
+        audioSourceList.Add(rocketAudioSource);
+        playerTurningAudioSource = transform.Find("PlayerTurningAudioSource").GetComponent<AudioSource>();
+        audioSourceList.Add(playerTurningAudioSource);
+        playerAudioSource = GameObject.Find("Player").GetComponent<AudioSource>();
+        audioSourceList.Add(playerAudioSource);
+        
+        
+        
+        
         asteroidCollision = Resources.Load<AudioClip>("Sounds/rockImpact");
         playerDeadSound = Resources.Load<AudioClip>("Sounds/player_dead_sound");
         explosion = Resources.Load<AudioClip>("Sounds/explosion_big");
@@ -46,24 +83,36 @@ public class SoundController : MonoBehaviour
         blasterMultiple = Resources.Load<AudioClip>("Sounds/blaster_multiple");
         shieldBeginCharge = Resources.Load<AudioClip>("Sounds/shield_charge");
         laserShoot = Resources.Load<AudioClip>("Sounds/firing_many");
-
         laserSingleShot = Resources.Load<AudioClip>("Sounds/single_shot");
         rockDestroy = Resources.Load<AudioClip>("Sounds/rock_destroy");
         beepWarning = Resources.Load<AudioClip>("Sounds/beep_warning");
+        longWhoosh = Resources.Load<AudioClip>("Sounds/whoosh_long");
+        shortWhoosh = Resources.Load<AudioClip>("Sounds/short_whoosh");
+        rocketShoot = Resources.Load<AudioClip>("Sounds/rocket_shoot");
+        shieldImpact = Resources.Load<AudioClip>("Sounds/shield_impact");
+        rocketBoostLow = Resources.Load<AudioClip>("Sounds/rocket_boost_low");
+        rocketMedium = Resources.Load<AudioClip>("Sounds/rocket_medium");
+        rocketMediumLow = Resources.Load<AudioClip>("Sounds/rocket_medium_low");
+        shieldCharged = Resources.Load<AudioClip>("Sounds/fully_charged");
+        points = Resources.Load<AudioClip>("Sounds/points");
+        coinDrop = Resources.Load<AudioClip>("Sounds/coin_drop");
+        success = Resources.Load<AudioClip>("Sounds/success");
+        doorSound = Resources.Load<AudioClip>("Sounds/door_sound");
+        snare = Resources.Load<AudioClip>("Sounds/snare");
+        glassBreak = Resources.Load<AudioClip>("Sounds/glass_break");
         
         InitialiseVolumes(OptionsParameters.MusicVolume,OptionsParameters.MasterVolume);
-        //ToDo: menu and game music. Music ramps up as you play
+        //ToDo: menu and game music. Music ramps up source you play
         StartMusic();
 
         lastAsteroidCollision = Time.time;
+        lastShieldImpact = Time.time;
+        lastPointScored = Time.time;
 
         bulletAudioSource.clip = laserShoot;
 
-
-
     }
 
-    // Update is called once per frame
     void Update()
     {
         //Debug.Log(OptionsParameters.MusicVolume);
@@ -87,10 +136,24 @@ public class SoundController : MonoBehaviour
         musicSource.Play();
     }
 
+    void AdjustMasterVolume(float volume)
+    {
+        foreach(AudioSource source in audioSourceList)
+        {
+            if(source == musicSource && volume > musicMaxVolume)
+            {
+                source.volume = musicMaxVolume;
+            }
+            else
+            {
+                source.volume = volume;
+            }
+        }
+    }
+
     public void PlayerDeadSound()
     {
-        musicSource.Stop();
-        audioSource.Stop();
+        GameOver();
         audioSource.PlayOneShot(playerDeadSound);
     }
 
@@ -117,21 +180,29 @@ public class SoundController : MonoBehaviour
         if(masterVolumeSet >= 1)
         {
             masterVolume = 1;
-            audioSource.volume = 1;
+            SetMasterVolume(1);
             OptionsParameters.MasterVolume = 1;
         }
         else if(masterVolumeSet <= 0)
         {
             masterVolume = 0;
-            audioSource.volume = 0;
+            SetMasterVolume(0);
             OptionsParameters.MasterVolume = 0;
         }
         else
         {
             masterVolume = masterVolumeSet;
-            audioSource.volume = masterVolumeSet;
+            SetMasterVolume(masterVolumeSet);
             OptionsParameters.MasterVolume = masterVolumeSet;
         }
+    }
+    public void ShieldFullyCharged()
+    {
+        audioSource.PlayOneShot(shieldCharged);
+    }
+    public void ShieldBroken()
+    {
+        audioSource.PlayOneShot(glassBreak);
     }
     public void asteroidCollisionSound()
     {
@@ -141,10 +212,22 @@ public class SoundController : MonoBehaviour
             lastAsteroidCollision = Time.time;
         }
     }
+    public void ScorePoints()
+    {
+        if(Time.time - lastPointScored > pointScoreCooldown)
+        {
+            lastPointScored = pointScoreCooldown;
+//        audioSource.PlayOneShot(points);
+            audioSource.PlayOneShot(coinDrop,masterVolume*0.65f);
+//        audioSource.PlayOneShot(success);
+//        audioSource.PlayOneShot(doorSound);
+            audioSource.PlayOneShot(snare,masterVolume*0.65f);
+        }
+    }
 
     public void playExplosionSound()
     {
-        audioSource.PlayOneShot(explosion);
+        rocketAudioSource.PlayOneShot(explosion);
     }
 
     public void playBeginShieldCharge()
@@ -158,9 +241,59 @@ public class SoundController : MonoBehaviour
         bulletAudioSource.Play();
     }
 
+    public void PlayshieldImpact()
+    {
+        if(Time.time - lastShieldImpact > shieldImpactCooldown)
+        {
+            lastShieldImpact = Time.time;
+            audioSource.PlayOneShot(shieldImpact);
+        }
+    }
+
+    public void StartRocketBoost()
+    {
+        if(playerAudioSource.clip != rocketMedium)
+        {
+            playerAudioSource.clip = rocketMedium;
+            playerAudioSource.volume = 0.75f*masterVolume;
+        }
+        playerAudioSource.Play();
+    }
+
+    public void StopRocketBoost()
+    {
+        playerAudioSource.Pause();
+    }
+
+    public void StartTurningRocketBoost()
+    {
+        if(playerTurningAudioSource.clip != rocketMedium)
+        {
+            playerTurningAudioSource.clip = rocketMedium;
+            playerTurningAudioSource.volume = 0.5f*masterVolume;
+        }
+        playerTurningAudioSource.Play();
+    }
+
+    public void StopTurningRocketBoost()
+    {
+        playerTurningAudioSource.Pause();
+    }
+
     public void StopShootingBullets()
     {
         bulletAudioSource.Pause();
+    }
+
+    public void PlayLongWhoosh()
+    {
+//        rocketAudioSource.PlayOneShot(longWhoosh);
+        rocketAudioSource.clip = rocketShoot;
+        rocketAudioSource.Play();
+    }
+    public void PlayShortWhoosh()
+    {
+        rocketAudioSource.PlayOneShot(shortWhoosh);
     }
 
     public void FireBullet()
@@ -177,6 +310,10 @@ public class SoundController : MonoBehaviour
         audioSource.PlayOneShot(rockDestroy,audioSource.volume/5f);
     }
 
+    public void RocketDestroyed()
+    {
+        rocketAudioSource.Stop();
+    }
 
     public void SetMasterVolume(float volume)
     {
@@ -238,10 +375,17 @@ public class SoundController : MonoBehaviour
         audioSource.PlayOneShot(blaster);
     }
 
+    public void GameOver()
+    {
+        foreach(AudioSource source in audioSourceList)
+        {
+            source.Pause();
+        }
+    }
 
      /**
   * Creates a sub clip from an audio clip based off of the start time
-  * and the stop time. The new clip will have the same frequency as
+  * and the stop time. The new clip will have the same frequency source
   * the original.
   */
     private AudioClip MakeSubclip(AudioClip clip, float start, float stop)

@@ -26,6 +26,8 @@ public class ShipShields : MonoBehaviour
     float matterDestroyedShieldPenalty = 0f;
 
     bool shieldNotOnCooldown = false;
+    bool shieldFullyCharged = true;
+    bool shieldBroken = false;
 
     void Start()
     {
@@ -38,6 +40,8 @@ public class ShipShields : MonoBehaviour
         lastHit = Time.time;
         lastPulse = Time.time-pulseCooldown;
         shieldForceMultiplier = playerRigidBody.mass;
+        shieldFullyCharged = true;
+        shieldBroken = false;
 
     }
 
@@ -94,10 +98,13 @@ public class ShipShields : MonoBehaviour
 
             if(hitCollider.gameObject.GetComponent<MainAsteroid>() != null)
             {
+                Reference.soundController.PlayshieldImpact();
+
                 hitCollider.gameObject.GetComponent<MainAsteroid>().MainAsteroidHitShields(distance, relativeVelocity, relativePosition, new Vector2(closestPoint.x,closestPoint.y), shieldDamageRadiusToAsteroids);
             }
             else if(hitCollider.gameObject.GetComponent<DerivedAsteroid>() != null)
             {
+                Reference.soundController.PlayshieldImpact();
                 hitCollider.gameObject.GetComponent<DerivedAsteroid>().DerivedAsteroidHitShields(distance, relativeVelocity, relativePosition, new Vector2(closestPoint.x,closestPoint.y), shieldDamageRadiusToAsteroids);
 
             }
@@ -106,6 +113,7 @@ public class ShipShields : MonoBehaviour
                 Projectile projectile = hitCollider.gameObject.GetComponent<Projectile>();
                 if(projectile.colliderEnabled)
                 {
+                    Reference.soundController.PlayshieldImpact();
                     projectile.DestroySelf();
                 }
             }
@@ -155,10 +163,15 @@ public class ShipShields : MonoBehaviour
             shieldNotOnCooldown = false;
         }
 
-        if(Time.time - lastHit > shieldChargeDelay)
+        if(Time.time - lastHit > shieldChargeDelay && !shieldFullyCharged)
         {
             shieldStrength += shieldRechargeRate*dt;
-            if(shieldStrength > maxShieldStrength){shieldStrength = maxShieldStrength;}
+            if(shieldStrength > maxShieldStrength)
+            {
+                shieldStrength = maxShieldStrength;
+                shieldFullyCharged = true;
+                Reference.soundController.ShieldFullyCharged();
+            }
 
         }
         if(shieldStrength == 0f)
@@ -212,10 +225,23 @@ public class ShipShields : MonoBehaviour
         lastHit = Time.time;
         shieldStrength -= shieldForceRatio*shieldForce;
         shieldNotOnCooldown = true;
+        shieldFullyCharged = false;
 
 //        Debug.Log(shieldForceRatio*shieldForce);
+        if(shieldStrength > 0 && shieldBroken)
+        {
+            shieldBroken = false;
+        }
+        if(shieldStrength < 0)
+        {
+            shieldStrength = 0;
+            if(!shieldBroken)
+            {
+                shieldBroken = true;
+                Reference.soundController.ShieldBroken();
+            }
+        }
 
-        if(shieldStrength < 0){shieldStrength = 0;}
     }
 
 

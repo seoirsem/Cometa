@@ -34,6 +34,9 @@ public class ProjectileController : MonoBehaviour
         if(projectileType == "Rocket")
         {
             projectilego = SimplePool.Spawn(rocketPrefab, position, rotation);
+            Reference.playerSpriteController.ApplyRocketLaunchImpulse();
+            //Reference.soundController.PlayShortWhoosh();
+            Reference.soundController.PlayLongWhoosh();
         }
         else if (projectileType == "Bullet")
         {
@@ -81,6 +84,7 @@ public class ProjectileController : MonoBehaviour
                     if(projectileObject.GetComponent<Projectile>().projectileType == "Rocket")
                     {
                         Reference.animationController.SpawnExplosionAnimation(projectileObject.transform.position);
+                        Reference.soundController.RocketDestroyed();
                         Reference.soundController.playExplosionSound();
                     }
                     SimplePool.Despawn(projectileObject);

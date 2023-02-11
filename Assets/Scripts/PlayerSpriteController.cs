@@ -6,6 +6,12 @@ public class PlayerSpriteController : MonoBehaviour
 {
     Player player;
     GameObject playergo;
+    GameObject blueFlame;
+    GameObject blueFlameLeftgo;
+    GameObject blueFlameRightgo;
+    GameObject blueFlameReverseLeft;
+    GameObject blueFlameReverseRight;
+
     float rotationRate = 500; 
     float engineForce = 8; 
     float mass = 15;
@@ -21,13 +27,33 @@ public class PlayerSpriteController : MonoBehaviour
     float bulletCooldown = 0.15f;
     public Rigidbody2D rigid_body;
     bool spaceDown = false;
-    
+    float rocketForce = 0.5f;
+
+    bool playingRocketSound = false;
+    bool playingTurningSound = false;
+
+    BlueFlameFunction blueFlameFunction;
+    BlueFlameFunction blueFlameLeft;
+    BlueFlameFunction blueFlameRight;
+
+
+
+
     void Awake()
     {
 
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.mass = mass;
         spaceDown = false;
+        blueFlameLeftgo = this.gameObject.transform.Find("LeftExhaust").gameObject;
+        blueFlameRightgo = this.gameObject.transform.Find("RightExhaust").gameObject;
+        blueFlame = this.gameObject.transform.Find("Blue_Flame").gameObject;
+        blueFlameReverseLeft = GameObject.Find("LeftReverse");
+        blueFlameReverseRight = GameObject.Find("RightReverse");
+        blueFlameFunction = blueFlame.GetComponent<BlueFlameFunction>();
+        blueFlameLeft = blueFlameLeftgo.GetComponent<BlueFlameFunction>();
+        blueFlameRight = blueFlameRightgo.GetComponent<BlueFlameFunction>();
+        //blueFlameFunction.StartJet();
 
     }
 
@@ -38,9 +64,11 @@ public class PlayerSpriteController : MonoBehaviour
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
-        bulletCooldownTimer = Time.time;
-        rocketCooldownTimer = Time.time;
+        bulletCooldownTimer = Time.time - bulletCooldown;
+        rocketCooldownTimer = Time.time - rocketCooldown;
         SpawnVisualClones();
+        //blueFlame.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -66,19 +94,7 @@ public class PlayerSpriteController : MonoBehaviour
     }
     void UpdatePlayerShooting()
     {
-        // Debug.Log($"Variable {Reference.playerInputController.spaceBar}, key {Input.GetKeyDown("space")}");
 
-        // if(Reference.playerInputController.spaceBar && !spaceDown)
-        // {
-        //     spaceDown = true;
-        //     Reference.soundController.StartShootingBullets();
-        // }
-        // else if(!Reference.playerInputController.spaceBar && spaceDown)
-        // {
-        //     Debug.Log("stopping");
-        //     spaceDown = false;
-        //     Reference.soundController.StopShootingBullets();
-        // }
 
         if (Reference.playerInputController.spaceBar)
         {
@@ -100,6 +116,14 @@ public class PlayerSpriteController : MonoBehaviour
                 Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Rocket");
             }
         }
+    }
+
+    public void ApplyRocketLaunchImpulse()
+    {
+        Vector2 direction = new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y);
+        Vector2 impulse = direction * rocketForce * mass;
+
+        rigid_body.AddForce(-1*impulse,ForceMode2D.Impulse);
     }
 
     void SpawnVisualClones()
@@ -150,10 +174,34 @@ public class PlayerSpriteController : MonoBehaviour
         if (Reference.playerInputController.leftKey)
         {
             playerInputRotation += 1;
+            if(!playingTurningSound)
+            {
+                Reference.soundController.StartTurningRocketBoost();
+                playingTurningSound = true;
+                blueFlameRightgo.SetActive(true);
+                blueFlameRight.StartJet();
+
+            }
         }
         if (Reference.playerInputController.rightKey)
         {
             playerInputRotation -= 1;
+            if(!playingTurningSound)
+            {
+                Reference.soundController.StartTurningRocketBoost();
+                playingTurningSound = true;
+                blueFlameLeftgo.SetActive(true);
+                blueFlameLeft.StartJet();
+
+            }
+        }
+        if(playerInputRotation == 0 && playingTurningSound)
+        {
+            Reference.soundController.StopTurningRocketBoost();
+            playingTurningSound = false;
+            blueFlameLeftgo.SetActive(false);
+            blueFlameRightgo.SetActive(false);
+
         }
 //        float frameRotation = Time.deltaTime *playerInputRotation*rotationRate;
         //float torque = Time.deltaTime *playerInputRotation*rotationRate;
@@ -170,12 +218,38 @@ public class PlayerSpriteController : MonoBehaviour
         if (Reference.playerInputController.upKey)
         {
             playerInputImpulse += 1*mass;
+            if(!playingRocketSound)
+            {
+                Reference.soundController.StartRocketBoost();
+                playingRocketSound = true;
+                blueFlame.SetActive(true);
+                blueFlameFunction.StartJet();
+            }
         }
         if (Reference.playerInputController.downKey)
         {
             playerInputImpulse -= 1*mass;
+            if(!playingRocketSound)
+            {// todo - make reverse sound different?
+                Reference.soundController.StartRocketBoost();
+                playingRocketSound = true;
+                blueFlameReverseLeft.SetActive(true);
+                blueFlameReverseRight.SetActive(true);
+                
+            }
         }
+        
+        if(playerInputImpulse == 0 && playingRocketSound)
+        {
 
+            Reference.soundController.StopRocketBoost();
+            playingRocketSound = false;
+            blueFlameFunction.StopJet();
+            blueFlame.SetActive(false);
+            blueFlameReverseLeft.SetActive(false);
+            blueFlameReverseRight.SetActive(false);
+
+        }
         
         //Vector3 impulse = transform.up * playerInputImpulse * engineForce / player.mass;
         //velocity += Time.deltaTime*impulse;
