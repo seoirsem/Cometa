@@ -80,9 +80,6 @@ public class Projectile : MonoBehaviour
             circleCollider2d.enabled = false;
             this.explosionRadiusDiameter = bulletRadius;
         }
-        rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
-        rigid_body.rotation = rotationalPosition + 90f;
-
     
         Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), true);
 
@@ -98,7 +95,7 @@ public class Projectile : MonoBehaviour
         }
         if(projectileType == "Bullet")
         {
-            rigid_body.AddForce(0.4f*transform.right,ForceMode2D.Impulse);
+            rigid_body.AddForce(0.6f*transform.right,ForceMode2D.Impulse);
         }
     }
     // Update is called once per frame

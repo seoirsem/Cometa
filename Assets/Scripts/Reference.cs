@@ -20,6 +20,7 @@ public class Reference
     public static ShipShields shipShields;
     public static SoundController soundController;
     public static ShakeCamera shakeCamera;
+    public static Camera mainCamera;
     // public static ShipShieldVisuals;
     
     
@@ -32,6 +33,7 @@ public class Reference
         hud = GameObject.Find("HUD");
 
         asteroidController = GameObject.Find("AsteroidController").GetComponent<AsteroidController>();
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
         animationController = GameObject.Find("AnimationController").GetComponent<AnimationController>();
         hudController = GameObject.Find("HUDController").GetComponent<HUDController>();

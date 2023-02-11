@@ -101,13 +101,14 @@ public class PlayerSpriteController : MonoBehaviour
     void UpdatePlayerShooting()
     {
 
+ ////////////// KEYBOARD CONTROLS ////////////////
 
         if (Reference.playerInputController.spaceBar)
         {
             if (Time.time - bulletCooldownTimer > bulletCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 bulletCooldownTimer = Time.time;
-                Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Bullet");
+                Reference.projectileController.ShootProjectile(player.go.transform.position, playergo.transform.rotation * Quaternion.Euler(0, 0, 90),"Bullet");
                 Reference.soundController.FireBullet();
                 Reference.shakeCamera.StartShake(0.05f,0.05f);
 
@@ -122,11 +123,50 @@ public class PlayerSpriteController : MonoBehaviour
                 Reference.projectileController.ShootProjectile(player.go.transform.position,playergo.transform.rotation* Quaternion.Euler(0, 0, 90),"Rocket");
             }
         }
-    }
 
-    public void ApplyRocketLaunchImpulse()
+///////////// MOUSE CONTROLS //////////////////
+
+        if (Reference.playerInputController.mouseClickDown)
+        {
+            Vector2 cursorPosition = Reference.mainCamera.ScreenToWorldPoint(Reference.playerInputController.cursorPosition);
+            if (Time.time - bulletCooldownTimer > bulletCooldown)
+            {//space to set variable cooldowns, and noises if on cooldown....etc
+                bulletCooldownTimer = Time.time;
+                float angle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,cursorPosition) + 90; // I have to hack this angle, why??
+                //Debug.Log($"Player: {Reference.playergo.GetComponent<Rigidbody2D>().position}, Cursor: {cursorPosition}, Angle: {angle}");
+//                Debug.Log(angle);
+                Reference.projectileController.ShootProjectile(player.go.transform.position, Quaternion.Euler(0,0,angle),"Bullet");
+                Reference.soundController.FireBullet();
+                Reference.shakeCamera.StartShake(0.05f,0.05f);
+
+            }
+        }
+        if (Reference.playerInputController.leftClickDown)
+        {
+            Vector2 cursorPosition = Reference.mainCamera.ScreenToWorldPoint(Reference.playerInputController.cursorPosition);
+            if (Time.time - rocketCooldownTimer > rocketCooldown)
+            {//space to set variable cooldowns, and noises if on cooldown....etc
+                rocketCooldownTimer = Time.time;
+                float angle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,cursorPosition) + 90; // I have to hack this angle, why??
+                Reference.projectileController.ShootProjectile(player.go.transform.position,Quaternion.Euler(0,0,angle),"Rocket");
+            }
+        }
+
+    }
+    public static float FindDegree(Vector2 v1, Vector2 v2)
     {
-        Vector2 direction = new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y);
+        float x = (v2.x - v1.x);
+        float y = (v2.y - v1.y);
+        float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
+        if(value < 0) value += 360f;
+    
+        return value;
+    }
+    public void ApplyRocketLaunchImpulse(Quaternion rotation)
+    {   
+        Debug.Log(rotation);
+        Quaternion euler = Quaternion.Euler(0,0,-90);
+        Vector2 direction = euler*(rotation * new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y));
         Vector2 impulse = direction * rocketForce * mass;
 
         rigid_body.AddForce(-1*impulse,ForceMode2D.Impulse);
@@ -177,7 +217,7 @@ public class PlayerSpriteController : MonoBehaviour
     {
         rigid_body.angularVelocity = 0;
         float playerInputRotation = 0;
-        if (Reference.playerInputController.leftKey)
+        if (Reference.playerInputController.leftKey || Reference.playerInputController.a)
         {
             playerInputRotation += 1;
             if(!playingTurningSound)
@@ -189,7 +229,7 @@ public class PlayerSpriteController : MonoBehaviour
 
             }
         }
-        if (Reference.playerInputController.rightKey)
+        if (Reference.playerInputController.rightKey || Reference.playerInputController.d)
         {
             playerInputRotation -= 1;
             if(!playingTurningSound)
@@ -221,7 +261,7 @@ public class PlayerSpriteController : MonoBehaviour
     void UpdatePlayerMotion()
     {
         float playerInputImpulse = 0;
-        if (Reference.playerInputController.upKey)
+        if (Reference.playerInputController.upKey || Reference.playerInputController.w)
         {
             playerInputImpulse += 1*mass;
             if(!playingRocketSound)
@@ -232,7 +272,7 @@ public class PlayerSpriteController : MonoBehaviour
                 blueFlameFunction.StartJet();
             }
         }
-        if (Reference.playerInputController.downKey)
+        if (Reference.playerInputController.downKey || Reference.playerInputController.s)
         {
             playerInputImpulse -= 1*mass;
             if(!playingRocketSound)

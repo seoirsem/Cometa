@@ -6,10 +6,14 @@ public class FlameDamageCollider : MonoBehaviour
 {
         
     CapsuleCollider2D flameDamageCollider;
+    float radiusOfDestruction = 4f;
 
     public List<Collider2D> damageTriggerList;
     public List<Collider2D> forceTriggerList;
     FlameForceCollider flameForceCollider;
+
+    float damageCooldown = 0.5f;
+    float timeLastDamaged;
 
     GameObject blueFlame;
     // Start is called before the first frame update
@@ -23,7 +27,7 @@ public class FlameDamageCollider : MonoBehaviour
 
     void Start()
     {
-        
+        timeLastDamaged = Time.time - damageCooldown;
     }
 
     // Update is called once per frame
@@ -47,10 +51,33 @@ public class FlameDamageCollider : MonoBehaviour
                 Vector2 relativePosition = collider.ClosestPoint(this.gameObject.transform.position + new Vector3(-0.05f,-0.25f,0)) - (Vector2)(this.gameObject.transform.position + new Vector3(-0.05f,-0.25f,0));
                 Rigidbody2D hitRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
 
-                FlameForceCalculation(distance, relativePosition, hitRigidBody);
-                
+                FlameForceCalculation(distance, relativePosition, hitRigidBody);   
             }
+        }
 
+        if(damageTriggerList.Count > 0 && Time.time - timeLastDamaged > damageCooldown)
+        {
+            timeLastDamaged = Time.time;
+            foreach(Collider2D collider in damageTriggerList)
+            {
+                if (collider.gameObject.GetComponent<Asteroid>() != null)
+                    {
+                        Vector2 position = (Vector2)(this.gameObject.transform.position + new Vector3(-0.05f,-0.25f,0));
+                        // this is janky repeating code which can probably be fixed by using derived classes better oh well
+                        // we will also want to damage nearby asteroids in the radius too
+                        if(collider.gameObject.GetComponent<MainAsteroid>() != null)
+                        {
+                            MainAsteroid asteroid = collider.gameObject.GetComponent<MainAsteroid>();
+                            asteroid.ApplyFlames(position, radiusOfDestruction, this.gameObject);
+                            //Debug.Log("Main Asteroid in explosion radius");
+                        }
+                        else
+                        {
+                            DerivedAsteroid asteroid = collider.gameObject.GetComponent<DerivedAsteroid>();
+                            asteroid.ApplyFlames(position, radiusOfDestruction, this.gameObject);
+                        }
+                    }
+            }
         }
 
     }

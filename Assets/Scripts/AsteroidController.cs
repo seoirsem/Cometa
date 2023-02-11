@@ -26,10 +26,7 @@ public class AsteroidController : MonoBehaviour
 
     void Update()
     {
-        if (Reference.playerInputController.mouseClicked && !Reference.worldController.isPaused)
-        {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
+
         if(Reference.playerInputController.o)
         { //clear screen
             foreach(Transform child in this.transform)
