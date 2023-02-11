@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShipShields : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float maxShieldStrength = 100f;
+    public float maxShieldStrength = 10000f;
     public float shieldStrength;
     Rigidbody2D playerRigidBody;
     GameObject playerGameObject;
@@ -18,12 +18,12 @@ public class ShipShields : MonoBehaviour
     float shieldForceMultiplier;
     SpriteRenderer spriteRenderer;
 
-    float shieldRechargeRate = 5f; //per second
+    float shieldRechargeRate = 500f; //per second
     float shieldChargeDelay = 2.5f; //seconds
     float shieldForceRatio = 5f;
 
     float shieldDamageRadiusToAsteroids = 1.5f;
-    float matterDestroyedShieldPenalty = 5f;
+    float matterDestroyedShieldPenalty = 0f;
 
     bool shieldNotOnCooldown = false;
 

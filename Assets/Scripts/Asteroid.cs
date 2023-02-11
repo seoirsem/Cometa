@@ -36,7 +36,7 @@ public class Asteroid : MonoBehaviour
     public SquareMesh squareMesh;
 
     private void Awake() {
-        celSize = 0.15f;
+        celSize = 0.2f;
     }
 
     public void ReDrawAsteroid()

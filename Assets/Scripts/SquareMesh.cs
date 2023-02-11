@@ -82,7 +82,7 @@ public class SquareMesh
 
         // If there were no squares in the mesh that has 'split', pass null for SquareMesh
         // This means the entire mesh (split or not) has been destroyed
-        if ( allSquares.Count == 0 ) { chunks.Add(null); return chunks; }
+        if ( allSquares.Count == 0 ) { chunks.Add(null); Debug.Log("No squares were destroyed"); return chunks; }
 
         // Useful debugging syntax:
         // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
@@ -129,14 +129,15 @@ public class SquareMesh
             safety += 1;
             if (safety > 4) { Debug.Log("Couldn't resolve all squares into chunks - tripped anti-infinity-loop safety"); break; }
         }
-
         if ( chunks.Count <= 1 ) 
         { 
-            // There was no split
+            // There was no break-through split
             if ( VoidThresholdExceeded() == true )
             {
-//                Debug.Log("Splitting to quarters");
+                // There was a void-fraction split
                 chunks = SplitIntoQuarters(this);
+                Debug.Log("Void fraction splitting!");
+                // Debug.Log(chunks.Count);
                 if ( chunks != null ) 
                 { 
                     for ( int m = 0; m < chunks.Count; m++ )
@@ -148,6 +149,7 @@ public class SquareMesh
             }
             else
             {
+                // There was no split at all
                 this.asteroid.ReDrawAsteroid();
                 chunks = null;
             }
@@ -185,10 +187,13 @@ public class SquareMesh
         {
             for ( int y = 0; y < sm.squares.GetLength(1); y++ )
             {
+                Debug.Log("Investigating a square:");
+                Debug.Log(new Vector2(x, y));
                 Square s = sm.squares[x, y];
-                if ( s == null ) { continue; }
+                if ( s == null ) { Debug.Log("Was null"); continue; }
                 if ( s.x < Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y < Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
+                    Debug.Log("BL");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f)  -1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     bL[x, y] = new Square(x, y); 
                     isEmptyBL = false;
@@ -196,6 +201,7 @@ public class SquareMesh
 
                 if ( s.x < Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y >= Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
+                    Debug.Log("TL");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     tL[x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = new Square(x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
                     isEmptyTL = false;
@@ -203,6 +209,7 @@ public class SquareMesh
 
                 if ( s.x >= Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y < Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
+                    Debug.Log("BR");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) - 1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     bR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y] = new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y); 
                     isEmptyBR = false;
@@ -210,6 +217,7 @@ public class SquareMesh
                 
                 if ( s.x >= Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y >= Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
+                    Debug.Log("TR");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     tR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = 
                                 new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
@@ -241,7 +249,6 @@ public class SquareMesh
         if ( isEmptyTL ) { topLeft = null; }
         if ( isEmptyBR ) { botRight = null; }
         if ( isEmptyTR ) { topRight = null; }
-
         List<SquareMesh> chunks = new List<SquareMesh>();
         chunks.Add(botLeft);
         chunks.Add(topLeft);
@@ -254,6 +261,7 @@ public class SquareMesh
             newMesh.edgeLength = this.edgeLength;
         }
         if ( botLeft == null && topLeft == null && botRight == null && topRight == null ) { chunks = null; }
+
         return chunks;
 
     }
@@ -353,9 +361,13 @@ public class SquareMesh
         
         if ( squaresToRemove.Count > 0 ) 
         {
+            Debug.Log(squaresToRemove.Count);
             RemoveSquares(squaresToRemove);
             chunks = OnSplit();
+            // Debug.Log(chunks.Count);
+            
         }
+        else{ Debug.Log("No squares were removed"); }
         return chunks;
     }
     

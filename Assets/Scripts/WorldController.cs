@@ -16,7 +16,7 @@ public class WorldController : MonoBehaviour
     string loadingScene = "Scenes/LoadingScene";
     string gameScene = "Scenes/GameScene";
     GameObject warningPrefab;
-    float asteroidSpawnInterval = 100f;
+    float asteroidSpawnInterval = 10000f;
     float time;
     bool gameOver = false;
 
@@ -27,7 +27,7 @@ public class WorldController : MonoBehaviour
 
     float colliderThickness = 0.01f;
 
-    float freqOfNewAsteroids = 30f;
+    float freqOfNewAsteroids = 3000f;
     float warningLifespan = 3f;
     int newAsteroidDirection;
     Vector3 asteroidPositionOffset;
@@ -76,8 +76,8 @@ public class WorldController : MonoBehaviour
         warningPrefab = Resources.Load("Prefabs/WarningSymbol") as GameObject;
         //Reference.asteroidController.SpawnNewAsteroid(randomSize,2, new Vector3(0,0,0));
         //Reference.asteroidController.SpawnRandomAsteroid(20, new Vector3(0,2.5f,0));
-        Reference.asteroidController.SpawnNewAsteroid(10,0, new Vector3(0,0,0), new Vector3(5f,0,0));
-        Reference.asteroidController.SpawnNewAsteroid(10,1, new Vector3(0,0,0), new Vector3(-5f,0,0));
+        // Reference.asteroidController.SpawnNewAsteroid(10,0, new Vector3(0,0,0), new Vector3(5f,0,0));
+        // Reference.asteroidController.SpawnNewAsteroid(10,1, new Vector3(0,0,0), new Vector3(-5f,0,0));
 
     }
 

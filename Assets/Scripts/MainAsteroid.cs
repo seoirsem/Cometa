@@ -315,24 +315,21 @@ public class MainAsteroid : Asteroid
         }
 
 
-        if (otherObject.GetComponent<Projectile>() != null) 
-        {
-            Projectile projectile = otherObject.GetComponent<Projectile>();
-            if (projectile.mainProjectile == true)
-            {
-                float radius = projectile.explosionRadiusDiameter;
-                //Reference.scoreController.IncrementScore((float)size);
+        // if (otherObject.GetComponent<Projectile>() != null) 
+        // {
+        //     Projectile projectile = otherObject.GetComponent<Projectile>();
+        //     if (projectile.mainProjectile == true)
+        //     {
+        //         float radius = projectile.explosionRadiusDiameter;
+        //         //Reference.scoreController.IncrementScore((float)size);
 
-                List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position - new Vector3(offset.x,offset.y,0), radius);
-                if(newAstroidMeshes != null)
-                {
+        //         List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(otherObject.transform.position - new Vector3(offset.x,offset.y,0), radius);
 
-                    /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
-                    Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,offset);
-                }
-            }
-        }
-        else if (otherObject.GetComponent<PlayerSpriteController>() != null)
+        //         /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
+        //         Reference.asteroidController.AsteroidHit(this, collisionLocation, otherObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,offset);
+        //     }
+        // }
+        if (otherObject.GetComponent<PlayerSpriteController>() != null)
         {
             //Debug.Log("Asteroid hit player");
         }
@@ -370,7 +367,11 @@ public class MainAsteroid : Asteroid
             //Debug.Log("Asteroid hit other asteroid");
 
         }
+   
+    }
 
+    public void CloneGeometryToDerivedAsteroids()
+    {
         foreach(GameObject asteroidgo in asteroidPack)
         {
             if(asteroidgo.GetComponent<DerivedAsteroid>() != null)

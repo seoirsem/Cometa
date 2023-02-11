@@ -17,3 +17,5 @@
 //
 //
 //
+// 2. I get some nulls when an asteroid gets destroed completely. It looks like the derived asteroid tries to FindOutline, but the 
+// Main asteroids has no squares that are non-null so it hits the "Could not find a starting square!" print out in SquareMesh. Fix!
