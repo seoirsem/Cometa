@@ -10,8 +10,11 @@ public class BlueFlameFunction : MonoBehaviour
     float timeStart;
     float timeOff = 10f;
 
+
     public bool start = true;
     public bool exit = false;
+
+
 
     void Start()
     {
@@ -25,8 +28,10 @@ public class BlueFlameFunction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
 //        Debug.Log(animator.GetCurrentAnimatorStateInfo(0));   
     }
+
 
 
     public void TransitionToFullJet()
@@ -58,4 +63,6 @@ public class BlueFlameFunction : MonoBehaviour
     {
         Destroy(this.gameObject);
     }
+
+
 }

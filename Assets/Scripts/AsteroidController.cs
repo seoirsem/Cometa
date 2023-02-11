@@ -120,9 +120,8 @@ public class AsteroidController : MonoBehaviour
                 //Debug.Log("This asteroid chunk has been completely destroyed");
             }
         }
-        Reference.scoreController.IncrementScore((float)numberOfSquaresLost);
-        Reference.hudController.ScoreText(contact, numberOfSquaresLost, new Color(255,215,0));
-        Debug.Log("Scored");
+        Reference.scoreController.IncrementScore((float)numberOfSquaresLost, contact);
+//        Debug.Log("Scored");
         if(otherObject.GetComponent<ShipShields>() != null)
         {
 //            Debug.Log("Shield Penalty");

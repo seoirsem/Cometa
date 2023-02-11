@@ -12,6 +12,8 @@ public class PlayerSpriteController : MonoBehaviour
     GameObject blueFlameReverseLeft;
     GameObject blueFlameReverseRight;
 
+    ShipShields shipShields;
+
     float rotationRate = 500; 
     float engineForce = 8; 
     float mass = 15;
@@ -31,6 +33,9 @@ public class PlayerSpriteController : MonoBehaviour
 
     bool playingRocketSound = false;
     bool playingTurningSound = false;
+
+    float boostCooldown = 2f;
+    float lastBoost;
 
     BlueFlameFunction blueFlameFunction;
     BlueFlameFunction blueFlameLeft;
@@ -54,7 +59,8 @@ public class PlayerSpriteController : MonoBehaviour
         blueFlameLeft = blueFlameLeftgo.GetComponent<BlueFlameFunction>();
         blueFlameRight = blueFlameRightgo.GetComponent<BlueFlameFunction>();
         //blueFlameFunction.StartJet();
-
+        shipShields = this.gameObject.transform.Find("ShipShields").GetComponent<ShipShields>();
+        lastBoost = Time.time - boostCooldown;
     }
 
     void Start()
@@ -82,7 +88,7 @@ public class PlayerSpriteController : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     { // A collision with the ship's hull has occurred! This is game over (for the time being)
 //        Debug.Log(collision.gameObject.name);
-        if(collision.gameObject.GetComponent<Projectile>() == null)
+        if(collision.gameObject.GetComponent<Projectile>() == null && shipShields.shieldStrength <= 0)
         {
             Reference.worldController.PlayerDead();
         }
@@ -251,6 +257,14 @@ public class PlayerSpriteController : MonoBehaviour
 
         }
         
+        if(Reference.playerInputController.b && Time.time - lastBoost > boostCooldown)
+        {
+            lastBoost = Time.time;
+            Vector2 directionBoost = new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y);
+            Vector2 impulseBoost = directionBoost * mass *  engineForce/2;
+            rigid_body.AddForce(impulseBoost,ForceMode2D.Impulse);
+
+        }
         //Vector3 impulse = transform.up * playerInputImpulse * engineForce / player.mass;
         //velocity += Time.deltaTime*impulse;
         //if(velocity.magnitude > maxSpeed)

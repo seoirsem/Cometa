@@ -17,6 +17,7 @@ public class PointScoreIndicator : MonoBehaviour
     Color color0 = new Color(255, 0, 0);
     Color color;
     Text text;
+    float scorePixelRatio;
 
     float tweenScale;
     float pulseCooldown = 0.1f;
@@ -37,6 +38,10 @@ public class PointScoreIndicator : MonoBehaviour
 
     }
 
+    void Start()
+    {
+        scorePixelRatio = Reference.scoreController.scorePixelRatio;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -65,7 +70,7 @@ public class PointScoreIndicator : MonoBehaviour
         worldPosition = position;
         this.color = colour;
         time0 = System.DateTime.Now;
-        int fontSize = 35 + 2*Mathf.RoundToInt(points);
+        int fontSize = 35 + 2*Mathf.RoundToInt(points/scorePixelRatio);
         if(fontSize>115){fontSize = 115;}
         text.fontSize = fontSize;
         this.gameObject.SetActive(true);

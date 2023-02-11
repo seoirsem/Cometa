@@ -28,7 +28,7 @@ public class Projectile : MonoBehaviour
     float playerMassImpulseAdjustment;
 
     public float explosionRadiusDiameter;
-    float rocketRadius = 6f;
+    float rocketRadius = 10f;
     float bulletRadius = 1.5f;
 
 
@@ -163,7 +163,7 @@ public class Projectile : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if(leftPlayerCollider)
+        if(leftPlayerCollider && collision.gameObject.GetComponent<Projectile>() == null)
         {
             DestroySelf();
             // Debug.Log(collision.gameObject.name);

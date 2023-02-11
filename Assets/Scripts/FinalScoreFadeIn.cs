@@ -67,7 +67,7 @@ public class FinalScoreFadeIn : MonoBehaviour
 
     public void SetScore(float score)
     {
-        finalScoreText.text = "Final Score: " + score.ToString("F1");
+        finalScoreText.text = "Final Score: " + score.ToString("F0");
     }
 
     void SetAlpha(float alpha, Text text)
