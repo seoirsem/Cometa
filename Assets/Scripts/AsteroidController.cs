@@ -21,7 +21,7 @@ public class AsteroidController : MonoBehaviour
         deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
 
-        SpawnAsteroid(15, new Vector3(-0.5f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
+        // SpawnAsteroid(15, new Vector3(-0.5f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
     }
 
     void Update()
