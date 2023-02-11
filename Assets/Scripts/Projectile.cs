@@ -28,8 +28,13 @@ public class Projectile : MonoBehaviour
     float playerMassImpulseAdjustment;
 
     public float explosionRadiusDiameter;
+<<<<<<< HEAD
     float rocketRadius = 6f;
     float bulletRadius = 2f;
+=======
+    float rocketRadius = 10f;
+    float bulletRadius = 1.5f;
+>>>>>>> c116be917d62a181201e08398bf978e7a4bc79eb
 
 
     bool awayFromPlayer = false;
@@ -80,9 +85,6 @@ public class Projectile : MonoBehaviour
             circleCollider2d.enabled = false;
             this.explosionRadiusDiameter = bulletRadius;
         }
-        rotationalPosition = Reference.playerSpriteController.GetComponent<Rigidbody2D>().rotation;
-        rigid_body.rotation = rotationalPosition + 90f;
-
     
         Physics2D.IgnoreCollision(go.GetComponent<Collider2D>(),Reference.playergo.GetComponent<Collider2D>(), true);
 
@@ -98,7 +100,7 @@ public class Projectile : MonoBehaviour
         }
         if(projectileType == "Bullet")
         {
-            rigid_body.AddForce(0.4f*transform.right,ForceMode2D.Impulse);
+            rigid_body.AddForce(0.6f*transform.right,ForceMode2D.Impulse);
         }
     }
     // Update is called once per frame
@@ -163,7 +165,7 @@ public class Projectile : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if(leftPlayerCollider)
+        if(leftPlayerCollider && collision.gameObject.GetComponent<Projectile>() == null)
         {
             DestroySelf();
             // Debug.Log(collision.gameObject.name);

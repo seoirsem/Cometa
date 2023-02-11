@@ -26,10 +26,7 @@ public class AsteroidController : MonoBehaviour
 
     void Update()
     {
-        if (Reference.playerInputController.mouseClicked && !Reference.worldController.isPaused)
-        {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
+
         if(Reference.playerInputController.o)
         { //clear screen
             foreach(Transform child in this.transform)
@@ -142,10 +139,15 @@ public class AsteroidController : MonoBehaviour
                 }
             }  
         }
+<<<<<<< HEAD
 
         Reference.scoreController.IncrementScore((float)numberOfSquaresLost);
         Reference.hudController.ScoreText(contact, numberOfSquaresLost, new Color(255,215,0));
         Debug.Log("Scored");
+=======
+        Reference.scoreController.IncrementScore((float)numberOfSquaresLost, contact);
+//        Debug.Log("Scored");
+>>>>>>> c116be917d62a181201e08398bf978e7a4bc79eb
         if(otherObject.GetComponent<ShipShields>() != null)
         {
             otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost,contact);

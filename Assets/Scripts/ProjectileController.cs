@@ -34,7 +34,7 @@ public class ProjectileController : MonoBehaviour
         if(projectileType == "Rocket")
         {
             projectilego = SimplePool.Spawn(rocketPrefab, position, rotation);
-            Reference.playerSpriteController.ApplyRocketLaunchImpulse();
+            Reference.playerSpriteController.ApplyRocketLaunchImpulse(rotation);
             //Reference.soundController.PlayShortWhoosh();
             Reference.soundController.PlayLongWhoosh();
         }

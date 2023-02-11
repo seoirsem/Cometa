@@ -46,7 +46,7 @@ public class WorldController : MonoBehaviour
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
-        worldSize = worldSize = new Vector2(20f, 12.5f);
+        worldSize = worldSize = new Vector2(25f, 15f);
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
         rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();
@@ -112,6 +112,11 @@ public class WorldController : MonoBehaviour
             warningOff = false;
             
             newAsteroidDirection = Random.Range(0,4); //left, right, up, down
+
+            if(freqOfNewAsteroids > 4f)
+            {
+                freqOfNewAsteroids -= 0.5f;
+            }
             
             int[] numbers = {-1,0,1,0,0,1,0,-1};
             Vector3 spawnPosition = new Vector3(numbers[newAsteroidDirection*2]*worldSize.x/2,numbers[newAsteroidDirection*2+1]*worldSize.y/2,0) + 

@@ -9,7 +9,8 @@ public class PlayerInputController : MonoBehaviour
     public bool leftKey = false;
     public bool rightKey = false;
     public Vector2 cursorPosition;
-    public bool mouseClicked = false;
+    public bool mouseClickDown = false;
+    public bool leftClickDown = false;
     public bool spaceBar = false;
     public bool b = false;
     public bool r = false;
@@ -18,6 +19,10 @@ public class PlayerInputController : MonoBehaviour
 
     public bool p = false;
     public bool o = false;
+    public bool w = false;
+    public bool a = false;
+    public bool s = false;
+    public bool d = false;
     
     void Start()
     {
@@ -77,13 +82,21 @@ public class PlayerInputController : MonoBehaviour
         {
             rightKey = false;
         }
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
-            mouseClicked = true;
+            mouseClickDown = true;
         }
         else
         {
-            mouseClicked = false;
+            mouseClickDown = false;
+        }
+        if (Input.GetMouseButton(1))
+        {
+            leftClickDown = true;
+        }
+        else
+        {
+            leftClickDown = false;
         }
         if (Input.GetKey("space"))
         {
@@ -132,6 +145,38 @@ public class PlayerInputController : MonoBehaviour
         else
         {
             e = false;
+        }
+        if (Input.GetKey("w"))
+        {
+            w = true;
+        }
+        else
+        {
+            w = false;
+        }
+        if (Input.GetKey("a"))
+        {
+            a = true;
+        }
+        else
+        {
+            a = false;
+        }
+        if (Input.GetKey("s"))
+        {
+            s = true;
+        }
+        else
+        {
+            s = false;
+        }
+        if (Input.GetKey("d"))
+        {
+            d = true;
+        }
+        else
+        {
+            d = false;
         }
     }
 }

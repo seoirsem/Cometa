@@ -78,6 +78,11 @@ public class DerivedAsteroid : Asteroid
         
     }
 
+    public void ApplyFlames(Vector2 position, float radius, GameObject gameObject)
+    {
+        MainAsteroid mainAst = mainAsteroid.GetComponent<MainAsteroid>();
+        mainAst.ApplyFlames(position,radius,gameObject);
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Collider2D otherObject = collision.collider;

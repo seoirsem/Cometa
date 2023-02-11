@@ -151,7 +151,6 @@ public class ShipShields : MonoBehaviour
         playerRigidBody.AddForce(-1 * shieldForceVector, ForceMode2D.Impulse);
         hitRigidBody.AddForce(shieldForceVector, ForceMode2D.Impulse);
         OnHit(shieldAppliedForce/shieldForceMultiplier);
-        
     }
 
     
