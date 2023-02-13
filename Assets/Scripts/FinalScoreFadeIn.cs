@@ -9,6 +9,8 @@ public class FinalScoreFadeIn : MonoBehaviour
     Text gameOverText;
     GameObject finalScore;
     Text finalScoreText;
+    GameObject finalTime;
+    Text finalTimeText;
 
     GameObject replay;
     Button replayButton;
@@ -29,6 +31,9 @@ public class FinalScoreFadeIn : MonoBehaviour
         finalScore = GameObject.Find("FinalScoreText");
         finalScoreText = finalScore.GetComponent<Text>();
         startTime = Time.unscaledTime;
+
+        finalTime = GameObject.Find("FinalTimeText");
+        finalTimeText = finalTime.GetComponent<Text>();
 
         replay = GameObject.Find("Replay");
         replayButton = replay.GetComponent<Button>();
@@ -57,6 +62,7 @@ public class FinalScoreFadeIn : MonoBehaviour
         if(Time.unscaledTime - startTime < fadeTimeScore)
         {
             SetAlpha((Time.unscaledTime - startTime)/fadeTimeScore, finalScoreText);
+            SetAlpha((Time.unscaledTime - startTime)/fadeTimeScore, finalTimeText);
         }
         if(!buttonsActive && Time.unscaledTime - startTime > 4f)
         {
@@ -70,6 +76,10 @@ public class FinalScoreFadeIn : MonoBehaviour
         finalScoreText.text = "Final Score: " + score.ToString("F0");
     }
 
+    public void SetTime(float time)
+    {
+        finalTimeText.text = "Time Survied: " + time.ToString("F2") + "s";
+    }
     void SetAlpha(float alpha, Text text)
     {
         Color tempColor = text.color;

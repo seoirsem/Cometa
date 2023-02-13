@@ -18,6 +18,9 @@ public class HUDController : MonoBehaviour
     GameObject gameOverScreen;
     GameObject gameOverScreenPrefab;
 
+    GameObject timergo;
+    Text timer;
+
     GameObject pointScoreIndicatorPrefab;
 
     SoundController soundController;
@@ -60,7 +63,8 @@ public class HUDController : MonoBehaviour
         pointScoreIndicatorPrefab = Resources.Load("Prefabs/PointScoreIndicator") as GameObject;
         //SimplePool.Preload(pointScoreIndicatorPrefab, 1);
         
-        
+        this.timergo = GameObject.Find("Timer");
+        this.timer = timergo.GetComponent<Text>();
         soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
 
     }
@@ -97,6 +101,7 @@ public class HUDController : MonoBehaviour
         gameOverScreen.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
         gameOverScreen.GetComponent<RectTransform>().localPosition = new Vector3(0,0,-3);
         gameOverScreen.GetComponent<FinalScoreFadeIn>().SetScore(finalScore);
+        gameOverScreen.GetComponent<FinalScoreFadeIn>().SetTime(Reference.scoreController.timeElapsed);
 
 
     }
@@ -173,6 +178,11 @@ public class HUDController : MonoBehaviour
         LeanTween.scale(scorego, new Vector3(1.2f, 1.2f, 1f), 0.3f);
         LeanTween.colorText(scorego.GetComponent<RectTransform>(), Color.white, 0.1f).setDelay(0.1f);
         LeanTween.scale(scorego, new Vector3(0.8f, 0.8f, 1f), 0.3f).setDelay(0.1f);;
+    }
+
+    public void UpdateOnScreenTime(float time)
+    {
+        timer.text = time.ToString("F2");
     }
 
     public void EnablePauseMenu()

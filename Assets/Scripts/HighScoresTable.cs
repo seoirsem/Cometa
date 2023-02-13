@@ -57,7 +57,7 @@ public class HighScoresTable : MonoBehaviour
             //highScore.GetComponent<RectTransform>().localPosition = new Vector3(highScore.GetComponent<RectTransform>().localPosition.x,highScore.GetComponent<RectTransform>().localPosition.y,-3);
 
             Michsky.UI.Shift.SpotlightButton spotlight = highScore.GetComponent<Michsky.UI.Shift.SpotlightButton>();
-            spotlight.buttonTitle = "Score: " + score.score.ToString("F1") + " -- Time " + score.timeElapsed.ToString("F0") + "s";
+            spotlight.buttonTitle = "Score: " + score.score.ToString("F1") + " -- Time " + score.timeElapsed.ToString("F2") + "s";
             spotlight.buttonDescription = score.dateAchieved;
         }
         GameObject returnButton = GameObject.Instantiate(returnButtonPrefab);
