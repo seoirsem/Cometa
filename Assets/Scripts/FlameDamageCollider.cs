@@ -35,8 +35,8 @@ public class FlameDamageCollider : MonoBehaviour
     {
         if(blueFlame.active)
         {
-        forceTriggerList = flameForceCollider.forceTriggerList;
-        CalculateForceAndDamage();
+            forceTriggerList = flameForceCollider.forceTriggerList;
+            CalculateForceAndDamage();
         }
     }
 

@@ -20,6 +20,8 @@ public class SquareMesh
 
     public int leftmostSplitCoord;
     public int bottomSplitCoord;
+    public int topSplitCoord;
+    public int rightmostSplitCoord;
 
     public Vector2 centreOfMass;
     public float mass;
@@ -106,7 +108,6 @@ public class SquareMesh
             // Remove stashed quares from the master list
             allSquares = SubtractChunk(allSquares, asteroidChunkList);
 
-            
             // if ( asteroidChunkList.Count == 0 ) 
             // {
             //     // If the chunk contains no squares (i.e. is destroyed), pass null for SquareMesh
@@ -137,7 +138,6 @@ public class SquareMesh
                 // There was a void-fraction split
                 chunks = SplitIntoQuarters(this);
                 Debug.Log("Void fraction splitting!");
-                // Debug.Log(chunks.Count);
                 if ( chunks != null ) 
                 { 
                     for ( int m = 0; m < chunks.Count; m++ )
@@ -165,6 +165,7 @@ public class SquareMesh
                 chunks[m].UpdateSquaresInQuartersCount();
             }
         }
+        
         return chunks;
     }
 
@@ -187,13 +188,10 @@ public class SquareMesh
         {
             for ( int y = 0; y < sm.squares.GetLength(1); y++ )
             {
-                Debug.Log("Investigating a square:");
-                Debug.Log(new Vector2(x, y));
                 Square s = sm.squares[x, y];
-                if ( s == null ) { Debug.Log("Was null"); continue; }
+                if ( s == null ) { continue; }
                 if ( s.x < Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y < Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    Debug.Log("BL");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f)  -1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     bL[x, y] = new Square(x, y); 
                     isEmptyBL = false;
@@ -201,7 +199,6 @@ public class SquareMesh
 
                 if ( s.x < Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y >= Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    Debug.Log("TL");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     tL[x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = new Square(x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
                     isEmptyTL = false;
@@ -209,7 +206,6 @@ public class SquareMesh
 
                 if ( s.x >= Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y < Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    Debug.Log("BR");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) - 1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     bR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y] = new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y); 
                     isEmptyBR = false;
@@ -217,7 +213,6 @@ public class SquareMesh
                 
                 if ( s.x >= Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y >= Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    Debug.Log("TR");
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
                     tR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = 
                                 new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
@@ -228,21 +223,27 @@ public class SquareMesh
         botLeft.squares = bL; topLeft.squares = tL; botRight.squares = bR; topRight.squares = tR;
 
         botLeft.leftmostSplitCoord = 0;
+        botLeft.rightmostSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1;
         botLeft.bottomSplitCoord = 0;
-
+        botLeft.topSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(1)/2f) - 1;
         botLeft.UpdateSquaresInQuartersCount();
-//        Debug.Log(botLeft.topLeftCount);
 
         topLeft.leftmostSplitCoord = 0;
+        topLeft.rightmostSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1;
         topLeft.bottomSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(1)/2f);
+        topLeft.topSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(1)) - 1;
         topLeft.UpdateSquaresInQuartersCount();
 
         botRight.leftmostSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(0)/2f);
+        botRight.rightmostSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(0)) - 1;
         botRight.bottomSplitCoord = 0;
+        botRight.topSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(1)/2f) - 1;
         botRight.UpdateSquaresInQuartersCount();
 
         topRight.leftmostSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(0)/2f);
+        topRight.rightmostSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(0)) - 1;
         topRight.bottomSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(1)/2f);
+        topRight.topSplitCoord = (int)Mathf.Ceil(sm.squares.GetLength(1)) - 1;
         topRight.UpdateSquaresInQuartersCount();
 
         if ( isEmptyBL ) { botLeft = null; }
@@ -293,6 +294,8 @@ public class SquareMesh
         }
         newSquareMesh.leftmostSplitCoord = leftmostCoord;
         newSquareMesh.bottomSplitCoord = bottomCoord;
+        newSquareMesh.topSplitCoord = topCoord;
+        newSquareMesh.rightmostSplitCoord = rightmostCoord;
 
         Square[,] chunkSquaresArray = new Square[rightmostCoord - leftmostCoord + 1, topCoord - bottomCoord + 1];
         foreach ( Square s in chunkSquaresList )
@@ -361,13 +364,10 @@ public class SquareMesh
         
         if ( squaresToRemove.Count > 0 ) 
         {
-            Debug.Log(squaresToRemove.Count);
             RemoveSquares(squaresToRemove);
             chunks = OnSplit();
-            // Debug.Log(chunks.Count);
-            
         }
-        else{ Debug.Log("No squares were removed"); }
+        // else{ Debug.Log("No squares were removed"); }
         return chunks;
     }
     
@@ -387,14 +387,15 @@ public class SquareMesh
     //     }
     // }
 
-    public void ScaleEdgeLength()
+    public void ScaleEdgeLengthAndShift()
     {
-        List<Vector2> tmp = new List<Vector2>();
+        List<Vector2> tmpList = new List<Vector2>();
         foreach ( Vector2 v in perimeterVertices )
         {
-            tmp.Add(v * this.edgeLength);
+            Vector2 scaledAndShifted = ( v - new Vector2( ((float)squares.GetLength(0))/2f, ((float)squares.GetLength(1))/2f ) )*edgeLength;
+            tmpList.Add(scaledAndShifted);
         }
-        this.perimeterVertices = tmp;
+        this.perimeterVertices = tmpList;
     }
 
     public void ResetMesh()
@@ -427,31 +428,36 @@ public class SquareMesh
         mesh2.SetIndices(perimeterIndices, MeshTopology.Lines, 0);
     }
 
-    public List<Square> SquaresInRadius(Vector2 collisionPoint, float radius)
+    public List<Square> SquaresInRadius(Vector2 collisionPointInWC, float radius)
     {
-
-        Vector2 asteroidCorner = (Vector2)asteroid.gameObject.transform.position;
-       // Debug.Log(asteroidCorner);
-        Vector2 offsetCollisionPoint = collisionPoint - asteroidCorner;
         float asteroidRotationAngle = asteroid.gameObject.transform.rotation.eulerAngles.z * Mathf.PI/180f;
-        float rotatedX = offsetCollisionPoint.x * Mathf.Cos(-asteroidRotationAngle) - offsetCollisionPoint.y * Mathf.Sin(-asteroidRotationAngle);
-        float rotatedY = offsetCollisionPoint.x * Mathf.Sin(-asteroidRotationAngle) + offsetCollisionPoint.y * Mathf.Cos(-asteroidRotationAngle);
+        Vector2 asteroidCentreInWC = (Vector2)asteroid.gameObject.transform.position;
 
-        float asteroidFrameX = rotatedX / edgeLength;
-        float asteroidFrameY = rotatedY / edgeLength;
+        float cornerOffsetX = ((float)squares.GetLength(0))*edgeLength/2f;
+        float cornerOffsetY = ((float)squares.GetLength(1))*edgeLength/2f;
+        float rotatedCornerOffsetX = cornerOffsetX * Mathf.Cos(asteroidRotationAngle) - cornerOffsetY * Mathf.Sin(asteroidRotationAngle);
+        float rotatedCornerOffsetY = cornerOffsetX * Mathf.Sin(asteroidRotationAngle) + cornerOffsetY * Mathf.Cos(asteroidRotationAngle);
 
-        Vector2 collisionPointInAsteroidCoords = new Vector2(asteroidFrameX, asteroidFrameY);
+        Vector2 asteroidCornerInWC = asteroidCentreInWC - new Vector2( rotatedCornerOffsetX, rotatedCornerOffsetY );
+
+        Vector2 collisionPointInAC = collisionPointInWC - asteroidCornerInWC;
+        float rotatedX = collisionPointInAC.x * Mathf.Cos(-asteroidRotationAngle) - collisionPointInAC.y * Mathf.Sin(-asteroidRotationAngle);
+        float rotatedY = collisionPointInAC.x * Mathf.Sin(-asteroidRotationAngle) + collisionPointInAC.y * Mathf.Cos(-asteroidRotationAngle);
+        float asteroidGridX = rotatedX / edgeLength;
+        float asteroidGridY = rotatedY / edgeLength;
+
+        Vector2 collisionPointInAsteroidCoords = new Vector2(asteroidGridX, asteroidGridY);
         List<Square> affectedSquares = new List<Square>();
 
-        for (int i = (int)asteroidFrameX - ( (int)radius + 1 ); i < (int)asteroidFrameX + ( (int)radius + 1 ); i++)
+        for (int i = (int)asteroidGridX - ( (int)radius + 1 ); i < (int)asteroidGridX + ( (int)radius + 1 ); i++)
         {
-            for (int j = (int)asteroidFrameY - ( (int)radius + 1 ); j < (int)asteroidFrameY + ( (int)radius + 1 ); j++)
+            for (int j = (int)asteroidGridY - ( (int)radius + 1 ); j < (int)asteroidGridY + ( (int)radius + 1 ); j++)
             {
                 if ( i < 0 || j < 0 || i > squares.GetLength(0) - 1 || j > squares.GetLength(1) - 1 ) { continue; }
                 if ( squares[i, j] == null ) { continue; }
                 // If one coordinate alone is > radius, no need to compute expensive Pythagoras
-                if ( Mathf.Abs( ((float)squares[i, j].x + 0.5f) - asteroidFrameX ) > radius || Mathf.Abs( ((float)squares[i, j].y + 0.5f) - asteroidFrameY) > radius  ) { continue; }
-                if ( Mathf.Sqrt( Mathf.Pow( ((float)squares[i, j].x + 0.5f) - asteroidFrameX, 2) + Mathf.Pow( ((float)squares[i, j].y + 0.5f) - asteroidFrameY, 2) ) < radius)
+                if ( Mathf.Abs( ((float)squares[i, j].x + 0.5f) - asteroidGridX ) > radius || Mathf.Abs( ((float)squares[i, j].y + 0.5f) - asteroidGridY) > radius  ) { continue; }
+                if ( Mathf.Sqrt( Mathf.Pow( ((float)squares[i, j].x + 0.5f) - asteroidGridX, 2) + Mathf.Pow( ((float)squares[i, j].y + 0.5f) - asteroidGridY, 2) ) < radius)
                 {
                     affectedSquares.Add(squares[i, j]);
                 }
@@ -584,7 +590,7 @@ public class SquareMesh
         }
         FindCentreOfMass();
         //FindMass();
-        this.squares = sm.squares;
+        // this.squares = sm.squares;
         return sm;
     }
 

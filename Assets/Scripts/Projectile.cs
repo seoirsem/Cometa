@@ -28,13 +28,8 @@ public class Projectile : MonoBehaviour
     float playerMassImpulseAdjustment;
 
     public float explosionRadiusDiameter;
-<<<<<<< HEAD
-    float rocketRadius = 6f;
-    float bulletRadius = 2f;
-=======
     float rocketRadius = 10f;
     float bulletRadius = 1.5f;
->>>>>>> c116be917d62a181201e08398bf978e7a4bc79eb
 
 
     bool awayFromPlayer = false;

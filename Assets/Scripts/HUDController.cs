@@ -103,7 +103,6 @@ public class HUDController : MonoBehaviour
 
     public void ScoreText(Vector3 position, float points, Color color)
     {
-        Debug.Log("score text");
         GameObject obj = SimplePool.Spawn(pointScoreIndicatorPrefab,position,Quaternion.identity);
         obj.transform.SetParent(this.gameObject.transform);
         //obj.transform.position = position;

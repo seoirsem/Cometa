@@ -16,7 +16,7 @@ public class WorldController : MonoBehaviour
     string loadingScene = "Scenes/LoadingScene";
     string gameScene = "Scenes/GameScene";
     GameObject warningPrefab;
-    float asteroidSpawnInterval = 10000f;
+    float asteroidSpawnInterval = 10f;
     float time;
     bool gameOver = false;
 
@@ -27,7 +27,7 @@ public class WorldController : MonoBehaviour
 
     float colliderThickness = 0.01f;
 
-    float freqOfNewAsteroids = 3000f;
+    float freqOfNewAsteroids = 15f;
     float warningLifespan = 3f;
     int newAsteroidDirection;
     Vector3 asteroidPositionOffset;

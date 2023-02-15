@@ -42,7 +42,7 @@ public class Asteroid : MonoBehaviour
     public void ReDrawAsteroid()
     {
         squareMesh.FindOutline();
-        squareMesh.ScaleEdgeLength();
+        squareMesh.ScaleEdgeLengthAndShift();
         squareMesh.ResetMesh();
         squareMesh.ResetColliderMesh();
         squareMesh.FindCentreOfMass();
@@ -63,7 +63,7 @@ public class Asteroid : MonoBehaviour
             squareMesh.SetAsteroid(this);
             squareMesh.GenerateSquareMesh(size,celSize);
             squareMesh.FindOutline();
-            squareMesh.ScaleEdgeLength();
+            squareMesh.ScaleEdgeLengthAndShift();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
@@ -73,7 +73,7 @@ public class Asteroid : MonoBehaviour
             squareMesh = squareMeshIn;
             squareMesh.SetAsteroid(this);
             squareMesh.FindOutline();
-            squareMesh.ScaleEdgeLength();
+            squareMesh.ScaleEdgeLengthAndShift();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
