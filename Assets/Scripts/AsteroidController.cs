@@ -161,7 +161,7 @@ public class AsteroidController : MonoBehaviour
                         Debug.Log(asteroidCornerInWC);
                         Debug.Log(splitOffset);
                         Debug.Log(asteroidCornerInWC + splitOffset);
-                        Debug.Break();
+                        // Debug.Break();
                         SpawnAsteroid(40, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
                         numberOfSquaresLost -= squareMesh.NumberOfSquaresInMesh();
                     }
