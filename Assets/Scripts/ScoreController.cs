@@ -8,28 +8,34 @@ using System.Runtime.Serialization.Formatters.Binary;
 public class ScoreController : MonoBehaviour
 {
 
-    public float scorePixelRatio = 100f;
+    public float scorePixelRatio;
     public float totalScore;
     public float timeElapsed;
     string highScoresPath = "Assets/Resources/SavedFiles/HighScores.bin";
 
 
     public float startTime;
-    void Start()
+    void Awake()
     {
         this.totalScore = 0f;
+        scorePixelRatio = 50f;
+    }
+    void Start()
+    {
         startTime = Time.time;
     }
 
     void Update()
     {
         timeElapsed = Time.time - startTime;
+        Reference.hudController.UpdateOnScreenTime(timeElapsed);
+        //Debug.Log(timeElapsed);
     }
 
     public void IncrementScore(float increment, Vector2 contact)
     {
         float deltaScore = increment*scorePixelRatio;
-
+        Debug.Log(deltaScore);
         this.totalScore += deltaScore;
         Reference.hudController.UpdateOnScreenScore(this.totalScore);
         Reference.soundController.ScorePoints();

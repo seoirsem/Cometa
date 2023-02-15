@@ -166,7 +166,7 @@ public class PlayerSpriteController : MonoBehaviour
     {   
         Debug.Log(rotation);
         Quaternion euler = Quaternion.Euler(0,0,-90);
-        Vector2 direction = euler*(rotation * new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y));
+        Vector2 direction = rotation * new Vector2(1,0);//euler*(rotation * new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y));
         Vector2 impulse = direction * rocketForce * mass;
 
         rigid_body.AddForce(-1*impulse,ForceMode2D.Impulse);
