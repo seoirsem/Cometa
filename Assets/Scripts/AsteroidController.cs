@@ -174,7 +174,7 @@ public class AsteroidController : MonoBehaviour
         float d = 2*worldSize.x;
         Quaternion rotation = Quaternion.Euler(eulerAngles.x, eulerAngles.y, eulerAngles.z);
 
-        GameObject asteroidgo = SimplePool.Spawn(mainAsteroidPrefab, position, rotation);//spawns the first asteroid
+        GameObject asteroidgo = SimplePool.Spawn(mainAsteroidPrefab, position + new Vector3(d,0,0), rotation);//spawns the first asteroid
         asteroidgo.transform.position = new Vector3(asteroidgo.transform.position.x,asteroidgo.transform.position.y,10);
         MainAsteroid mainAsteroid = asteroidgo.GetComponent<MainAsteroid>();
         mainAsteroid.derivedAsteroids = new Dictionary<Vector2,GameObject>();
@@ -202,61 +202,59 @@ public class AsteroidController : MonoBehaviour
 
         asteroidgo.transform.SetParent(this.gameObject.transform);
         asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, angularVelocity, squareMesh, NewAsteroid, positionOrientation);
+        asteroidgo.transform.position = position;
         asteroids.Add(asteroidgo);
 
         asteroidgo1.transform.SetParent(this.gameObject.transform);
         asteroidgo1.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo1);
+        if(NewAsteroid){asteroidgo1.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(1, 0),asteroidgo1);
 
         asteroidgo2.transform.SetParent(this.gameObject.transform);
         asteroidgo2.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo2);
+        if(NewAsteroid){asteroidgo2.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(-1, 0),asteroidgo2);
 
         asteroidgo3.transform.SetParent(this.gameObject.transform);
         asteroidgo3.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo3);
+        if(NewAsteroid){asteroidgo3.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(0, 1),asteroidgo3);
 
         asteroidgo4.transform.SetParent(this.gameObject.transform);
         asteroidgo4.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, -1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo4);
+        if(NewAsteroid){asteroidgo4.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(0, -1),asteroidgo4);
 
         asteroidgo5.transform.SetParent(this.gameObject.transform);
         asteroidgo5.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, -1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo5);
+        if(NewAsteroid){asteroidgo5.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(-1, -1),asteroidgo5);
 
         asteroidgo6.transform.SetParent(this.gameObject.transform);
         asteroidgo6.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, -1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo6);
+        if(NewAsteroid){asteroidgo6.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(1, -1),asteroidgo6);
 
         asteroidgo7.transform.SetParent(this.gameObject.transform);
         asteroidgo7.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo7);
+        if(NewAsteroid){asteroidgo7.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(-1, 1),asteroidgo7);
 
         asteroidgo8.transform.SetParent(this.gameObject.transform);
         asteroidgo8.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo8);
+        if(NewAsteroid){asteroidgo8.SetActive(false);}
         mainAsteroid.derivedAsteroids.Add(new Vector2(1, 1),asteroidgo8);
 
         asteroidSets.Add(asteroidPack);
 
-        if(NewAsteroid)
-        {
-            asteroidgo1.SetActive(false);
-            asteroidgo2.SetActive(false);
-            asteroidgo3.SetActive(false);
-            asteroidgo4.SetActive(false);
-            asteroidgo5.SetActive(false);
-            asteroidgo6.SetActive(false);
-            asteroidgo7.SetActive(false);
-            asteroidgo8.SetActive(false);
-        }
 
     }
 
