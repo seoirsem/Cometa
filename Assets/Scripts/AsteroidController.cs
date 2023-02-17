@@ -21,7 +21,7 @@ public class AsteroidController : MonoBehaviour
         deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
 
-        //SpawnAsteroid(32, new Vector3(-0.155f, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
+        SpawnAsteroid(20, new Vector3(0f, 0f, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
     }
 
     void Update()
@@ -36,8 +36,6 @@ public class AsteroidController : MonoBehaviour
                 List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
             }
         }
-
-
     }
     
 
@@ -90,38 +88,91 @@ public class AsteroidController : MonoBehaviour
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes, int numberOfSquaresInAsteroid, Vector3 offsetFromActualCollision = new Vector3())
     {
         int numberOfSquaresLost = numberOfSquaresInAsteroid;
-        Vector3 preSplitPosition = asteroid.gameObject.transform.position;
-        Vector3 preSplitVelocity = (Vector3)asteroid.rigid_body.velocity;
-        Vector3 preSplitEulerAngles = asteroid.gameObject.transform.eulerAngles;
-        float preSplitAngularVelocity = asteroid.rigid_body.angularVelocity;
         Reference.soundController.RockDestroy();
+        
+        if ( newAstroidMeshes == null ) 
+        {
+            Debug.Log("Returning as list of meshes itself is null"); 
+            // Just copy geometry to the derived clones and return, no splitting/spawning
+            numberOfSquaresLost -= asteroid.squareMesh.NumberOfSquaresInMesh();
+            // (MainAsteroid)asteroid.CloneGeometryToDerivedAsteroids(); 
+        }
+        else
+        {
+            Vector3 preSplitPosition = asteroid.gameObject.transform.position;
+            Vector3 preSplitVelocity = (Vector3)asteroid.rigid_body.velocity;
+            Vector3 preSplitEulerAngles = asteroid.gameObject.transform.eulerAngles;
+            float preSplitAngularVelocity = asteroid.rigid_body.angularVelocity;
 
-        DespawnAsteroid(asteroid,asteroidPack);
-        foreach(SquareMesh squareMesh in newAstroidMeshes)
-        {        
-            if ( squareMesh != null )
+            float asteroidRotation = asteroid.gameObject.transform.rotation.eulerAngles.z * Mathf.PI/180f;
+            float cornerOffsetX = ((float)asteroid.squareMesh.squares.GetLength(0)) * asteroid.squareMesh.edgeLength/2f;
+            float cornerOffsetY = ((float)asteroid.squareMesh.squares.GetLength(1)) * asteroid.squareMesh.edgeLength/2f;
+            float rotatedCornerOffsetX = cornerOffsetX * Mathf.Cos(asteroidRotation) - cornerOffsetY * Mathf.Sin(asteroidRotation);
+            float rotatedCornerOffsetY = cornerOffsetX * Mathf.Sin(asteroidRotation) + cornerOffsetY * Mathf.Cos(asteroidRotation);
+            Debug.Log(preSplitPosition);
+            Debug.Log(asteroidRotation);
+            Debug.Log(asteroid.squareMesh.squares.GetLength(0));
+            Debug.Log(asteroid.squareMesh.squares.GetLength(1));
+            Debug.Log(rotatedCornerOffsetX);
+            Debug.Log(rotatedCornerOffsetY);
+            Vector3 asteroidCornerInWC = preSplitPosition - new Vector3( rotatedCornerOffsetX, rotatedCornerOffsetY, 0f );
+
+            DespawnAsteroid(asteroid,asteroidPack);
+
+            // Check if all meshes are null; this would mean there was a split but all sub-asteroids are destroyed
+            bool allNullFlag = true;
+            foreach ( SquareMesh squareMesh in newAstroidMeshes )
             {
-                float splitOffsetX = (float)squareMesh.leftmostSplitCoord * squareMesh.edgeLength;
-                float splitOffsetY = (float)squareMesh.bottomSplitCoord * squareMesh.edgeLength;
-                float asteroidRotation = asteroid.gameObject.transform.rotation.eulerAngles.z * Mathf.PI/180f;
-                float rotatedSplitOffsetX = splitOffsetX * Mathf.Cos(asteroidRotation) - splitOffsetY * Mathf.Sin(asteroidRotation);
-                float rotatedSplitOffsetY = splitOffsetX * Mathf.Sin(asteroidRotation) + splitOffsetY * Mathf.Cos(asteroidRotation);
-                Vector3 splitOffset = new Vector3(rotatedSplitOffsetX, rotatedSplitOffsetY, 0f);
-                Vector3 postSplitPosition = preSplitPosition + splitOffset;
-                SpawnAsteroid(40, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
-                numberOfSquaresLost -= squareMesh.NumberOfSquaresInMesh();
-                
+                if ( squareMesh != null ) { allNullFlag = false; }
             }
+
+            if ( allNullFlag == true ) 
+            { 
+                // Debug.Log("All meshes are null"); 
+                numberOfSquaresLost -= asteroid.squareMesh.NumberOfSquaresInMesh();
+            } 
             else 
             {
-                //Debug.Log("This asteroid chunk has been completely destroyed");
-            }
+                // Debug.Log("Non-null meshes present - spawning chunks");
+                foreach(SquareMesh squareMesh in newAstroidMeshes)
+                {        
+                    // If the mesh is null, then this asteroid fragment was completely destroyed
+                    if ( squareMesh != null )
+                    {
+                        // Debug.Log("Spawning an asteroid from a new mesh");
+                        // Debug.Log(asteroidCornerInWC);
+                        Debug.Log(squareMesh.leftmostSplitCoord);
+                        Debug.Log(squareMesh.rightmostSplitCoord);
+                        // Debug.Log(squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord);
+                        // Debug.Log((squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord) * squareMesh.edgeLength/2f);
+                        Debug.Log(squareMesh.bottomSplitCoord);
+                        Debug.Log(squareMesh.topSplitCoord);
+                        
+                        // Debug.Log(squareMesh.topSplitCoord + squareMesh.bottomSplitCoord);
+                        // Debug.Log((squareMesh.topSplitCoord + squareMesh.bottomSplitCoord) * squareMesh.edgeLength/2f);
+                        float splitOffsetX = (float)(squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord+1) * squareMesh.edgeLength/2f;
+                        float splitOffsetY = (float)(squareMesh.topSplitCoord+1 + squareMesh.bottomSplitCoord) * squareMesh.edgeLength/2f;
+                               
+                        float rotatedSplitOffsetX = splitOffsetX * Mathf.Cos(asteroidRotation) - splitOffsetY * Mathf.Sin(asteroidRotation);
+                        float rotatedSplitOffsetY = splitOffsetX * Mathf.Sin(asteroidRotation) + splitOffsetY * Mathf.Cos(asteroidRotation);
+
+                        Vector3 splitOffset = new Vector3(rotatedSplitOffsetX, rotatedSplitOffsetY, 0f);
+                        Vector3 postSplitPosition = asteroidCornerInWC + splitOffset;
+                        Debug.Log(asteroidCornerInWC);
+                        Debug.Log(splitOffset);
+                        Debug.Log(asteroidCornerInWC + splitOffset);
+                        // Debug.Break();
+                        SpawnAsteroid(40, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
+                        numberOfSquaresLost -= squareMesh.NumberOfSquaresInMesh();
+                    }
+                }
+            }  
         }
+
         Reference.scoreController.IncrementScore((float)numberOfSquaresLost, contact);
-//        Debug.Log("Scored");
+        // Reference.hudController.ScoreText(contact, numberOfSquaresLost, new Color(255,215,0));
         if(otherObject.GetComponent<ShipShields>() != null)
         {
-//            Debug.Log("Shield Penalty");
             otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost,contact);
         }
     }

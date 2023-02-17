@@ -36,13 +36,13 @@ public class Asteroid : MonoBehaviour
     public SquareMesh squareMesh;
 
     private void Awake() {
-        celSize = 0.15f;
+        celSize = 0.2f;
     }
 
     public void ReDrawAsteroid()
     {
         squareMesh.FindOutline();
-        squareMesh.ScaleEdgeLength();
+        squareMesh.ScaleEdgeLengthAndShift();
         squareMesh.ResetMesh();
         squareMesh.ResetColliderMesh();
         squareMesh.FindCentreOfMass();
@@ -61,9 +61,9 @@ public class Asteroid : MonoBehaviour
         {
             squareMesh = new SquareMesh();
             squareMesh.SetAsteroid(this);
-            squareMesh.GenerateCircularMesh(size,celSize);
+            squareMesh.GenerateSquareMesh(size,celSize);
             squareMesh.FindOutline();
-            squareMesh.ScaleEdgeLength();
+            squareMesh.ScaleEdgeLengthAndShift();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
@@ -73,7 +73,7 @@ public class Asteroid : MonoBehaviour
             squareMesh = squareMeshIn;
             squareMesh.SetAsteroid(this);
             squareMesh.FindOutline();
-            squareMesh.ScaleEdgeLength();
+            squareMesh.ScaleEdgeLengthAndShift();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();

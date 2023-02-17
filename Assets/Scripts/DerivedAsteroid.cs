@@ -68,7 +68,7 @@ public class DerivedAsteroid : Asteroid
         this.squareMesh.perimeterVertices = mainAst.squareMesh.perimeterVertices;
         squareMesh.squares = mainAst.squareMesh.squares;
         squareMesh.FindOutline();
-        squareMesh.ScaleEdgeLength();
+        squareMesh.ScaleEdgeLengthAndShift();
 
         this.squareMesh.RedrawMesh();
         squareMesh.FindCentreOfMass();
