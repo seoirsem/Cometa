@@ -30,13 +30,13 @@ public class Asteroid : MonoBehaviour
 
     public Vector2 rigidBodyVelocity;
 
-    static public float celSize = 0.15f;
+    static public float celSize;
     public int size;
 
     public SquareMesh squareMesh;
 
     private void Awake() {
-        celSize = 0.2f;
+        celSize = 0.15f;
     }
 
     public void ReDrawAsteroid()
@@ -61,7 +61,7 @@ public class Asteroid : MonoBehaviour
         {
             squareMesh = new SquareMesh();
             squareMesh.SetAsteroid(this);
-            squareMesh.GenerateSquareMesh(size,celSize);
+            squareMesh.GenerateCircularMesh(size,celSize);
             squareMesh.FindOutline();
             squareMesh.ScaleEdgeLengthAndShift();
             squareMesh.ResetMesh();
@@ -80,7 +80,8 @@ public class Asteroid : MonoBehaviour
         }
 
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
-        rigid_body.centerOfMass = squareMesh.centreOfMass;
+        //rigid_body.centerOfMass = squareMesh.centreOfMass;
+        //rigid_body.ResetCenterOfMass();
         this.mass = squareMesh.mass;
         rigid_body.mass = squareMesh.mass;
 

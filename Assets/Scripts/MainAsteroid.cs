@@ -44,8 +44,8 @@ public class MainAsteroid : Asteroid
         {
 //            this.gameObject.layer = LayerMask.NameToLayer("SpawningAsteroid");
             this.gameObject.layer = LayerMask.NameToLayer("Default");
-//            this.transform.position = new Vector3(transform.position.x,transform.position.y,10);
-            this.transform.position = new Vector3(transform.position.x,transform.position.y,-1);
+            this.transform.position = new Vector3(transform.position.x,transform.position.y,10);
+//            this.transform.position = new Vector3(transform.position.x,transform.position.y,-1);
 
         }
         else
@@ -220,7 +220,8 @@ public class MainAsteroid : Asteroid
     bool CheckIfFullyOnScreen()
     {// says whether the central asteroid is fully on the screen
         bool fullyOnScreen = false;
-        if((this.rigid_body.position.x > -worldSize.x/2 && this.rigid_body.position.x < worldSize.x/2 - Asteroid.celSize*size) && (this.rigid_body.position.y > -worldSize.y/2 && this.rigid_body.position.y < worldSize.y/2 - Asteroid.celSize*size))
+        float halfAsteroid = 1.1f*this.size*Asteroid.celSize/2;
+        if((this.rigid_body.position.x > -worldSize.x/2 + halfAsteroid && this.rigid_body.position.x < worldSize.x/2 - halfAsteroid) && (this.rigid_body.position.y > -worldSize.y/2 + halfAsteroid && this.rigid_body.position.y < worldSize.y/2 - halfAsteroid))
         {
             fullyOnScreen = true;
         }
@@ -230,7 +231,7 @@ public class MainAsteroid : Asteroid
     bool CheckIfFullyOffScreen()
     {// says whether the central asteroid is fully off the screen
         bool fullyOffScreen = false;
-        float edgeSpace = 1.05f;
+        float edgeSpace = 1.1f;
         if((this.rigid_body.position.x < -edgeSpace*worldSize.x/2 || this.rigid_body.position.x > edgeSpace*worldSize.x/2 - Asteroid.celSize*size) && (this.rigid_body.position.y < -edgeSpace*worldSize.y/2 || this.rigid_body.position.y > edgeSpace*worldSize.y/2 - Asteroid.celSize*size))
         {
             Debug.Log("fully off screen");
@@ -422,9 +423,8 @@ public class MainAsteroid : Asteroid
     public void HitByProjectile()
     {
 
-
-
     }
+
     public void MainAsteroidHitShields(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Vector2 closestPoint, float shieldDamage)
     {
             

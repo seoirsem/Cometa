@@ -64,8 +64,11 @@ public class SquareMesh
                 }
             }
         }
-        centreOfMass = new Vector2(xTotal*edgeLength/count,yTotal*edgeLength/count);
+        
+        float midpoint = Asteroid.celSize*size/2;
+        centreOfMass = new Vector2(xTotal*edgeLength/count - midpoint,yTotal*edgeLength/count - midpoint);
         mass = count;//count*edgeLength*edgeLength * 999f;
+
     }
 
     public List<SquareMesh> OnSplit()

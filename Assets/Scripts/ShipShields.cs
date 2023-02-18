@@ -18,7 +18,7 @@ public class ShipShields : MonoBehaviour
     float shieldForceMultiplier;
     SpriteRenderer spriteRenderer;
 
-    float shieldRechargeRate = 500f; //per second
+    float shieldRechargeRate = 5f; //per second
     float shieldChargeDelay = 2.5f; //seconds
     float shieldForceRatio = 5f;
 

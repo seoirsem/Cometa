@@ -36,6 +36,7 @@ public class AsteroidController : MonoBehaviour
                 List<List<GameObject>> asteroidSets = new List<List<GameObject>>();
             }
         }
+
     }
     
 
@@ -52,22 +53,22 @@ public class AsteroidController : MonoBehaviour
         Vector3 position = new Vector3(0,0,0);
         if(directionIndex == 0)
         {// left
-            position = new Vector3(-worldSize.x/2f - 1.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
+            position = new Vector3(-worldSize.x/2f - 0.55f*size*Asteroid.celSize, -0.0f*size*Asteroid.celSize,0);
             direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
         }
         if(directionIndex == 1)
         {// right
-            position = new Vector3(worldSize.x/2f + 0.05f*size*Asteroid.celSize, -0.5f*size*Asteroid.celSize,0);
+            position = new Vector3(worldSize.x/2f + 0.55f*size*Asteroid.celSize, -0.0f*size*Asteroid.celSize,0);
             direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
         }
         if(directionIndex == 2)
         {// up
-            position = new Vector3(-0.5f*size*Asteroid.celSize,worldSize.y/2 + 0.05f*size*Asteroid.celSize,0);
+            position = new Vector3(-0.0f*size*Asteroid.celSize,worldSize.y/2 + 0.55f*size*Asteroid.celSize,0);
             direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
         }
         if(directionIndex == 3)
         {// down
-            position = new Vector3(-0.5f*size*Asteroid.celSize,-worldSize.y/2 - 1.05f*size*Asteroid.celSize,0);
+            position = new Vector3(-0.0f*size*Asteroid.celSize,-worldSize.y/2 - 0.55f*size*Asteroid.celSize,0);
             direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
         }
 
@@ -109,12 +110,12 @@ public class AsteroidController : MonoBehaviour
             float cornerOffsetY = ((float)asteroid.squareMesh.squares.GetLength(1)) * asteroid.squareMesh.edgeLength/2f;
             float rotatedCornerOffsetX = cornerOffsetX * Mathf.Cos(asteroidRotation) - cornerOffsetY * Mathf.Sin(asteroidRotation);
             float rotatedCornerOffsetY = cornerOffsetX * Mathf.Sin(asteroidRotation) + cornerOffsetY * Mathf.Cos(asteroidRotation);
-            Debug.Log(preSplitPosition);
-            Debug.Log(asteroidRotation);
-            Debug.Log(asteroid.squareMesh.squares.GetLength(0));
-            Debug.Log(asteroid.squareMesh.squares.GetLength(1));
-            Debug.Log(rotatedCornerOffsetX);
-            Debug.Log(rotatedCornerOffsetY);
+            // Debug.Log(preSplitPosition);
+            // Debug.Log(asteroidRotation);
+            // Debug.Log(asteroid.squareMesh.squares.GetLength(0));
+            // Debug.Log(asteroid.squareMesh.squares.GetLength(1));
+            // Debug.Log(rotatedCornerOffsetX);
+            // Debug.Log(rotatedCornerOffsetY);
             Vector3 asteroidCornerInWC = preSplitPosition - new Vector3( rotatedCornerOffsetX, rotatedCornerOffsetY, 0f );
 
             DespawnAsteroid(asteroid,asteroidPack);
@@ -141,12 +142,12 @@ public class AsteroidController : MonoBehaviour
                     {
                         // Debug.Log("Spawning an asteroid from a new mesh");
                         // Debug.Log(asteroidCornerInWC);
-                        Debug.Log(squareMesh.leftmostSplitCoord);
-                        Debug.Log(squareMesh.rightmostSplitCoord);
+//                        Debug.Log(squareMesh.leftmostSplitCoord);
+//                        Debug.Log(squareMesh.rightmostSplitCoord);
                         // Debug.Log(squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord);
                         // Debug.Log((squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord) * squareMesh.edgeLength/2f);
-                        Debug.Log(squareMesh.bottomSplitCoord);
-                        Debug.Log(squareMesh.topSplitCoord);
+//                        Debug.Log(squareMesh.bottomSplitCoord);
+//                        Debug.Log(squareMesh.topSplitCoord);
                         
                         // Debug.Log(squareMesh.topSplitCoord + squareMesh.bottomSplitCoord);
                         // Debug.Log((squareMesh.topSplitCoord + squareMesh.bottomSplitCoord) * squareMesh.edgeLength/2f);
@@ -158,9 +159,9 @@ public class AsteroidController : MonoBehaviour
 
                         Vector3 splitOffset = new Vector3(rotatedSplitOffsetX, rotatedSplitOffsetY, 0f);
                         Vector3 postSplitPosition = asteroidCornerInWC + splitOffset;
-                        Debug.Log(asteroidCornerInWC);
-                        Debug.Log(splitOffset);
-                        Debug.Log(asteroidCornerInWC + splitOffset);
+//                        Debug.Log(asteroidCornerInWC);
+//                        Debug.Log(splitOffset);
+//                        Debug.Log(asteroidCornerInWC + splitOffset);
                         // Debug.Break();
                         SpawnAsteroid(40, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
                         numberOfSquaresLost -= squareMesh.NumberOfSquaresInMesh();
