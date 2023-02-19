@@ -16,14 +16,42 @@ public class PlayerInputController : MonoBehaviour
     public bool r = false;
     public bool escape = false;
     public bool e = false;
-
     public bool p = false;
     public bool o = false;
     public bool w = false;
     public bool a = false;
     public bool s = false;
     public bool d = false;
+
+    public Vector2 moveDirection;
+    public Vector2 shootDirection;
+    public bool shootRocket;
+
+    GameObject moveJoystickgo;
+    GameObject shootJoystickgo;
+
+
+    string platform;
     
+    void Awake()
+    {
+        if(Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+            Debug.Log("On PC");
+    //        platform = "Windows".
+        }
+        else if (Application.platform == RuntimePlatform.Android)
+        {
+            Debug.Log("Android");
+  //          platform = "Android";
+        }
+        else if(Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            platform = "Editor";
+//            Debug.Log("Unity Editor");
+        }
+    }
+
     void Start()
     {
         
@@ -31,12 +59,32 @@ public class PlayerInputController : MonoBehaviour
 
     void Update()
     {
-        GetPlayerInputs();
+        if(platform == "Android")
+        {
+            GetAndroidControls();
+        }
+        else if(platform == "Windows")
+        {
+            GetWindowsControls();
+        }
+        else if(platform == "Editor")
+        {
+            GetDebuggingControls();
+        }
+    }
+
+    void GetAndroidControls()
+    {
 
     }
 
 
-    void GetPlayerInputs()
+    void GetWindowsControls()
+    {
+
+    }
+
+    void GetDebuggingControls()
     {
         //needs a rewrite for mobile. Currently setup for maximal flexibility
 

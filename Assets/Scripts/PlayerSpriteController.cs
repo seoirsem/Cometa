@@ -27,6 +27,7 @@ public class PlayerSpriteController : MonoBehaviour
     float rocketCooldownTimer;
     float rocketCooldown = 2f;//s
     float bulletCooldown = 0.15f;
+    public bool RocketOnCooldown;
     public Rigidbody2D rigid_body;
     bool spaceDown = false;
     float rocketForce = 0.5f;
@@ -46,7 +47,7 @@ public class PlayerSpriteController : MonoBehaviour
 
     void Awake()
     {
-
+        RocketOnCooldown = false;
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.mass = mass;
         spaceDown = false;
@@ -114,6 +115,10 @@ public class PlayerSpriteController : MonoBehaviour
 
             }
         }
+        if (Time.time - rocketCooldownTimer > rocketCooldown){RocketOnCooldown = false;}
+        else {RocketOnCooldown = true;}
+        {}
+
         if (Reference.playerInputController.r)
         {
             if (Time.time - rocketCooldownTimer > rocketCooldown)
