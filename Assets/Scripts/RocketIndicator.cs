@@ -20,8 +20,6 @@ public class RocketIndicator : MonoBehaviour
         ImageGray = false;
         rocket = Resources.Load<Sprite>("Sprites/rocket") as Sprite;
         rocketGray = Resources.Load<Sprite>("Sprites/rocketGray") as Sprite;
-        Debug.Log(rocket);
-        Debug.Log(rocketGray);
         playerSpriteController = Reference.playerSpriteController;
         image = this.gameObject.GetComponent<Image>();
 
@@ -34,15 +32,19 @@ public class RocketIndicator : MonoBehaviour
      {
         ImageGray = true;
         image.sprite = rocketGray;
+        LeanTween.scaleX(this.gameObject, tweenScale, pulseCooldown/2f);
+        LeanTween.scaleX(this.gameObject, 1f, pulseCooldown/2f).setDelay(pulseCooldown/2f);
+        LeanTween.scaleY(this.gameObject, tweenScale, pulseCooldown/2f);
+        LeanTween.scaleY(this.gameObject, 1f, pulseCooldown/2f).setDelay(pulseCooldown/2f);
      }   
-     if(!playerSpriteController.RocketOnCooldown && ImageGray)
+     else if(!playerSpriteController.RocketOnCooldown && ImageGray)
      {
         ImageGray = false;
         image.sprite = rocket;
         LeanTween.scaleX(this.gameObject, 1f/tweenScale, pulseCooldown/2f);
-        LeanTween.scaleX(this.gameObject, tweenScale, pulseCooldown/2f).setDelay(pulseCooldown/2f);
+        LeanTween.scaleX(this.gameObject, 1f, pulseCooldown/2f).setDelay(pulseCooldown/2f);
         LeanTween.scaleY(this.gameObject, 1f/tweenScale, pulseCooldown/2f);
-        LeanTween.scaleY(this.gameObject, tweenScale, pulseCooldown/2f).setDelay(pulseCooldown/2f);
+        LeanTween.scaleY(this.gameObject, 1f, pulseCooldown/2f).setDelay(pulseCooldown/2f);
      }
     }
 }

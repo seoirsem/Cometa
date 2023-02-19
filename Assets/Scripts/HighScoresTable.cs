@@ -12,7 +12,7 @@ public class HighScoresTable : MonoBehaviour
 {
     MenuSoundController menuSoundController;
 
-    string highScoresPath = "Assets/Resources/SavedFiles/HighScores.bin";
+    string highScoresPath;// = "Assets/Resources/SavedFiles/HighScores.bin";
     string returnButtonPath = "Prefabs/highScoreReturn";
     string prefabPath = "Prefabs/HighScore";
     GameObject highScorePrefab;
@@ -22,6 +22,8 @@ public class HighScoresTable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        highScoresPath = Application.persistentDataPath + "HighScores.bin";
+
         highScorePrefab = Resources.Load(prefabPath) as GameObject;
         returnButtonPrefab = Resources.Load(returnButtonPath) as GameObject;
         mainUIController = GameObject.Find("UI").GetComponent<MainUIController>();

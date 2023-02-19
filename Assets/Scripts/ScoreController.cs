@@ -11,7 +11,7 @@ public class ScoreController : MonoBehaviour
     public float scorePixelRatio;
     public float totalScore;
     public float timeElapsed;
-    string highScoresPath = "Assets/Resources/SavedFiles/HighScores.bin";
+    string highScoresPath;//"Assets/Resources/SavedFiles/HighScores.bin";
 
 
     public float startTime;
@@ -19,10 +19,12 @@ public class ScoreController : MonoBehaviour
     {
         this.totalScore = 0f;
         scorePixelRatio = 50f;
+        highScoresPath = Application.persistentDataPath + "HighScores.bin";
     }
     void Start()
     {
         startTime = Time.time;
+        Debug.Log(highScoresPath);
     }
 
     void Update()

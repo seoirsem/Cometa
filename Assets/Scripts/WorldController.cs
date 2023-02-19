@@ -31,7 +31,7 @@ public class WorldController : MonoBehaviour
     float warningLifespan = 3f;
     int newAsteroidDirection;
     Vector3 asteroidPositionOffset;
-
+    public string platform;
     bool warningOff = true;
 
 
@@ -46,7 +46,7 @@ public class WorldController : MonoBehaviour
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
-        worldSize = worldSize = new Vector2(25f, 15f);
+        worldSize = worldSize = new Vector2(18f, 15f);
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
         rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();
@@ -63,6 +63,23 @@ public class WorldController : MonoBehaviour
         bottomEdgeCollider.gameObject.transform.position = new Vector3(0f, -(Reference.worldController.worldSize.y/2f + colliderThickness), 0f);
         topEdgeCollider.size = new Vector2(Reference.worldController.worldSize.x, colliderThickness);
         bottomEdgeCollider.size = new Vector2(Reference.worldController.worldSize.x, colliderThickness);
+        if(Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+ //           Debug.Log("On PC");
+            platform = "Windows";
+        }
+        else if (Application.platform == RuntimePlatform.Android)
+        {
+            //Debug.Log("Android");
+            platform = "Android";
+        }
+        else if(Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            platform = "Editor";
+//            Debug.Log("Unity Editor");
+        }
+        platform = "Android";
+        Debug.Log("Debugging Only");
     }
 
     void Start() 
