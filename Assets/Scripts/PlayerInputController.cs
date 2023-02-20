@@ -10,6 +10,7 @@ public class PlayerInputController : MonoBehaviour
     public bool rightKey = false;
     public Vector2 cursorPosition;
     public bool shootRocket = false;
+    public float rocketAngle;
     public bool shootBullet = false;
     public bool spaceBar = false;
     public bool b = false;
@@ -95,6 +96,13 @@ public class PlayerInputController : MonoBehaviour
         {
             angleMove = 720f; //ie a large number
         }
+        // if(Input.Ge)
+        // {
+
+        // }
+        // {
+
+        // }
 
 
     }
@@ -117,6 +125,7 @@ public class PlayerInputController : MonoBehaviour
         if (Input.GetMouseButton(1))
         {
             shootRocket = true;
+            rocketAngle = angle;
         }
         else
         {

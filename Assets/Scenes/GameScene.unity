@@ -175,6 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 98413661}
   - component: {fileID: 98413662}
+  - component: {fileID: 98413663}
   m_Layer: 0
   m_Name: PlayerInputController
   m_TagString: Untagged
@@ -214,6 +215,7 @@ MonoBehaviour:
   rightKey: 0
   cursorPosition: {x: 0, y: 0}
   shootRocket: 0
+  rocketAngle: 0
   shootBullet: 0
   spaceBar: 0
   b: 0
@@ -231,6 +233,18 @@ MonoBehaviour:
   moveDirection: {x: 0, y: 0}
   shootDirection: {x: 0, y: 0}
   moveMagnitude: 0
+--- !u!114 &98413663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98413660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 079b5cddb263e594aa11822bc971956d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &152684082
 GameObject:
   m_ObjectHideFlags: 0

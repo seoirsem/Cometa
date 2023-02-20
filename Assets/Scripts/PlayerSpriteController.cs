@@ -158,8 +158,8 @@ public class PlayerSpriteController : MonoBehaviour
             if (Time.time - rocketCooldownTimer > rocketCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 rocketCooldownTimer = Time.time;
-                float angle = Reference.playerInputController.angle; // I have to hack this angle, why??
-                Reference.projectileController.ShootProjectile(player.go.transform.position,Quaternion.Euler(0,0,angle),"Rocket");
+                float rocketAngle = Reference.playerInputController.rocketAngle; // I have to hack this angle, why??
+                Reference.projectileController.ShootProjectile(player.go.transform.position,Quaternion.Euler(0,0,rocketAngle),"Rocket");
             }
         }
 
