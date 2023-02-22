@@ -46,7 +46,8 @@ public class WorldController : MonoBehaviour
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
-        worldSize = worldSize = new Vector2(18f, 15f);
+        worldSize = new Vector2(18f, 15f);
+
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
         rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();
@@ -78,8 +79,10 @@ public class WorldController : MonoBehaviour
             platform = "Editor";
 //            Debug.Log("Unity Editor");
         }
+        
+        Debug.Log("The game is running on the following platform: " + platform);
         platform = "Android";
-        Debug.Log("Debugging Only");
+        //Debug.Log("Debugging Only");
     }
 
     void Start() 

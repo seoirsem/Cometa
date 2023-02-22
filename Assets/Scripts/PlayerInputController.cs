@@ -28,6 +28,8 @@ public class PlayerInputController : MonoBehaviour
     public Vector2 moveDirection;
     public Vector2 shootDirection;
     public float moveMagnitude;
+    TapManager tapManager;
+    public Vector2 shootRocketLocation;
 
     GameObject moveJoystickgo;
     GameObject shootJoystickgo;
@@ -44,7 +46,7 @@ public class PlayerInputController : MonoBehaviour
     void Start()
     {
         platform = Reference.worldController.platform;
-
+        tapManager = Reference.tapManager;
         moveJoystickgo = GameObject.Find("MoveJoystick");
         shootJoystickgo = GameObject.Find("ShootJoystick");
         moveStick = moveJoystickgo.GetComponent<bl_MovementJoystick>();
@@ -96,10 +98,16 @@ public class PlayerInputController : MonoBehaviour
         {
             angleMove = 720f; //ie a large number
         }
-        // if(Input.Ge)
-        // {
-
-        // }
+        if(tapManager.shootRocket && !Reference.worldController.isPaused)
+        {
+            shootRocket = true;
+            shootRocketLocation = tapManager.worldTapPosition;
+        }
+        else
+        {
+            shootRocket = false;
+        }
+        
         // {
 
         // }

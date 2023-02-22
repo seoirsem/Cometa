@@ -158,7 +158,16 @@ public class PlayerSpriteController : MonoBehaviour
             if (Time.time - rocketCooldownTimer > rocketCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 rocketCooldownTimer = Time.time;
-                float rocketAngle = Reference.playerInputController.rocketAngle; // I have to hack this angle, why??
+                float rocketAngle;
+                if(Reference.worldController.platform == "Android")
+                {
+                    rocketAngle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,Reference.playerInputController.shootRocketLocation) + 90;
+                    Debug.Log("Rocket shot by android controls");
+                }
+                else
+                {
+                    rocketAngle = Reference.playerInputController.rocketAngle; // I have to hack this angle, why??
+                }
                 Reference.projectileController.ShootProjectile(player.go.transform.position,Quaternion.Euler(0,0,rocketAngle),"Rocket");
             }
         }
@@ -328,6 +337,7 @@ public class PlayerSpriteController : MonoBehaviour
         playingTurningSound = false;
         blueFlameLeftgo.SetActive(false);
         blueFlameRightgo.SetActive(false);
+        rigid_body.angularVelocity = 0;
     }
 
     void UpdatePlayerRotationPC()
@@ -468,6 +478,16 @@ public class PlayerSpriteController : MonoBehaviour
         rigid_body.AddForce(magnitude*direction,ForceMode2D.Impulse);
     }
 
+
+    public static float FindDegree(Vector2 v1, Vector2 v2)
+    {
+        float x = (v2.x - v1.x);
+        float y = (v2.y - v1.y);
+        float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
+        if(value < 0) value += 360f;
+    
+        return value;
+    }
 
 //ToDo animations when rockets are firing for main and side jets
 
