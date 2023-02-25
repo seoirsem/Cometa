@@ -184,18 +184,8 @@ public class PlayerInputController : MonoBehaviour
     void GetDebuggingControls()
     {
         //needs a rewrite for mobile. Currently setup for maximal flexibility
+        GetWindowsControls();
 
-        cursorPosition = Reference.mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        angle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,cursorPosition) + 90;
-
-        if (Input.GetKey("escape"))
-        {
-            escape = true;   
-        }
-        else 
-        {
-            escape = false;
-        }
         if (Input.GetKey("up"))
         {
             upKey = true;   
@@ -228,18 +218,7 @@ public class PlayerInputController : MonoBehaviour
         {
             rightKey = false;
         }
-        if (Input.GetMouseButton(0))
-        {
-            shootBullet = true;
-        }
-        else
-        {
-            shootBullet = false;
-        }
-        if (Input.GetMouseButton(1))
-        {
-            shootRocket = true;
-        }
+ 
         if (Input.GetKey("space"))
         {
             spaceBar = true;
@@ -287,38 +266,6 @@ public class PlayerInputController : MonoBehaviour
         else
         {
             e = false;
-        }
-        if (Input.GetKey("w"))
-        {
-            w = true;
-        }
-        else
-        {
-            w = false;
-        }
-        if (Input.GetKey("a"))
-        {
-            a = true;
-        }
-        else
-        {
-            a = false;
-        }
-        if (Input.GetKey("s"))
-        {
-            s = true;
-        }
-        else
-        {
-            s = false;
-        }
-        if (Input.GetKey("d"))
-        {
-            d = true;
-        }
-        else
-        {
-            d = false;
         }
         
     }
