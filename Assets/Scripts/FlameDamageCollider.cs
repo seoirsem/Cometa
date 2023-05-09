@@ -49,9 +49,11 @@ public class FlameDamageCollider : MonoBehaviour
             {
                 float distance = collider.ClosestPoint(this.gameObject.transform.position + new Vector3(-0.05f,-0.25f,0)).magnitude;
                 Vector2 relativePosition = collider.ClosestPoint(this.gameObject.transform.position + new Vector3(-0.05f,-0.25f,0)) - (Vector2)(this.gameObject.transform.position + new Vector3(-0.05f,-0.25f,0));
-                Rigidbody2D hitRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
-
-                FlameForceCalculation(distance, relativePosition, hitRigidBody);   
+                if(collider.gameObject.GetComponent<Rigidbody2D>() != null)
+                {
+                    Rigidbody2D hitRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
+                    FlameForceCalculation(distance, relativePosition, hitRigidBody);   
+                }
             }
         }
 
