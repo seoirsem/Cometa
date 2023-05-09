@@ -156,7 +156,7 @@ TextureImporter:
       213: -499895448411297815
     second: dust_cloud_50
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -176,6 +176,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -184,9 +186,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -207,10 +209,14 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -226,6 +232,42 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -318,7 +360,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 766db6f950174d490800000000000000
-      internalID: -7722423192070138265
+      internalID: -8687195689990381051
       vertices: []
       indices: 
       edges: []
@@ -339,7 +381,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 9fbec5f2ab0bee410800000000000000
-      internalID: 1508337238920719353
+      internalID: -8125166379205452103
       vertices: []
       indices: 
       edges: []
@@ -360,7 +402,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 502a1d3fb81e07780800000000000000
-      internalID: -8687195689990381051
+      internalID: 19167739234806180
       vertices: []
       indices: 
       edges: []
@@ -402,7 +444,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 857ef996fea2b3820800000000000000
-      internalID: 2898957992900683608
+      internalID: 5006472522544537617
       vertices: []
       indices: 
       edges: []
@@ -423,7 +465,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 110650cdb309a7540800000000000000
-      internalID: 5006472522544537617
+      internalID: 2898957992900683608
       vertices: []
       indices: 
       edges: []
@@ -444,7 +486,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 9be13822a3c9d3f80800000000000000
-      internalID: -8125166379205452103
+      internalID: 1508337238920719353
       vertices: []
       indices: 
       edges: []
@@ -459,6 +501,17 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      dust_cloud_1: -8687195689990381051
+      dust_cloud_10: 19167739234806180
+      dust_cloud_2: -7060028055731691174
+      dust_cloud_3: 4851555388648378504
+      dust_cloud_4: 8654963945695122465
+      dust_cloud_5: -1535217318912323088
+      dust_cloud_6: 1508337238920719353
+      dust_cloud_7: 2898957992900683608
+      dust_cloud_8: 5006472522544537617
+      dust_cloud_9: -8125166379205452103
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -79,9 +79,14 @@ public class WorldController : MonoBehaviour
             platform = "Editor";
 //            Debug.Log("Unity Editor");
         }
+        else
+        {
+            platform = "Windows";
+        }
+
         
         Debug.Log("The game is running on the following platform: " + platform);
-        platform = "Android";
+        //platform = "Android";
         //Debug.Log("Debugging Only");
     }
 
