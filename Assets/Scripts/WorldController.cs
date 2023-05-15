@@ -86,7 +86,7 @@ public class WorldController : MonoBehaviour
 
         
         Debug.Log("The game is running on the following platform: " + platform);
-        //platform = "Android";
+        platform = "Android";
         //Debug.Log("Debugging Only");
     }
 

@@ -15,7 +15,7 @@ public class PlayerSpriteController : MonoBehaviour
     ShipShields shipShields;
 
     float rotationRate = 500; 
-    float engineForce = 20; 
+    float engineForce = 8; 
     float mass = 15;
     Reference reference;
     float rotation = 0;
@@ -257,18 +257,22 @@ public class PlayerSpriteController : MonoBehaviour
             {
                 angleTo = playerAngle + Time.fixedDeltaTime* 1f *rotationRate;
                 LeftTurnEffects();
-            }
-            rigid_body.MoveRotation(angleTo);
+            }// Fixing it to just immediately turn
+            //rigid_body.MoveRotation(angleTo);
         }
         else if(angleMove != 720f && Mathf.Abs(dAngle) < Time.fixedDeltaTime*rotationRate)
         {//angles are close to aligned
-            rigid_body.MoveRotation(angleMove);
+            //rigid_body.MoveRotation(angleMove);
             if(playingTurningSound && Mathf.Abs(dAngle) < Time.fixedDeltaTime*rotationRate/2f)
             {
                 StopTurnEffects();
             }
         }
-
+        //Debug.Log(angleMove);
+        if(angleMove != 720)
+        {
+            rigid_body.MoveRotation(angleMove);
+        }
         ///////////// Motion ///////////////////////
         float moveMagnitude = Reference.playerInputController.moveMagnitude;
         if(moveMagnitude > 0f)
