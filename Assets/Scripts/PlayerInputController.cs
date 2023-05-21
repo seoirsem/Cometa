@@ -30,6 +30,7 @@ public class PlayerInputController : MonoBehaviour
     public float moveMagnitude;
     TapManager tapManager;
     public Vector2 shootRocketLocation;
+    public bool touchAnywhere = false;
 
     GameObject moveJoystickgo;
     GameObject shootJoystickgo;
@@ -106,6 +107,15 @@ public class PlayerInputController : MonoBehaviour
         else
         {
             shootRocket = false;
+        }
+        
+        if(Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+        {
+            touchAnywhere = true;
+        }
+        else
+        {
+            touchAnywhere = false;
         }
         
         // {

@@ -34,6 +34,8 @@ public class WorldController : MonoBehaviour
     public string platform;
     bool warningOff = true;
 
+    float howToTime = 10f;
+    float howToStart;
 
     float spawnCooldown;
 
@@ -99,6 +101,11 @@ public class WorldController : MonoBehaviour
         int randomSize = Random.Range(7,13);
         //Debug.Log(randomSize);
         warningPrefab = Resources.Load("Prefabs/WarningSymbol") as GameObject;
+        if(platform == "Android")
+        {
+            ShowControlIcons();
+            howToStart = Time.unscaledTime;
+        }
         //Reference.asteroidController.SpawnNewAsteroid(randomSize,2, new Vector3(0,0,0));
         //Reference.asteroidController.SpawnRandomAsteroid(20, new Vector3(0,2.5f,0));
         // Reference.asteroidController.SpawnNewAsteroid(10,0, new Vector3(0,0,0), new Vector3(5f,0,0));
@@ -109,6 +116,12 @@ public class WorldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(platform == "Android" && (Time.unscaledTime - howToStart > howToTime || Reference.playerInputController.touchAnywhere))
+        {
+            HideControlIcons();
+        }
+
         if (Time.time - time > asteroidSpawnInterval)
         {
             // Reference.asteroidController.SpawnNewAsteroid();
@@ -194,7 +207,21 @@ public class WorldController : MonoBehaviour
         }
     }
 
-
+    void ShowControlIcons()
+    {
+        Debug.Log("Game Paused");
+        isPaused = true;
+        escPressed = true;
+        Time.timeScale = 0;
+        Reference.hudController.ShowControlDescriptions();
+    }
+    void HideControlIcons()
+    {
+        Debug.Log("Game Resuming");
+        isPaused = false;;
+        Time.timeScale = 1;
+        Reference.hudController.HideControlDescriptions();
+    }
 
     void PauseGame()
     {

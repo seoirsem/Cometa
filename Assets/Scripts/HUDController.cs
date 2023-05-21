@@ -33,6 +33,12 @@ public class HUDController : MonoBehaviour
     GameObject musicVolumeTogglego;
     GameObject optionsReturngo;
 
+    // to tell the player how to play 
+    GameObject moveIndicator;
+    GameObject shootIndicator;
+    GameObject backgroundIndicator;
+    GameObject rocketIndicator;
+    
     GameObject pauseButtongo;
     Button pauseButton;
     Button masterVolumeToggle;
@@ -67,6 +73,15 @@ public class HUDController : MonoBehaviour
         pauseButtongo = GameObject.Find("PauseButton");
         pauseButton = pauseButtongo.GetComponent<Button>();
         pauseButton.onClick.AddListener(PauseGame);
+        
+        moveIndicator = GameObject.Find("Move");
+        shootIndicator = GameObject.Find("Shoot");
+        backgroundIndicator = GameObject.Find("ControlBackground");
+        rocketIndicator = GameObject.Find("Rocket");
+        moveIndicator.SetActive(false);
+        shootIndicator.SetActive(false);
+        backgroundIndicator.SetActive(false);
+        rocketIndicator.SetActive(false);
 
         if(Reference.worldController.platform != "Android")
         {
@@ -78,7 +93,20 @@ public class HUDController : MonoBehaviour
         soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
 
     }
-
+    public void ShowControlDescriptions()
+    {
+        moveIndicator.SetActive(true);
+        shootIndicator.SetActive(true);
+        backgroundIndicator.SetActive(true);
+        rocketIndicator.SetActive(true);
+    }
+    public void HideControlDescriptions()
+    {
+        moveIndicator.SetActive(false);
+        shootIndicator.SetActive(false);
+        backgroundIndicator.SetActive(false);
+        rocketIndicator.SetActive(false);
+    }
     void PauseGame()
     {
         if(!Reference.worldController.isPaused)
