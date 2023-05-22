@@ -176,11 +176,7 @@ public class PlayerSpriteController : MonoBehaviour
 
     public void ApplyRocketLaunchImpulse(Quaternion rotation)
     {   
-<<<<<<< HEAD
         // Debug.Log(rotation);
-=======
-//        Debug.Log(rotation);
->>>>>>> ab8057b73a7973372430890b500db6335b2612ba
         Quaternion euler = Quaternion.Euler(0,0,-90);
         Vector2 direction = rotation * new Vector2(1,0);//euler*(rotation * new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y));
         Vector2 impulse = direction * rocketForce * mass;

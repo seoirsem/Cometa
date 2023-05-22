@@ -106,16 +106,13 @@ public class WorldController : MonoBehaviour
         int randomSize = Random.Range(minAsteroidSize, maxAsteroidSize);
         //Debug.Log(randomSize);
         warningPrefab = Resources.Load("Prefabs/WarningSymbol") as GameObject;
-<<<<<<< HEAD
         Reference.asteroidController.SpawnNewAsteroid(30, 2, new Vector3(0,3,0), new Vector3(0,0,0));
-=======
         if(platform == "Android")
         {
             ShowControlIcons();
             howToStart = Time.unscaledTime;
         }
         //Reference.asteroidController.SpawnNewAsteroid(randomSize,2, new Vector3(0,0,0));
->>>>>>> ab8057b73a7973372430890b500db6335b2612ba
         //Reference.asteroidController.SpawnRandomAsteroid(20, new Vector3(0,2.5f,0));
         // Reference.asteroidController.SpawnNewAsteroid(10,0, new Vector3(0,0,0), new Vector3(5f,0,0));
         // Reference.asteroidController.SpawnNewAsteroid(10,1, new Vector3(0,0,0), new Vector3(-5f,0,0));
