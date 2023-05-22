@@ -225,7 +225,7 @@ public class SoundController : MonoBehaviour
         }
     }
 
-    public void playExplosionSound()
+    public void PlayExplosionSound()
     {
         rocketAudioSource.PlayOneShot(explosion);
     }

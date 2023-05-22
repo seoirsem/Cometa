@@ -9,6 +9,7 @@ public class AnimationController : MonoBehaviour
     GameObject dustCloudAnimationPrefab;
     GameObject blueFlameAnimationPrefab;
     GameObject shieldExplosionAnimationPrefab;
+    GameObject particleSprayAniumationPrefab;
 
     void Start()
     {
@@ -16,6 +17,7 @@ public class AnimationController : MonoBehaviour
         dustCloudAnimationPrefab = Resources.Load("Prefabs/Dust_Cloud") as GameObject;
         blueFlameAnimationPrefab = Resources.Load("Prefabs/Blue_Flame") as GameObject;
         shieldExplosionAnimationPrefab = Resources.Load("Prefabs/ShieldExplosion") as GameObject;
+        particleSprayAniumationPrefab = Resources.Load("Prefabs/ParticleSpray") as GameObject;
     }
 
     void Update()
@@ -33,6 +35,18 @@ public class AnimationController : MonoBehaviour
     {
         GameObject dustCloudAnimationGo = SimplePool.Spawn(dustCloudAnimationPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         dustCloudAnimationGo.transform.SetParent(asteroidgo.transform);
+    }
+
+    public void SpawnParticleSprayAnimationGo(Vector3 collisionPoint, Quaternion rotation)
+    {
+        GameObject dustCloudAnimationGo = SimplePool.Spawn(particleSprayAniumationPrefab, collisionPoint, rotation);
+        particleSprayAniumationPrefab.transform.SetParent(this.gameObject.transform);
+    }
+
+    public void SpawnDustCloudAnimationOnBulletHit(Vector3 collisionPoint)
+    {
+        GameObject dustCloudAnimationGo = SimplePool.Spawn(dustCloudAnimationPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
+        dustCloudAnimationGo.transform.SetParent(this.gameObject.transform);
     }
 
     public void SpawnShieldExplosionAnimation(Vector3 collisionPoint, GameObject shipShields)

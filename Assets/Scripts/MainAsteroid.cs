@@ -33,6 +33,7 @@ public class MainAsteroid : Asteroid
 
     public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, float rotationRate, SquareMesh squareMesh, bool spawning, Vector2 positionOrientation)
     {
+        Debug.Log(size);
         this.timeAlive = Time.time;
 
         waitFrames = 0;
@@ -346,7 +347,7 @@ public class MainAsteroid : Asteroid
             if(relativeMomentum.magnitude > 200f)
             {
                 float radius = relativeMomentum.magnitude/450f;
-//                Debug.Log($"Mass: {mass}, Other Object mass: {otherAsteroid.mass} Relative momentum: {relativeMomentum.magnitude}, radius: {radius}");
+                // Debug.Log($"Mass: {mass}, Other Object mass: {otherAsteroid.mass} Relative momentum: {relativeMomentum.magnitude}, radius: {radius}");
                 if(otherAsteroid.mass == 1600){Debug.Log(otherAsteroid.gameObject.name); Debug.Break();}
                 List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(collision.contacts[0].point, radius);
                 if(newAstroidMeshes != null)
