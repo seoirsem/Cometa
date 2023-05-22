@@ -35,7 +35,6 @@ public class ScoreController : MonoBehaviour
     public void IncrementScore(float increment, Vector2 contact)
     {
         float deltaScore = increment*scorePixelRatio;
-        Debug.Log(deltaScore);
         this.totalScore += deltaScore;
         Reference.hudController.UpdateOnScreenScore(this.totalScore);
         Reference.soundController.ScorePoints();

@@ -87,7 +87,7 @@ public class SquareMesh
 
         // If there were no squares in the mesh that has 'split', pass null for SquareMesh
         // This means the entire mesh (split or not) has been destroyed
-        if ( allSquares.Count == 0 ) { chunks.Add(null); Debug.Log("No squares were destroyed"); return chunks; }
+        if ( allSquares.Count == 0 ) { chunks.Add(null); return chunks; }
 
         // Useful debugging syntax:
         // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
@@ -140,7 +140,7 @@ public class SquareMesh
             {
                 // There was a void-fraction split
                 chunks = SplitIntoQuarters(this);
-                Debug.Log("Void fraction splitting!");
+                // Debug.Log("Void fraction splitting!");
                 if ( chunks != null ) 
                 { 
                     for ( int m = 0; m < chunks.Count; m++ )
@@ -195,28 +195,52 @@ public class SquareMesh
                 if ( s == null ) { continue; }
                 if ( s.x < Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y < Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f)  -1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
+                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f)  -1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) 
+                    { 
+                        if( Random.Range(0,1f) > 0.5f) 
+                        { 
+                            continue; 
+                            }
+                        }
                     bL[x, y] = new Square(x, y); 
                     isEmptyBL = false;
                 }
 
                 if ( s.x < Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y >= Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
+                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) 
+                    {
+                        if( Random.Range(0,1f) > 0.5f) 
+                        { 
+                            continue; 
+                        } 
+                    }
                     tL[x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = new Square(x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
                     isEmptyTL = false;
                 }
 
                 if ( s.x >= Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y < Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) - 1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
+                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) - 1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) 
+                    { 
+                        if( Random.Range(0,1f) > 0.5f) 
+                        { 
+                            continue; 
+                        }
+                    }
                     bR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y] = new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y); 
                     isEmptyBR = false;
                 }
                 
                 if ( s.x >= Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y >= Mathf.Ceil(sm.squares.GetLength(1)/2f) ) 
                 { 
-                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) { if( Random.Range(0,1f) > 0.5f) { continue; }; }
+                    if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) 
+                    { 
+                        if( Random.Range(0,1f) > 0.5f) 
+                        { 
+                            continue; 
+                        }
+                    }
                     tR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = 
                                 new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
                     isEmptyTR = false;
@@ -261,7 +285,7 @@ public class SquareMesh
         foreach(SquareMesh newMesh in chunks)
         {
             if ( newMesh == null ){ continue; }
-            newMesh.size = this.size;
+            newMesh.size = Mathf.Max( newMesh.squares.GetLength(0), newMesh.squares.GetLength(1) );
             newMesh.edgeLength = this.edgeLength;
         }
         if ( botLeft == null && topLeft == null && botRight == null && topRight == null ) { chunks = null; }
@@ -307,7 +331,7 @@ public class SquareMesh
             chunkSquaresArray[newSquare.x, newSquare.y] = newSquare;
         }
         newSquareMesh.squares = chunkSquaresArray;
-        newSquareMesh.size = this.size;
+        newSquareMesh.size = Mathf.Max( newSquareMesh.squares.GetLength(0), newSquareMesh.squares.GetLength(1) );
         newSquareMesh.edgeLength = this.edgeLength;
         return newSquareMesh;
     }
@@ -403,32 +427,32 @@ public class SquareMesh
 
     public void ResetMesh()
     {
-        MeshFilter meshFilter = asteroid.gameObject.GetComponent<MeshFilter>();
-        Mesh mesh2 = new Mesh();
-        meshFilter.mesh = mesh2;
+        // MeshFilter meshFilter = asteroid.gameObject.GetComponent<MeshFilter>();
+        // Mesh mesh2 = new Mesh();
+        // meshFilter.mesh = mesh2;
         
-        // Mesh only accepts Vector3's, so got to convert...
-        List<Vector3> meshVertices = new List<Vector3>();
-        Vector3 temp;
-        foreach (Vector2 v2 in perimeterVertices)
-        {
-            temp = new Vector3((float)v2.x, (float)v2.y, 0f);
-            meshVertices.Add( temp );
-        }
+        // // Mesh only accepts Vector3's, so got to convert...
+        // List<Vector3> meshVertices = new List<Vector3>();
+        // Vector3 temp;
+        // foreach (Vector2 v2 in perimeterVertices)
+        // {
+        //     temp = new Vector3((float)v2.x, (float)v2.y, 0f);
+        //     meshVertices.Add( temp );
+        // }
 
-        mesh2.vertices = meshVertices.ToArray();
-        meshFilter.mesh = mesh2;
+        // mesh2.vertices = meshVertices.ToArray();
+        // meshFilter.mesh = mesh2;
 
-        perimeterIndices = new int[2*meshVertices.Count];
-        for (int i = 0; i < meshVertices.Count; i++)
-        {
-            perimeterIndices[2*i] = i;    
-            perimeterIndices[2*i+1] = i+1;
-        }
+        // perimeterIndices = new int[2*meshVertices.Count];
+        // for (int i = 0; i < meshVertices.Count; i++)
+        // {
+        //     perimeterIndices[2*i] = i;    
+        //     perimeterIndices[2*i+1] = i+1;
+        // }
 
-        perimeterIndices[(meshVertices.Count)*2-1] = 0;
+        // perimeterIndices[(meshVertices.Count)*2-1] = 0;
 
-        mesh2.SetIndices(perimeterIndices, MeshTopology.Lines, 0);
+        // mesh2.SetIndices(perimeterIndices, MeshTopology.Lines, 0);
     }
 
     public List<Square> SquaresInRadius(Vector2 collisionPointInWC, float radius)
@@ -508,10 +532,122 @@ public class SquareMesh
                 }
             }
         }
-        UpdateNeighboursAndEdges(null);
+        this.squares = UpdateNeighboursAndEdges(this).squares;
+        Debug.Log(this.botLeftCount); 
+        UpdateSquaresInQuartersCount();
+        Debug.Log(this.botLeftCount); 
     }
 
-    
+    public void GenerateRandomShapeMesh(int size, float celSize)
+    {
+        this.size = size;
+        this.edgeLength = celSize;
+        this.squares = new Square[size, size]; // Initialize an empty squares array
+        int nSquares = Random.Range(size*size/2, size*size); // How many squares will we populate into the empty array?
+        int xStart = Random.Range(0, size); // Starting x inside the empty array
+        int yStart = Random.Range(0, size); // Starting y inside the empty array
+        List<Vector2> activeSquares = new List<Vector2>(); // Keeping track of squares I have activated inside the array
+        List<Vector2> candidateSquares = new List<Vector2>();
+        squares[xStart, yStart] = new Square(xStart, yStart); // Activate a starting square
+        Vector2 currentSquare = new Vector2(xStart, yStart);
+        // Debug.Log("We will be adding:");
+        // Debug.Log(nSquares);
+        for (int i = 0; i <= nSquares; i++)
+        {
+            activeSquares.Add(new Vector2(currentSquare.x, currentSquare.y)); // Add square to the list of active squares
+            // Debug.Log("Added square at:");
+            // Debug.Log(new Vector2(currentSquare.x, currentSquare.y));
+            // Add all viable neighbours to the list of possible candidate squares
+            if ( currentSquare.x + 1 <= size-1 ) 
+            { 
+                if ( candidateSquares.Contains( new Vector2( currentSquare.x + 1 , currentSquare.y ) ) == false ) 
+                { 
+                    candidateSquares.Add( new Vector2( currentSquare.x + 1 , currentSquare.y ) ); 
+                }
+            }
+            if ( currentSquare.x - 1 >= 0 )      
+            { 
+                if ( candidateSquares.Contains( new Vector2( currentSquare.x - 1 , currentSquare.y ) ) == false ) 
+                { 
+                    candidateSquares.Add( new Vector2( currentSquare.x - 1 , currentSquare.y ) );
+                }
+            }
+            if ( currentSquare.y + 1 <= size-1 ) 
+            { 
+                if ( candidateSquares.Contains( new Vector2( currentSquare.x , currentSquare.y + 1 ) ) == false ) 
+                { 
+                    candidateSquares.Add( new Vector2( currentSquare.x , currentSquare.y + 1 ) ); 
+                }
+            }
+            if ( currentSquare.y - 1 >= 0 )      
+            { 
+                if ( candidateSquares.Contains( new Vector2( currentSquare.x , currentSquare.y - 1 ) ) == false ) 
+                { 
+                    candidateSquares.Add( new Vector2( currentSquare.x , currentSquare.y - 1 ) ); 
+                }
+            }
+            
+            
+            // int dx = currentSquare.x - candidateSquares[idx].x; // Get dx, dy to figure out neigbourhood relations
+            // ind dy = currentSquare.y - candidateSquares[idx].y; 
+            // Assign neighbourhood relationships
+            candidateSquares.Remove( new Vector2( currentSquare.x, currentSquare.y ) );
+            squares[ (int)currentSquare.x, (int)currentSquare.y ] = new Square((int)currentSquare.x, (int)currentSquare.y);
+            int idx = Random.Range(0, candidateSquares.Count); // Pick next square from list of candidates
+            currentSquare = candidateSquares[idx];
+        }
+
+
+        // for (int i = 0; i <= nSquares; i++)
+        // {
+        //     int idx = Random.Range(0, activeSquares.Count-1);  // Pick a random active square
+        //     // Debug.Log("Going from square");
+        //     // Debug.Log(new Vector2( (int)activeSquares[idx].x, (int)activeSquares[idx].y ));
+        //     Square fromSquare = squares[(int)activeSquares[idx].x, (int)activeSquares[idx].y];
+        //     // Which neighbour will we add to the picked square?
+        //     int dx = 1; int dy = 1;
+        //     if ( Random.Range(0f, 1f) < 0.5f ) {dx = -1;}
+        //     if ( Random.Range(0f, 1f) < 0.5f ) {dy = -1;}
+        //     int neighbourOfStartingSquare = -1;
+        //     int neighbourOfNewSquare = -1;
+        //     if ( Random.Range(0f, 1f) < 0.5f ) 
+        //     { 
+        //         dx = 0;
+        //         if ( dy == 1 ) { neighbourOfStartingSquare = 0; neighbourOfNewSquare = 2;}
+        //         if ( dy == -1 ) { neighbourOfStartingSquare = 2; neighbourOfNewSquare = 0;}
+        //     }
+        //     else
+        //     {
+        //         dy = 0;
+        //         if ( dx == 1 ) { neighbourOfStartingSquare = 1;  neighbourOfNewSquare = 3; }
+        //         if ( dx == -1 ) { neighbourOfStartingSquare = 3;  neighbourOfNewSquare = 1; }
+        //     }
+        //     // Debug.Log("Going to square");
+        //     // Debug.Log(new Vector2(activeSquares[idx].x + dx, activeSquares[idx].y + dy));
+        //     // If outside bounds of the array then skip
+        //     if ( activeSquares[idx].x + dx < 0 || activeSquares[idx].x + dx > size-1 || activeSquares[idx].y + dy < 0 || activeSquares[idx].y + dy > size-1) 
+        //     { 
+        //         // Debug.Log("But was outside bounds");
+        //         continue; 
+        //     }
+        //     // If new square already active then skip
+        //     else if ( activeSquares.Contains( new Vector2(activeSquares[idx].x + dx, activeSquares[idx].y + dy) ) ) 
+        //     { 
+        //         // Debug.Log("But was already active");
+        //         continue; 
+        //     }
+        //     else
+        //     {
+        //         // Debug.Log("Added square succesfully!");
+        //         squares[(int)activeSquares[idx].x + dx, (int)activeSquares[idx].y + dy] = new Square((int)activeSquares[idx].x + dx, (int)activeSquares[idx].y + dy);
+        //         activeSquares.Add( new Vector2(activeSquares[idx].x + dx, activeSquares[idx].y + dy) );
+        //         // squares[activeSquares[idx].x + dx, activeSquares[idx].y + dy].neighbourSquares[neighbourOfNewSquare] = squares[activeSquares[idx].x, activeSquares[idx].y];
+        //         // squares[activeSquares[idx].x, activeSquares[idx].y].neighbourSquares[neighbourOfStartingSquare] = squares[activeSquares[idx].x + dx, activeSquares[idx].y + dy];
+        //     }
+        // }
+        this.squares = UpdateNeighboursAndEdges(this).squares;
+        UpdateSquaresInQuartersCount();
+    }
 
     public SquareMesh UpdateNeighboursAndEdges(SquareMesh sm)
     {
@@ -711,7 +847,6 @@ public class SquareMesh
 
         if ( startingSquare == null ) { Debug.Log("Could not find a starting square!"); }
         Square currentSquare = startingSquare; // Start with any square
-
         // Get things started by explicitly calling ExtendVerticesList on the first square
         vertices = ExtendVerticesList(currentSquare, vertices);
         // Debug.Log(vertices.Count);

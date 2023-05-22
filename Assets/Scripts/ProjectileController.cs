@@ -85,7 +85,14 @@ public class ProjectileController : MonoBehaviour
                     {
                         Reference.animationController.SpawnExplosionAnimation(projectileObject.transform.position);
                         Reference.soundController.RocketDestroyed();
-                        Reference.soundController.playExplosionSound();
+                        Reference.soundController.PlayExplosionSound();
+                    }
+                    if(projectileObject.GetComponent<Projectile>().projectileType == "Bullet")
+                    {
+                        Reference.animationController.SpawnDustCloudAnimationOnBulletHit(projectileObject.transform.position);
+                        // float angle = Vector2.Angle(new Vector2(-1f, 0f), projectileObject.GetComponent<Projectile>().velocity);
+                        Quaternion rotation = Quaternion.FromToRotation(new Vector3(-1f, 0f, 0f), (Vector3)projectileObject.GetComponent<Projectile>().velocity);
+                        Reference.animationController.SpawnParticleSprayAnimationGo(projectileObject.transform.position, rotation);
                     }
                     SimplePool.Despawn(projectileObject);
                     projectileList.Remove(projectileObject);

@@ -29,7 +29,7 @@ public class Projectile : MonoBehaviour
 
     public float explosionRadiusDiameter;
     float rocketRadius = 10f;
-    float bulletRadius = 1.5f;
+    float bulletRadius = 1f;
 
 
     bool awayFromPlayer = false;

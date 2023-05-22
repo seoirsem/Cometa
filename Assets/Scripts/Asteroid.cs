@@ -36,7 +36,7 @@ public class Asteroid : MonoBehaviour
     public SquareMesh squareMesh;
 
     private void Awake() {
-        celSize = 0.15f;
+        celSize = 0.4f;
     }
 
     public void ReDrawAsteroid()
@@ -46,6 +46,7 @@ public class Asteroid : MonoBehaviour
         squareMesh.ResetMesh();
         squareMesh.ResetColliderMesh();
         squareMesh.FindCentreOfMass();
+        this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture();
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.centerOfMass = squareMesh.centreOfMass;
         this.mass = squareMesh.mass;
@@ -61,12 +62,15 @@ public class Asteroid : MonoBehaviour
         {
             squareMesh = new SquareMesh();
             squareMesh.SetAsteroid(this);
+            // squareMesh.GenerateRandomShapeMesh(size,celSize);
             squareMesh.GenerateCircularMesh(size,celSize);
             squareMesh.FindOutline();
+            // Debug.Log(squareMesh.perimeterVertices.Count);
             squareMesh.ScaleEdgeLengthAndShift();
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
+            // this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture();
         }
         else
         {
@@ -77,6 +81,7 @@ public class Asteroid : MonoBehaviour
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
+            this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture();
         }
 
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();

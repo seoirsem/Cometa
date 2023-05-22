@@ -16,7 +16,7 @@ public class WorldController : MonoBehaviour
     string loadingScene = "Scenes/LoadingScene";
     string gameScene = "Scenes/GameScene";
     GameObject warningPrefab;
-    float asteroidSpawnInterval = 10f;
+    float asteroidSpawnInterval = 100f;
     float time;
     bool gameOver = false;
 
@@ -27,13 +27,15 @@ public class WorldController : MonoBehaviour
 
     float colliderThickness = 0.01f;
 
-    float freqOfNewAsteroids = 10f;
+    float freqOfNewAsteroids = 100f;
     float warningLifespan = 3f;
     int newAsteroidDirection;
     Vector3 asteroidPositionOffset;
 
     bool warningOff = true;
 
+    public int maxAsteroidSize = 30;
+    public int minAsteroidSize = 20;
 
     float spawnCooldown;
 
@@ -71,10 +73,10 @@ public class WorldController : MonoBehaviour
         player = new Player(playergo);
         spawnCooldown = Time.time;
 
-        int randomSize = Random.Range(7,13);
+        int randomSize = Random.Range(minAsteroidSize, maxAsteroidSize);
         //Debug.Log(randomSize);
         warningPrefab = Resources.Load("Prefabs/WarningSymbol") as GameObject;
-        //Reference.asteroidController.SpawnNewAsteroid(randomSize,2, new Vector3(0,0,0));
+        Reference.asteroidController.SpawnNewAsteroid(30, 2, new Vector3(0,3,0), new Vector3(0,0,0));
         //Reference.asteroidController.SpawnRandomAsteroid(20, new Vector3(0,2.5f,0));
         // Reference.asteroidController.SpawnNewAsteroid(10,0, new Vector3(0,0,0), new Vector3(5f,0,0));
         // Reference.asteroidController.SpawnNewAsteroid(10,1, new Vector3(0,0,0), new Vector3(-5f,0,0));
@@ -132,14 +134,14 @@ public class WorldController : MonoBehaviour
              //spawnn new asteroid
             spawnCooldown = Time.time;
             warningOff = true;
-            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18),newAsteroidDirection, asteroidPositionOffset,new Vector3(0,0,0));
+            Reference.asteroidController.SpawnNewAsteroid(Random.Range(minAsteroidSize, maxAsteroidSize),newAsteroidDirection, asteroidPositionOffset,new Vector3(0,0,0));
         }
 
         if ((Reference.playerInputController.p && Time.time - spawnCooldown > 2f) && !isPaused)
         {
             spawnCooldown = Time.time;
             int randomInt = Random.Range(0,3);
-            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18), randomInt, GenerateAsteroidPositionOffset(randomInt),new Vector3(0,0,0));   
+            Reference.asteroidController.SpawnNewAsteroid(Random.Range(minAsteroidSize, maxAsteroidSize), randomInt, GenerateAsteroidPositionOffset(randomInt),new Vector3(0,0,0));   
         }
 
     }

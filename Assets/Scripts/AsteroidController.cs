@@ -21,7 +21,7 @@ public class AsteroidController : MonoBehaviour
         deriveAsteroidPrefab = Resources.Load("Prefabs/DerivedAsteroid") as GameObject;
         worldSize = Reference.worldController.worldSize;
 
-        SpawnAsteroid(20, new Vector3(0f, 0f, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
+        // SpawnAsteroid(20, new Vector3(0f, 0f, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0), 0f, null, false, new Vector2(0,0)); 
     }
 
     void Update()
@@ -48,29 +48,29 @@ public class AsteroidController : MonoBehaviour
 //        int directionIndex = Random.Range(0,3);
         Vector3 directionOrientation = new Vector3(numbers[directionIndex*2],numbers[directionIndex*2+1],0);
         float magnitude = Random.Range(1f,5f);
-        Vector3 direction = -1 * magnitude*directionOrientation;
+        Vector3 direction = -0 * magnitude*directionOrientation;
 
         Vector3 position = new Vector3(0,0,0);
-        if(directionIndex == 0)
-        {// left
-            position = new Vector3(-worldSize.x/2f - 0.55f*size*Asteroid.celSize, -0.0f*size*Asteroid.celSize,0);
-            direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
-        }
-        if(directionIndex == 1)
-        {// right
-            position = new Vector3(worldSize.x/2f + 0.55f*size*Asteroid.celSize, -0.0f*size*Asteroid.celSize,0);
-            direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
-        }
-        if(directionIndex == 2)
-        {// up
-            position = new Vector3(-0.0f*size*Asteroid.celSize,worldSize.y/2 + 0.55f*size*Asteroid.celSize,0);
-            direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
-        }
-        if(directionIndex == 3)
-        {// down
-            position = new Vector3(-0.0f*size*Asteroid.celSize,-worldSize.y/2 - 0.55f*size*Asteroid.celSize,0);
-            direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
-        }
+        // if(directionIndex == 0)
+        // {// left
+        //     position = new Vector3(-worldSize.x/2f - 0.55f*size*Asteroid.celSize, -0.0f*size*Asteroid.celSize,0);
+        //     direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
+        // }
+        // if(directionIndex == 1)
+        // {// right
+        //     position = new Vector3(worldSize.x/2f + 0.55f*size*Asteroid.celSize, -0.0f*size*Asteroid.celSize,0);
+        //     direction += new Vector3(0,Random.Range(-0.4f,0.4f),0);
+        // }
+        // if(directionIndex == 2)
+        // {// up
+        //     position = new Vector3(-0.0f*size*Asteroid.celSize,worldSize.y/2 + 0.55f*size*Asteroid.celSize,0);
+        //     direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
+        // }
+        // if(directionIndex == 3)
+        // {// down
+        //     position = new Vector3(-0.0f*size*Asteroid.celSize,-worldSize.y/2 - 0.55f*size*Asteroid.celSize,0);
+        //     direction += new Vector3(Random.Range(-0.4f,0.4f),0,0);
+        // }
 
         /// position
         //Vector3 position = new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);
@@ -78,7 +78,7 @@ public class AsteroidController : MonoBehaviour
         {
             direction = velocity;
         }
-        SpawnAsteroid(size, position + asteroidPositionOffset, direction, new Vector3(0, 0, 0), GaussianRandom.generateNormalRandom(0,30f), null, true, directionOrientation);    
+        SpawnAsteroid(size, position + asteroidPositionOffset, direction, new Vector3(0, 0, 0), GaussianRandom.generateNormalRandom(0,0f), null, true, directionOrientation);    
     }
 
     public void SpawnRandomAsteroid(int size, Vector3 position)
@@ -140,17 +140,6 @@ public class AsteroidController : MonoBehaviour
                     // If the mesh is null, then this asteroid fragment was completely destroyed
                     if ( squareMesh != null )
                     {
-                        // Debug.Log("Spawning an asteroid from a new mesh");
-                        // Debug.Log(asteroidCornerInWC);
-//                        Debug.Log(squareMesh.leftmostSplitCoord);
-//                        Debug.Log(squareMesh.rightmostSplitCoord);
-                        // Debug.Log(squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord);
-                        // Debug.Log((squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord) * squareMesh.edgeLength/2f);
-//                        Debug.Log(squareMesh.bottomSplitCoord);
-//                        Debug.Log(squareMesh.topSplitCoord);
-                        
-                        // Debug.Log(squareMesh.topSplitCoord + squareMesh.bottomSplitCoord);
-                        // Debug.Log((squareMesh.topSplitCoord + squareMesh.bottomSplitCoord) * squareMesh.edgeLength/2f);
                         float splitOffsetX = (float)(squareMesh.leftmostSplitCoord + squareMesh.rightmostSplitCoord+1) * squareMesh.edgeLength/2f;
                         float splitOffsetY = (float)(squareMesh.topSplitCoord+1 + squareMesh.bottomSplitCoord) * squareMesh.edgeLength/2f;
                                
@@ -159,11 +148,7 @@ public class AsteroidController : MonoBehaviour
 
                         Vector3 splitOffset = new Vector3(rotatedSplitOffsetX, rotatedSplitOffsetY, 0f);
                         Vector3 postSplitPosition = asteroidCornerInWC + splitOffset;
-//                        Debug.Log(asteroidCornerInWC);
-//                        Debug.Log(splitOffset);
-//                        Debug.Log(asteroidCornerInWC + splitOffset);
-                        // Debug.Break();
-                        SpawnAsteroid(40, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
+                        SpawnAsteroid(squareMesh.size, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
                         numberOfSquaresLost -= squareMesh.NumberOfSquaresInMesh();
                     }
                 }
