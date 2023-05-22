@@ -33,6 +33,14 @@ public class HUDController : MonoBehaviour
     GameObject musicVolumeTogglego;
     GameObject optionsReturngo;
 
+    // to tell the player how to play 
+    GameObject moveIndicator;
+    GameObject shootIndicator;
+    GameObject backgroundIndicator;
+    GameObject rocketIndicator;
+    
+    GameObject pauseButtongo;
+    Button pauseButton;
     Button masterVolumeToggle;
     Button masterVolumeSwitch;
     Button musicVolumeToggle;
@@ -62,11 +70,54 @@ public class HUDController : MonoBehaviour
 
         pointScoreIndicatorPrefab = Resources.Load("Prefabs/PointScoreIndicator") as GameObject;
         //SimplePool.Preload(pointScoreIndicatorPrefab, 1);
+        pauseButtongo = GameObject.Find("PauseButton");
+        pauseButton = pauseButtongo.GetComponent<Button>();
+        pauseButton.onClick.AddListener(PauseGame);
         
+        moveIndicator = GameObject.Find("Move");
+        shootIndicator = GameObject.Find("Shoot");
+        backgroundIndicator = GameObject.Find("ControlBackground");
+        rocketIndicator = GameObject.Find("Rocket");
+        moveIndicator.SetActive(false);
+        shootIndicator.SetActive(false);
+        backgroundIndicator.SetActive(false);
+        rocketIndicator.SetActive(false);
+
+        if(Reference.worldController.platform != "Android")
+        {
+            pauseButtongo.SetActive(false);
+        }
+
         this.timergo = GameObject.Find("Timer");
         this.timer = timergo.GetComponent<Text>();
         soundController = GameObject.Find("SoundController").GetComponent<SoundController>();
 
+    }
+    public void ShowControlDescriptions()
+    {
+        moveIndicator.SetActive(true);
+        shootIndicator.SetActive(true);
+        backgroundIndicator.SetActive(true);
+        rocketIndicator.SetActive(true);
+    }
+    public void HideControlDescriptions()
+    {
+        moveIndicator.SetActive(false);
+        shootIndicator.SetActive(false);
+        backgroundIndicator.SetActive(false);
+        rocketIndicator.SetActive(false);
+    }
+    void PauseGame()
+    {
+        if(!Reference.worldController.isPaused)
+        {
+            Reference.playerInputController.escape = true;
+        }
+        else
+        {
+            Reference.playerInputController.escape = false;
+            Reference.worldController.UnPauseGame();
+        }
     }
 
     void LoadPauseMenu()
@@ -89,6 +140,7 @@ public class HUDController : MonoBehaviour
         options.onClick.AddListener(Options);
         exitToMenu.onClick.AddListener(EscapeToMenu);        
     }
+
 
     void UnloadPauseMenu()
     {
@@ -198,6 +250,7 @@ public class HUDController : MonoBehaviour
 
     void ResumeButton()
     {
+        Reference.playerInputController.escape = false;
         Reference.worldController.UnPauseGame();
     }
 

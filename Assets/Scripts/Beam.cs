@@ -27,6 +27,7 @@ public class Beam : MonoBehaviour
         rayCastAdvanceSpeed = 0.1f;
         rayCastRetractSpeed = 0.3f;
     }
+    
 
     // Update is called once per frame
     void Update()

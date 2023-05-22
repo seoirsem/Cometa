@@ -9,39 +9,178 @@ public class PlayerInputController : MonoBehaviour
     public bool leftKey = false;
     public bool rightKey = false;
     public Vector2 cursorPosition;
-    public bool mouseClickDown = false;
-    public bool leftClickDown = false;
+    public bool shootRocket = false;
+    public float rocketAngle;
+    public bool shootBullet = false;
     public bool spaceBar = false;
     public bool b = false;
     public bool r = false;
     public bool escape = false;
     public bool e = false;
-
     public bool p = false;
     public bool o = false;
     public bool w = false;
     public bool a = false;
     public bool s = false;
     public bool d = false;
+    public float angle;
+    public float angleMove;
+    public Vector2 moveDirection;
+    public Vector2 shootDirection;
+    public float moveMagnitude;
+    TapManager tapManager;
+    public Vector2 shootRocketLocation;
+    public bool touchAnywhere = false;
+
+    GameObject moveJoystickgo;
+    GameObject shootJoystickgo;
+    bl_MovementJoystick moveStick;
+    bl_MovementJoystick shootStick;
+
+    string platform;
     
+    void Awake()
+    {
+
+    }
+
     void Start()
     {
-        
+        platform = Reference.worldController.platform;
+        tapManager = Reference.tapManager;
+        moveJoystickgo = GameObject.Find("MoveJoystick");
+        shootJoystickgo = GameObject.Find("ShootJoystick");
+        moveStick = moveJoystickgo.GetComponent<bl_MovementJoystick>();
+        shootStick = shootJoystickgo.GetComponent<bl_MovementJoystick>();
+        if(platform != "Android")
+        {
+            //set the joysticks inactive
+            moveJoystickgo.SetActive(false);
+            shootJoystickgo.SetActive(false);
+        }
     }
 
     void Update()
     {
-        GetPlayerInputs();
+        if(platform == "Android")
+        {
+            GetAndroidControls();
+        }
+        else if(platform == "Windows")
+        {
+            GetWindowsControls();
+        }
+        else if(platform == "Editor")
+        {
+            GetDebuggingControls();
+        }
+    }
+
+    void GetAndroidControls()
+    {
+//        Debug.Log(moveStick.Horizontal);
+        moveDirection = new Vector2(moveStick.Horizontal,moveStick.Vertical).normalized;
+        shootDirection = new Vector2(shootStick.Horizontal,shootStick.Vertical).normalized;
+        moveMagnitude = (new Vector2(moveStick.Horizontal,moveStick.Vertical)).magnitude;
+        if(shootDirection != new Vector2(0,0))
+        {
+            shootBullet = true;
+            angle = -1*FindDegree(new Vector2(0,0),shootDirection) + 90;
+        }
+        else
+        {
+            shootBullet = false;
+        }
+        if(moveDirection != new Vector2(0,0))
+        {
+            angleMove = -1*FindDegree(new Vector2(0,0),moveDirection);
+        }
+        else
+        {
+            angleMove = 720f; //ie a large number
+        }
+        if(tapManager.shootRocket && !Reference.worldController.isPaused)
+        {
+            shootRocket = true;
+            shootRocketLocation = tapManager.worldTapPosition;
+        }
+        else
+        {
+            shootRocket = false;
+        }
+        
+        if(Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+        {
+            touchAnywhere = true;
+        }
+        else
+        {
+            touchAnywhere = false;
+        }
+        
+        // {
+
+        // }
+
 
     }
 
 
-    void GetPlayerInputs()
+    void GetWindowsControls()
     {
-        //needs a rewrite for mobile. Currently setup for maximal flexibility
+        
+        cursorPosition = Reference.mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        angle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,cursorPosition) + 90;
 
-        cursorPosition = Input.mousePosition;
-
+        if (Input.GetMouseButton(0))
+        {
+            shootBullet = true;
+        }
+        else
+        {
+            shootBullet = false;
+        }
+        if (Input.GetMouseButton(1))
+        {
+            shootRocket = true;
+            rocketAngle = angle;
+        }
+        else
+        {
+            shootRocket = false;
+        }
+        if (Input.GetKey("w"))
+        {
+            w = true;
+        }
+        else
+        {
+            w = false;
+        }
+        if (Input.GetKey("a"))
+        {
+            a = true;
+        }
+        else
+        {
+            a = false;
+        }
+        if (Input.GetKey("s"))
+        {
+            s = true;
+        }
+        else
+        {
+            s = false;
+        }
+        if (Input.GetKey("d"))
+        {
+            d = true;
+        }
+        else
+        {
+            d = false;
+        }
         if (Input.GetKey("escape"))
         {
             escape = true;   
@@ -50,6 +189,13 @@ public class PlayerInputController : MonoBehaviour
         {
             escape = false;
         }
+    }
+
+    void GetDebuggingControls()
+    {
+        //needs a rewrite for mobile. Currently setup for maximal flexibility
+        GetWindowsControls();
+
         if (Input.GetKey("up"))
         {
             upKey = true;   
@@ -82,22 +228,7 @@ public class PlayerInputController : MonoBehaviour
         {
             rightKey = false;
         }
-        if (Input.GetMouseButton(0))
-        {
-            mouseClickDown = true;
-        }
-        else
-        {
-            mouseClickDown = false;
-        }
-        if (Input.GetMouseButton(1))
-        {
-            leftClickDown = true;
-        }
-        else
-        {
-            leftClickDown = false;
-        }
+ 
         if (Input.GetKey("space"))
         {
             spaceBar = true;
@@ -146,37 +277,16 @@ public class PlayerInputController : MonoBehaviour
         {
             e = false;
         }
-        if (Input.GetKey("w"))
-        {
-            w = true;
-        }
-        else
-        {
-            w = false;
-        }
-        if (Input.GetKey("a"))
-        {
-            a = true;
-        }
-        else
-        {
-            a = false;
-        }
-        if (Input.GetKey("s"))
-        {
-            s = true;
-        }
-        else
-        {
-            s = false;
-        }
-        if (Input.GetKey("d"))
-        {
-            d = true;
-        }
-        else
-        {
-            d = false;
-        }
+        
+    }
+
+    public static float FindDegree(Vector2 v1, Vector2 v2)
+    {
+        float x = (v2.x - v1.x);
+        float y = (v2.y - v1.y);
+        float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
+        if(value < 0) value += 360f;
+    
+        return value;
     }
 }

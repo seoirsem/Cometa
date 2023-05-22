@@ -11,7 +11,7 @@ public class ScoreController : MonoBehaviour
     public float scorePixelRatio;
     public float totalScore;
     public float timeElapsed;
-    string highScoresPath = "Assets/Resources/SavedFiles/HighScores.bin";
+    string highScoresPath;//"Assets/Resources/SavedFiles/HighScores.bin";
 
 
     public float startTime;
@@ -19,10 +19,12 @@ public class ScoreController : MonoBehaviour
     {
         this.totalScore = 0f;
         scorePixelRatio = 50f;
+        highScoresPath = Application.persistentDataPath + "HighScores.bin";
     }
     void Start()
     {
         startTime = Time.time;
+        Debug.Log(highScoresPath);
     }
 
     void Update()
@@ -35,6 +37,10 @@ public class ScoreController : MonoBehaviour
     public void IncrementScore(float increment, Vector2 contact)
     {
         float deltaScore = increment*scorePixelRatio;
+<<<<<<< HEAD
+=======
+//        Debug.Log(deltaScore);
+>>>>>>> ab8057b73a7973372430890b500db6335b2612ba
         this.totalScore += deltaScore;
         Reference.hudController.UpdateOnScreenScore(this.totalScore);
         Reference.soundController.ScorePoints();

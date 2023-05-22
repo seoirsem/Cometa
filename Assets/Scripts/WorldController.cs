@@ -31,11 +31,16 @@ public class WorldController : MonoBehaviour
     float warningLifespan = 3f;
     int newAsteroidDirection;
     Vector3 asteroidPositionOffset;
-
+    public string platform;
     bool warningOff = true;
 
+<<<<<<< HEAD
     public int maxAsteroidSize = 30;
     public int minAsteroidSize = 20;
+=======
+    float howToTime = 10f;
+    float howToStart;
+>>>>>>> ab8057b73a7973372430890b500db6335b2612ba
 
     float spawnCooldown;
 
@@ -48,7 +53,8 @@ public class WorldController : MonoBehaviour
         Reference.CreateReferences();
         windowing = GameObject.Find("Windowing");
 
-        worldSize = worldSize = new Vector2(25f, 15f);
+        worldSize = new Vector2(18f, 15f);
+
         windowing.transform.localScale = new Vector3(2*worldSize.x, 2*worldSize.y, 1);
 
         rightEdgeCollider = transform.Find("RightEdgeCollider").GetComponent<BoxCollider2D>();
@@ -65,6 +71,30 @@ public class WorldController : MonoBehaviour
         bottomEdgeCollider.gameObject.transform.position = new Vector3(0f, -(Reference.worldController.worldSize.y/2f + colliderThickness), 0f);
         topEdgeCollider.size = new Vector2(Reference.worldController.worldSize.x, colliderThickness);
         bottomEdgeCollider.size = new Vector2(Reference.worldController.worldSize.x, colliderThickness);
+        if(Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+ //           Debug.Log("On PC");
+            platform = "Windows";
+        }
+        else if (Application.platform == RuntimePlatform.Android)
+        {
+            //Debug.Log("Android");
+            platform = "Android";
+        }
+        else if(Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            platform = "Editor";
+//            Debug.Log("Unity Editor");
+        }
+        else
+        {
+            platform = "Windows";
+        }
+
+        
+        Debug.Log("The game is running on the following platform: " + platform);
+        platform = "Android";
+        //Debug.Log("Debugging Only");
     }
 
     void Start() 
@@ -76,7 +106,16 @@ public class WorldController : MonoBehaviour
         int randomSize = Random.Range(minAsteroidSize, maxAsteroidSize);
         //Debug.Log(randomSize);
         warningPrefab = Resources.Load("Prefabs/WarningSymbol") as GameObject;
+<<<<<<< HEAD
         Reference.asteroidController.SpawnNewAsteroid(30, 2, new Vector3(0,3,0), new Vector3(0,0,0));
+=======
+        if(platform == "Android")
+        {
+            ShowControlIcons();
+            howToStart = Time.unscaledTime;
+        }
+        //Reference.asteroidController.SpawnNewAsteroid(randomSize,2, new Vector3(0,0,0));
+>>>>>>> ab8057b73a7973372430890b500db6335b2612ba
         //Reference.asteroidController.SpawnRandomAsteroid(20, new Vector3(0,2.5f,0));
         // Reference.asteroidController.SpawnNewAsteroid(10,0, new Vector3(0,0,0), new Vector3(5f,0,0));
         // Reference.asteroidController.SpawnNewAsteroid(10,1, new Vector3(0,0,0), new Vector3(-5f,0,0));
@@ -86,6 +125,12 @@ public class WorldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(platform == "Android" && (Time.unscaledTime - howToStart > howToTime || Reference.playerInputController.touchAnywhere))
+        {
+            HideControlIcons();
+        }
+
         if (Time.time - time > asteroidSpawnInterval)
         {
             // Reference.asteroidController.SpawnNewAsteroid();
@@ -171,7 +216,21 @@ public class WorldController : MonoBehaviour
         }
     }
 
-
+    void ShowControlIcons()
+    {
+        Debug.Log("Game Paused");
+        isPaused = true;
+        escPressed = true;
+        Time.timeScale = 0;
+        Reference.hudController.ShowControlDescriptions();
+    }
+    void HideControlIcons()
+    {
+        Debug.Log("Game Resuming");
+        isPaused = false;;
+        Time.timeScale = 1;
+        Reference.hudController.HideControlDescriptions();
+    }
 
     void PauseGame()
     {

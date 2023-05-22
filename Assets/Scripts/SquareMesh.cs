@@ -87,7 +87,16 @@ public class SquareMesh
 
         // If there were no squares in the mesh that has 'split', pass null for SquareMesh
         // This means the entire mesh (split or not) has been destroyed
+<<<<<<< HEAD
         if ( allSquares.Count == 0 ) { chunks.Add(null); return chunks; }
+=======
+        if ( allSquares.Count == 0 ) 
+        { 
+            chunks.Add(null); 
+            //Debug.Log("No squares were destroyed");
+            return chunks;    
+        }
+>>>>>>> ab8057b73a7973372430890b500db6335b2612ba
 
         // Useful debugging syntax:
         // System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
@@ -140,7 +149,11 @@ public class SquareMesh
             {
                 // There was a void-fraction split
                 chunks = SplitIntoQuarters(this);
+<<<<<<< HEAD
                 // Debug.Log("Void fraction splitting!");
+=======
+               // Debug.Log("Void fraction splitting!");
+>>>>>>> ab8057b73a7973372430890b500db6335b2612ba
                 if ( chunks != null ) 
                 { 
                     for ( int m = 0; m < chunks.Count; m++ )

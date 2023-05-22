@@ -181,7 +181,7 @@ public class MainUIController : MonoBehaviour
         // for quitting a built game:
         Application.Quit();
         //for working in the unity editor:
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false;
     }
 
     void PlayGame()

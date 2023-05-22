@@ -47,8 +47,13 @@ public class AsteroidController : MonoBehaviour
         int[] numbers = {-1,0,1,0,0,1,0,-1};
 //        int directionIndex = Random.Range(0,3);
         Vector3 directionOrientation = new Vector3(numbers[directionIndex*2],numbers[directionIndex*2+1],0);
+<<<<<<< HEAD
         float magnitude = Random.Range(1f,5f);
         Vector3 direction = -0 * magnitude*directionOrientation;
+=======
+        float magnitude = Random.Range(2f,8f);
+        Vector3 direction = -1 * magnitude*directionOrientation;
+>>>>>>> ab8057b73a7973372430890b500db6335b2612ba
 
         Vector3 position = new Vector3(0,0,0);
         // if(directionIndex == 0)

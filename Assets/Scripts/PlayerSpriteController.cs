@@ -27,6 +27,7 @@ public class PlayerSpriteController : MonoBehaviour
     float rocketCooldownTimer;
     float rocketCooldown = 2f;//s
     float bulletCooldown = 0.15f;
+    public bool RocketOnCooldown;
     public Rigidbody2D rigid_body;
     bool spaceDown = false;
     float rocketForce = 0.5f;
@@ -41,12 +42,12 @@ public class PlayerSpriteController : MonoBehaviour
     BlueFlameFunction blueFlameLeft;
     BlueFlameFunction blueFlameRight;
 
-
+    string platform;
 
 
     void Awake()
     {
-
+        RocketOnCooldown = false;
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
         rigid_body.mass = mass;
         spaceDown = false;
@@ -70,9 +71,10 @@ public class PlayerSpriteController : MonoBehaviour
         playergo.transform.rotation = new Quaternion(0, 0, 0, 0);
         player = Reference.worldController.player;
         worldEdges = Reference.worldController.worldSize;
-        bulletCooldownTimer = Time.time - bulletCooldown;
-        rocketCooldownTimer = Time.time - rocketCooldown;
+        bulletCooldownTimer = Time.time - bulletCooldown - 0.1f;
+        rocketCooldownTimer = Time.time - rocketCooldown - 0.1f;
         SpawnVisualClones();
+        platform = Reference.worldController.platform;
         //blueFlame.SetActive(false);
 
     }
@@ -80,8 +82,15 @@ public class PlayerSpriteController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        UpdatePlayerRotation();
-        UpdatePlayerMotion();
+        if(platform == "Android")
+        {
+            UpdateMotionAndroid();
+        }
+        else
+        {
+            UpdatePlayerRotationPC();
+            UpdatePlayerMotionPC();
+        }
         UpdatePlayerShooting();
     }
 
@@ -114,6 +123,10 @@ public class PlayerSpriteController : MonoBehaviour
 
             }
         }
+        if (Time.time - rocketCooldownTimer > rocketCooldown){RocketOnCooldown = false;}
+        else {RocketOnCooldown = true;}
+        {}
+
         if (Reference.playerInputController.r)
         {
             if (Time.time - rocketCooldownTimer > rocketCooldown)
@@ -126,13 +139,12 @@ public class PlayerSpriteController : MonoBehaviour
 
 ///////////// MOUSE CONTROLS //////////////////
 
-        if (Reference.playerInputController.mouseClickDown)
+        if (Reference.playerInputController.shootBullet)
         {
-            Vector2 cursorPosition = Reference.mainCamera.ScreenToWorldPoint(Reference.playerInputController.cursorPosition);
             if (Time.time - bulletCooldownTimer > bulletCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 bulletCooldownTimer = Time.time;
-                float angle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,cursorPosition) + 90; // I have to hack this angle, why??
+                float angle = Reference.playerInputController.angle; // I have to hack this angle, why??
                 //Debug.Log($"Player: {Reference.playergo.GetComponent<Rigidbody2D>().position}, Cursor: {cursorPosition}, Angle: {angle}");
 //                Debug.Log(angle);
                 Reference.projectileController.ShootProjectile(player.go.transform.position, Quaternion.Euler(0,0,angle),"Bullet");
@@ -141,30 +153,34 @@ public class PlayerSpriteController : MonoBehaviour
 
             }
         }
-        if (Reference.playerInputController.leftClickDown)
+        if (Reference.playerInputController.shootRocket)
         {
-            Vector2 cursorPosition = Reference.mainCamera.ScreenToWorldPoint(Reference.playerInputController.cursorPosition);
             if (Time.time - rocketCooldownTimer > rocketCooldown)
             {//space to set variable cooldowns, and noises if on cooldown....etc
                 rocketCooldownTimer = Time.time;
-                float angle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,cursorPosition) + 90; // I have to hack this angle, why??
-                Reference.projectileController.ShootProjectile(player.go.transform.position,Quaternion.Euler(0,0,angle),"Rocket");
+                float rocketAngle;
+                if(Reference.worldController.platform == "Android")
+                {
+                    rocketAngle = -1*FindDegree(Reference.playergo.GetComponent<Rigidbody2D>().position,Reference.playerInputController.shootRocketLocation) + 90;
+                    Debug.Log("Rocket shot by android controls");
+                }
+                else
+                {
+                    rocketAngle = Reference.playerInputController.rocketAngle; // I have to hack this angle, why??
+                }
+                Reference.projectileController.ShootProjectile(player.go.transform.position,Quaternion.Euler(0,0,rocketAngle),"Rocket");
             }
         }
 
     }
-    public static float FindDegree(Vector2 v1, Vector2 v2)
-    {
-        float x = (v2.x - v1.x);
-        float y = (v2.y - v1.y);
-        float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
-        if(value < 0) value += 360f;
-    
-        return value;
-    }
+
     public void ApplyRocketLaunchImpulse(Quaternion rotation)
     {   
+<<<<<<< HEAD
         // Debug.Log(rotation);
+=======
+//        Debug.Log(rotation);
+>>>>>>> ab8057b73a7973372430890b500db6335b2612ba
         Quaternion euler = Quaternion.Euler(0,0,-90);
         Vector2 direction = rotation * new Vector2(1,0);//euler*(rotation * new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y));
         Vector2 impulse = direction * rocketForce * mass;
@@ -213,41 +229,146 @@ public class PlayerSpriteController : MonoBehaviour
 
 
     }
-    void UpdatePlayerRotation()
+
+    void UpdateMotionAndroid()
+    {
+
+        /////////////////////// Rotation ///////////////////
+        float BoundAngle(float angleIn)
+        {
+            float angleOut = angleIn;
+            while(angleOut > 180f || angleOut < -180f)
+            {
+                if(angleOut > 180f){angleOut -= 360f;}
+                if(angleOut < -180f){angleOut += 360f;}
+            }
+            return angleOut;
+        }
+        Vector2 moveDirection = Reference.playerInputController.moveDirection;
+        float angleMove = Reference.playerInputController.angleMove;
+        float playerAngle = rigid_body.rotation;
+        float dAngle = BoundAngle(playerAngle) - BoundAngle(angleMove);
+        //Debug.Log($"Player: {BoundAngle(playerAngle)}, Stick: {BoundAngle(angleMove)}, delta: {dAngle}");
+        if(angleMove != 720f && Mathf.Abs(dAngle) > Time.fixedDeltaTime*rotationRate)
+        {
+            float angleTo = playerAngle;
+            if((dAngle < 180f && dAngle > 0f) || (dAngle<=-180))
+            {
+                angleTo = playerAngle + Time.fixedDeltaTime* -1f *rotationRate;
+                RightTurnEffects();
+            }
+            else
+            {
+                angleTo = playerAngle + Time.fixedDeltaTime* 1f *rotationRate;
+                LeftTurnEffects();
+            }// Fixing it to just immediately turn
+            //rigid_body.MoveRotation(angleTo);
+        }
+        else if(angleMove != 720f && Mathf.Abs(dAngle) < Time.fixedDeltaTime*rotationRate)
+        {//angles are close to aligned
+            //rigid_body.MoveRotation(angleMove);
+            if(playingTurningSound && Mathf.Abs(dAngle) < Time.fixedDeltaTime*rotationRate/2f)
+            {
+                StopTurnEffects();
+            }
+        }
+        //Debug.Log(angleMove);
+        if(angleMove != 720)
+        {
+            rigid_body.MoveRotation(angleMove);
+        }
+        ///////////// Motion ///////////////////////
+        float moveMagnitude = Reference.playerInputController.moveMagnitude;
+        if(moveMagnitude > 0f)
+        {
+            moveMagnitude = 1f;
+        }
+        //Debug.Log(moveMagnitude);
+
+        //Vector2 playerDirection = new Vector2(Mathf.Sin(playerAngle),Mathf.Cos(playerAngle));
+        float thrustInDirection = moveMagnitude*Mathf.Cos(BoundAngle(angleMove) - BoundAngle(playerAngle));
+        //Debug.Log($"PlayerAngle: {playerAngle}, Move Angle: {angleMove}, thrust: {moveMagnitude}, Thrust in direction: {thrustInDirection}");
+
+
+
+
+        Vector2 direction = new Vector2 (gameObject.transform.up.x, gameObject.transform.up.y);
+        Vector2 impulse = direction * thrustInDirection * engineForce * mass;
+        if(thrustInDirection > 0.1f){StartForwardEffects();}
+        else if(thrustInDirection < -0.75f){StartBackwardEffects();}
+        else if(playingRocketSound){StopThrustEffects();}
+
+        rigid_body.AddForce(impulse);
+
+
+
+        /////////////// World Edges //////////////////////////
+
+        if (playergo.transform.position.x > worldEdges.x/2)
+        {
+            playergo.transform.position = new Vector3(-worldEdges.x / 2, playergo.transform.position.y, 0);
+        }
+        if (playergo.transform.position.x < -worldEdges.x/2)
+        {
+            playergo.transform.position = new Vector3(worldEdges.x / 2, playergo.transform.position.y, 0);
+        } 
+        if (playergo.transform.position.y > worldEdges.y/2)
+        {
+            playergo.transform.position = new Vector3(playergo.transform.position.x, -worldEdges.y / 2, 0);
+        } 
+        if (playergo.transform.position.y < -worldEdges.y/2)
+        {
+            playergo.transform.position = new Vector3(playergo.transform.position.x, worldEdges.y / 2, 0);
+        }
+
+    }
+    void LeftTurnEffects()
+    {
+        if(!playingTurningSound)
+            {    
+                Reference.soundController.StartTurningRocketBoost();
+                playingTurningSound = true;
+                blueFlameRightgo.SetActive(true);
+                blueFlameRight.StartJet();
+            }
+    }
+    void RightTurnEffects()
+    {
+        if(!playingTurningSound)
+        {
+            Reference.soundController.StartTurningRocketBoost();
+            playingTurningSound = true;
+            blueFlameLeftgo.SetActive(true);
+            blueFlameLeft.StartJet();
+        }
+    }
+
+    void StopTurnEffects()
+    {
+        Reference.soundController.StopTurningRocketBoost();
+        playingTurningSound = false;
+        blueFlameLeftgo.SetActive(false);
+        blueFlameRightgo.SetActive(false);
+        rigid_body.angularVelocity = 0;
+    }
+
+    void UpdatePlayerRotationPC()
     {
         rigid_body.angularVelocity = 0;
         float playerInputRotation = 0;
         if (Reference.playerInputController.leftKey || Reference.playerInputController.a)
         {
             playerInputRotation += 1;
-            if(!playingTurningSound)
-            {
-                Reference.soundController.StartTurningRocketBoost();
-                playingTurningSound = true;
-                blueFlameRightgo.SetActive(true);
-                blueFlameRight.StartJet();
-
-            }
+            LeftTurnEffects();
         }
         if (Reference.playerInputController.rightKey || Reference.playerInputController.d)
         {
             playerInputRotation -= 1;
-            if(!playingTurningSound)
-            {
-                Reference.soundController.StartTurningRocketBoost();
-                playingTurningSound = true;
-                blueFlameLeftgo.SetActive(true);
-                blueFlameLeft.StartJet();
-
-            }
+            RightTurnEffects();
         }
         if(playerInputRotation == 0 && playingTurningSound)
         {
-            Reference.soundController.StopTurningRocketBoost();
-            playingTurningSound = false;
-            blueFlameLeftgo.SetActive(false);
-            blueFlameRightgo.SetActive(false);
-
+            StopTurnEffects();
         }
 //        float frameRotation = Time.deltaTime *playerInputRotation*rotationRate;
         //float torque = Time.deltaTime *playerInputRotation*rotationRate;
@@ -258,43 +379,66 @@ public class PlayerSpriteController : MonoBehaviour
         //Debug.Log(frameRotation);
     }
 
-    void UpdatePlayerMotion()
+    void StartForwardEffects()
+    {
+        if(!playingRocketSound)
+        {
+            Reference.soundController.StartRocketBoost();
+            playingRocketSound = true;
+            blueFlame.SetActive(true);
+            blueFlameFunction.StartJet();
+        }
+        else if(!blueFlame.active)
+        {
+            StopThrustEffects();
+        }
+    }
+
+    void StartBackwardEffects()
+    {
+        if(!playingRocketSound)
+        {// todo - make reverse sound different?
+            Reference.soundController.StartRocketBoost();
+            playingRocketSound = true;
+            blueFlameReverseLeft.SetActive(true);
+            blueFlameReverseRight.SetActive(true);
+        }
+        else if(!blueFlameReverseLeft.active)
+        {
+            StopThrustEffects();
+        }
+
+    }
+
+    void StopThrustEffects()
+    {
+        Reference.soundController.StopRocketBoost();
+        playingRocketSound = false;
+        blueFlameFunction.StopJet();
+        blueFlame.SetActive(false);
+        blueFlameReverseLeft.SetActive(false);
+        blueFlameReverseRight.SetActive(false);
+    }
+
+
+    void UpdatePlayerMotionPC()
     {
         float playerInputImpulse = 0;
+     
         if (Reference.playerInputController.upKey || Reference.playerInputController.w)
         {
             playerInputImpulse += 1*mass;
-            if(!playingRocketSound)
-            {
-                Reference.soundController.StartRocketBoost();
-                playingRocketSound = true;
-                blueFlame.SetActive(true);
-                blueFlameFunction.StartJet();
-            }
+            StartForwardEffects();
         }
         if (Reference.playerInputController.downKey || Reference.playerInputController.s)
         {
             playerInputImpulse -= 1*mass;
-            if(!playingRocketSound)
-            {// todo - make reverse sound different?
-                Reference.soundController.StartRocketBoost();
-                playingRocketSound = true;
-                blueFlameReverseLeft.SetActive(true);
-                blueFlameReverseRight.SetActive(true);
-                
-            }
+            StartBackwardEffects();
         }
         
         if(playerInputImpulse == 0 && playingRocketSound)
         {
-
-            Reference.soundController.StopRocketBoost();
-            playingRocketSound = false;
-            blueFlameFunction.StopJet();
-            blueFlame.SetActive(false);
-            blueFlameReverseLeft.SetActive(false);
-            blueFlameReverseRight.SetActive(false);
-
+            StopThrustEffects();
         }
         
         if(Reference.playerInputController.b && Time.time - lastBoost > boostCooldown)
@@ -346,6 +490,16 @@ public class PlayerSpriteController : MonoBehaviour
         rigid_body.AddForce(magnitude*direction,ForceMode2D.Impulse);
     }
 
+
+    public static float FindDegree(Vector2 v1, Vector2 v2)
+    {
+        float x = (v2.x - v1.x);
+        float y = (v2.y - v1.y);
+        float value = (float)((Mathf.Atan2(x, y) / Mathf.PI) * 180f);
+        if(value < 0) value += 360f;
+    
+        return value;
+    }
 
 //ToDo animations when rockets are firing for main and side jets
 
