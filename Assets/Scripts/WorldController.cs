@@ -34,13 +34,10 @@ public class WorldController : MonoBehaviour
     public string platform;
     bool warningOff = true;
 
-<<<<<<< HEAD
     public int maxAsteroidSize = 30;
     public int minAsteroidSize = 20;
-=======
     float howToTime = 10f;
     float howToStart;
->>>>>>> ab8057b73a7973372430890b500db6335b2612ba
 
     float spawnCooldown;
 
@@ -93,7 +90,7 @@ public class WorldController : MonoBehaviour
 
         
         Debug.Log("The game is running on the following platform: " + platform);
-        platform = "Android";
+        // platform = "Android";
         //Debug.Log("Debugging Only");
     }
 

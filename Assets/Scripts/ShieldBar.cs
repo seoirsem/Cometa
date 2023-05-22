@@ -21,7 +21,7 @@ public class ShieldBar : MonoBehaviour
         activeRect = activeBar.GetComponent<RectTransform>();
         shipShields = Reference.shipShields;
 
-        Debug.Log(activeRect);
+        // Debug.Log(activeRect);
     }
 
     // Update is called once per frame
