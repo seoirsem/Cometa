@@ -49,12 +49,12 @@ public class TapManager : MonoBehaviour
             {
                 float tapTime = Time.time - timeTouchBegan[fingerIndex];
 //                Debug.Log(tapTime);
-                Debug.Log("Finger #" + fingerIndex.ToString() + " left. Tap time: " + tapTime.ToString());
+                //Debug.Log("Finger #" + fingerIndex.ToString() + " left. Tap time: " + tapTime.ToString());
                 if (tapTime <= tapTimeThreshold)// && touchDidMove[fingerIndex] == false)
                 {
                     Vector2 tapPosition = touch.position;
                     worldTapPosition = Reference.mainCamera.ScreenToWorldPoint(tapPosition);
-                    Debug.Log("Finger #" + fingerIndex.ToString() + " TAP DETECTED at: " + worldTapPosition.ToString());
+                    //Debug.Log("Finger #" + fingerIndex.ToString() + " TAP DETECTED at: " + worldTapPosition.ToString());
                     if((worldTapPosition.x < worldSize.x/2 && worldTapPosition.x > -worldSize.x/2) && (worldTapPosition.y < worldSize.y/2 && worldTapPosition.y > -worldSize.y/2))
                     { // the player has tapped on the world - fire a rocket!
                         //Debug.Log("On world");

@@ -39,6 +39,8 @@ public class WorldController : MonoBehaviour
 
     float spawnCooldown;
 
+    bool how_to_play_active = false;
+
 
     void Awake()
     {
@@ -116,8 +118,8 @@ public class WorldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if(platform == "Android" && (Time.unscaledTime - howToStart > howToTime || Reference.playerInputController.touchAnywhere))
+        if(platform == "Android" && how_to_play_active && (Time.unscaledTime - howToStart > howToTime ||
+          (Reference.playerInputController.touchAnywhere && Time.unscaledTime - howToStart > 0.8f)))
         {
             HideControlIcons();
         }
@@ -207,18 +209,24 @@ public class WorldController : MonoBehaviour
         }
     }
 
-    void ShowControlIcons()
+    public void ShowControlIcons()
     {
+        Reference.hudController.DisablePauseMenu();
+        Reference.playerInputController.escape = false;
         Debug.Log("Game Paused");
+        how_to_play_active = true;
         isPaused = true;
         escPressed = true;
         Time.timeScale = 0;
+        howToStart = Time.unscaledTime;
         Reference.hudController.ShowControlDescriptions();
     }
     void HideControlIcons()
     {
         Debug.Log("Game Resuming");
-        isPaused = false;;
+        isPaused = false;
+        how_to_play_active = false;
+        escPressed = false;
         Time.timeScale = 1;
         Reference.hudController.HideControlDescriptions();
     }
