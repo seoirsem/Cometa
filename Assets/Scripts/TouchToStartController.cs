@@ -20,7 +20,7 @@ public class TouchToStartController : MonoBehaviour
     float scorePixelRatio;
 
     float tweenScale;
-    float pulseCooldown = 0.1f;
+    float pulseCooldown = 1.1f;
     float lastPulse;
     float timeAwake;
 
@@ -35,8 +35,14 @@ public class TouchToStartController : MonoBehaviour
         text = this.GetComponent<Text>();
         tweenScale = 1.1f;
         lastPulse = timeAwake - pulseCooldown;
+<<<<<<< HEAD
         color = Color.red;
         // Debug.Log(Color.red);
+=======
+        color = new Color(255,0,216);
+        //color1 = new Color(172,0,255);
+//        Debug.Log(Color.red);
+>>>>>>> 4982013a87c6b0fc2db5d3f48fbe0e647732f256
 
     }
 
@@ -48,7 +54,9 @@ public class TouchToStartController : MonoBehaviour
     void Update()
     {
 
-        text.color = color;
+        //text.color = color;
+
+
         timeChange = (float)(System.DateTime.Now - time0).TotalSeconds;
         time0 = System.DateTime.Now;
 

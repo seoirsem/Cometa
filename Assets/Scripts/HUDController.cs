@@ -50,6 +50,9 @@ public class HUDController : MonoBehaviour
     Button resume;
     Button options;
     Button exitToMenu;
+    Button howToPlay;
+
+    bool tapToPlayDelay = false;
 
 
     void Start()
@@ -109,8 +112,10 @@ public class HUDController : MonoBehaviour
     }
     void PauseGame()
     {
+        //Debug.Log("pause button pressed");
         if(!Reference.worldController.isPaused)
         {
+            //Debug.Log("pause !ispaused");
             Reference.playerInputController.escape = true;
         }
         else
@@ -129,16 +134,21 @@ public class HUDController : MonoBehaviour
 
         resume = GameObject.Find("Resume").GetComponent<Button>();
         options = GameObject.Find("Options").GetComponent<Button>();
+        howToPlay = GameObject.Find("HowToPlay").GetComponent<Button>();
         exitToMenu = GameObject.Find("ExitToMenu").GetComponent<Button>();
 
         GameObject.Find("Resume").GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
         GameObject.Find("Options").GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
+        GameObject.Find("HowToPlay").GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
         GameObject.Find("ExitToMenu").GetComponent<Michsky.UI.Shift.UIElementSound>().audioObject = Reference.soundController.gameObject.GetComponent<AudioSource>();
 
 
         resume.onClick.AddListener(ResumeButton);
         options.onClick.AddListener(Options);
-        exitToMenu.onClick.AddListener(EscapeToMenu);        
+        howToPlay.onClick.AddListener(HowToPlayButton);
+        exitToMenu.onClick.AddListener(EscapeToMenu);     
+
+        Debug.Log(howToPlay);   
     }
 
 
@@ -252,6 +262,14 @@ public class HUDController : MonoBehaviour
     {
         Reference.playerInputController.escape = false;
         Reference.worldController.UnPauseGame();
+    }
+
+    void HowToPlayButton()
+    {
+        Debug.Log("HowToPlay Button");
+        Reference.worldController.ShowControlIcons();
+        UnloadOptionsMenu();
+        UnloadPauseMenu();
     }
 
     void Options()
