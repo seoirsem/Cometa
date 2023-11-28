@@ -28,7 +28,7 @@ public class Projectile : MonoBehaviour
     float playerMassImpulseAdjustment;
 
     public float explosionRadiusDiameter;
-    float rocketRadius = 10f;
+    float rocketRadius = 5f;
     float bulletRadius = 1f;
 
 

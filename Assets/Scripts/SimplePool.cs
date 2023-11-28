@@ -70,7 +70,8 @@ public static class SimplePool {
 		// Spawn an object from our pool
 		public GameObject Spawn(Vector3 pos, Quaternion rot) {
 			GameObject obj;
-			if(inactive.Count==0) {
+			// if(inactive.Count==0) {
+				// Debug.Log("Fresh object");
 				// We don't have an object in our pool, so we
 				// instantiate a whole new object.
 				obj = (GameObject)GameObject.Instantiate(prefab, pos, rot);
@@ -79,12 +80,13 @@ public static class SimplePool {
 				// Add a PoolMember component so we know what pool
 				// we belong to.
 				obj.AddComponent<PoolMember>().myPool = this;
-			}
-			else {
-				// Grab the last object in the inactive array
-				obj = inactive.Pop();
+			// }
+			// else {
+			// 	Debug.Log("From");
+			// 	// Grab the last object in the inactive array
+			// 	obj = inactive.Pop();
 
-				if(obj == null) {
+			// 	if(obj == null) {
 					// The inactive object we expected to find no longer exists.
 					// The most likely causes are:
 					//   - Someone calling Destroy() on our object
@@ -93,9 +95,9 @@ public static class SimplePool {
 					//	   if you really don't want this.
 					// No worries -- we'll just try the next one in our sequence.
 
-					return Spawn(pos, rot);
-				}
-			}
+			// 		return Spawn(pos, rot);
+			// 	}
+			// }
 
 			obj.transform.position = pos;
 			obj.transform.rotation = rot;

@@ -89,7 +89,7 @@ public class WorldController : MonoBehaviour
         }
 
         
-        Debug.Log("The game is running on the following platform: " + platform);
+        // Debug.Log("The game is running on the following platform: " + platform);
         // platform = "Android";
         //Debug.Log("Debugging Only");
     }
@@ -103,7 +103,7 @@ public class WorldController : MonoBehaviour
         int randomSize = Random.Range(minAsteroidSize, maxAsteroidSize);
         //Debug.Log(randomSize);
         warningPrefab = Resources.Load("Prefabs/WarningSymbol") as GameObject;
-        Reference.asteroidController.SpawnNewAsteroid(30, 2, new Vector3(0,3,0), new Vector3(0,0,0));
+        Reference.asteroidController.SpawnNewAsteroid(20, 2, new Vector3(0,2.5f,0), new Vector3(0,0,0));
         if(platform == "Android")
         {
             ShowControlIcons();

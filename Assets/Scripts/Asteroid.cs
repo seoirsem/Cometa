@@ -24,7 +24,7 @@ public class Asteroid : MonoBehaviour
     public List<GameObject> asteroidPack;
     public PolygonCollider2D polygonCollider;
     public Rigidbody2D rigid_body;
-    public Vector3 CoMShift;
+    // public Vector3 CoMShift;
     public AsteroidController asteroidController;
     public float[] vertexHealth;
 
@@ -43,7 +43,7 @@ public class Asteroid : MonoBehaviour
     {
         squareMesh.FindOutline();
         squareMesh.ScaleEdgeLengthAndShift();
-        squareMesh.ResetMesh();
+        // squareMesh.ResetMesh();
         squareMesh.ResetColliderMesh();
         squareMesh.FindCentreOfMass();
         this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture();
@@ -53,7 +53,7 @@ public class Asteroid : MonoBehaviour
         rigid_body.mass = squareMesh.mass;
     }
 
-    public void DrawAsteroid(int size, SquareMesh squareMeshIn)
+    public void DrawAsteroid(int size, SquareMesh oldMesh, SquareMesh squareMeshIn)
     {              
         polygonCollider = this.gameObject.GetComponent<PolygonCollider2D>();
         this.size = size;
@@ -81,11 +81,11 @@ public class Asteroid : MonoBehaviour
             squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
-            this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture();
+            this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture(oldMesh);
         }
 
         rigid_body = this.gameObject.GetComponent<Rigidbody2D>();
-        //rigid_body.centerOfMass = squareMesh.centreOfMass;
+        rigid_body.centerOfMass = squareMesh.centreOfMass;
         //rigid_body.ResetCenterOfMass();
         this.mass = squareMesh.mass;
         rigid_body.mass = squareMesh.mass;

@@ -7,7 +7,7 @@ public class DerivedAsteroid : Asteroid
 
     Vector2 offset;
     public Vector2 location;
-    GameObject mainAsteroid;
+    public GameObject mainAsteroid;
     MainAsteroid mainAsteroidClass;
 
     Vector3 thisStepMainPosition;
