@@ -67,7 +67,7 @@ public class Asteroid : MonoBehaviour
             squareMesh.FindOutline();
             // Debug.Log(squareMesh.perimeterVertices.Count);
             squareMesh.ScaleEdgeLengthAndShift();
-            squareMesh.ResetMesh();
+            // squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
             // this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture();
@@ -78,9 +78,10 @@ public class Asteroid : MonoBehaviour
             squareMesh.SetAsteroid(this);
             squareMesh.FindOutline();
             squareMesh.ScaleEdgeLengthAndShift();
-            squareMesh.ResetMesh();
+            // squareMesh.ResetMesh();
             squareMesh.ResetColliderMesh();
             squareMesh.FindCentreOfMass();
+            // Debug.Log("Updating textures");
             this.gameObject.transform.Find("Texture").GetComponent<AsteroidTextureController>().UpdateTexture(oldMesh);
         }
 

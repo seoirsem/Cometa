@@ -69,6 +69,11 @@ public static class SimplePool {
 
 		// Spawn an object from our pool
 		public GameObject Spawn(Vector3 pos, Quaternion rot) {
+			// if ( prefab.name.Contains("Asteroid") )
+			// {
+			// 	Debug.Log("Let's get the stack for this shit");
+			// }
+			
 			GameObject obj;
 			// if(inactive.Count==0) {
 				// Debug.Log("Fresh object");

@@ -37,7 +37,7 @@ public class AsteroidTextureController : MonoBehaviour
     {
         alreadyTextured = 1;
         cellSize = Asteroid.celSize;
-        SquareMesh squareMesh = this.transform.parent.GetComponent<MainAsteroid>().squareMesh;
+        SquareMesh squareMesh = this.transform.parent.GetComponent<Asteroid>().squareMesh;
 
         meshVertices2D = new List<Vector2>();
         foreach ( Vector2 v in squareMesh.perimeterVertices )
@@ -60,12 +60,12 @@ public class AsteroidTextureController : MonoBehaviour
             List<Vector2> oldVertices = oldMesh.perimeterVertices;
             
             oldAsteroidWorldPosition = (Vector2)oldMesh.asteroid.gameObject.transform.position;
-            if ( oldMesh.asteroid.gameObject.name.Contains("Derived") )
-            {
-                // Debug.Log("Was derived asteroid, finding the main");
-                DerivedAsteroid tempAsteroid1 = (DerivedAsteroid)oldMesh.asteroid;
-                oldAsteroidWorldPosition = tempAsteroid1.mainAsteroid.gameObject.transform.position;
-            }
+            // if ( oldMesh.asteroid.gameObject.name.Contains("Derived") )
+            // {
+            //     // Debug.Log("Was derived asteroid, finding the main");
+            //     DerivedAsteroid tempAsteroid1 = (DerivedAsteroid)oldMesh.asteroid;
+            //     oldAsteroidWorldPosition = tempAsteroid1.mainAsteroid.gameObject.transform.position;
+            // }
             if ( oldAsteroidWorldPosition.x > oldMesh.asteroid.worldSize.x ) { oldAsteroidWorldPosition -= new Vector2( oldMesh.asteroid.worldSize.x * 2, 0f ); }
 
             foreach ( Vector2 v in oldVertices )
@@ -75,12 +75,12 @@ public class AsteroidTextureController : MonoBehaviour
         }
 
         Vector2 newAsteroidWorldPosition = (Vector2)gameObject.transform.position;
-        if ( squareMesh.asteroid.gameObject.name.Contains("Derived") )
-        {
-            // Debug.Log("Was derived asteroid, finding the main");
-            DerivedAsteroid tempAsteroid2 = (DerivedAsteroid)squareMesh.asteroid;
-            newAsteroidWorldPosition = tempAsteroid2.mainAsteroid.gameObject.transform.position;
-        }
+        // if ( squareMesh.asteroid.gameObject.name.Contains("Derived") )
+        // {
+        //     // Debug.Log("Was derived asteroid, finding the main");
+        //     DerivedAsteroid tempAsteroid2 = (DerivedAsteroid)squareMesh.asteroid;
+        //     newAsteroidWorldPosition = tempAsteroid2.mainAsteroid.gameObject.transform.position;
+        // }
         if (oldMesh != null)
         {
             for (int j = 0; j < meshVertices2D.Count; j++)
@@ -141,8 +141,12 @@ public class AsteroidTextureController : MonoBehaviour
         }
 
 
-
-        this.transform.parent.GetComponent<MainAsteroid>().squareMesh.ResetMesh(vertices3D);
+        // Debug.Log("Calling ResetMesh");
+        this.transform.parent.GetComponent<Asteroid>().squareMesh.ResetMesh(vertices3D);
+        // foreach ( KeyValuePair<Vector2, GameObject> kvp in this.transform.parent.GetComponent<MainAsteroid>().derivedAsteroids )
+        // {
+        //     kvp.Value.GetComponent<DerivedAsteroid>().squareMesh.ResetMesh(vertices3D);
+        // }
 
 
 
@@ -177,6 +181,20 @@ public class AsteroidTextureController : MonoBehaviour
 
         MeshFilter filter = gameObject.GetComponent<MeshFilter>();
         filter.mesh = mesh;
+
+        MainAsteroid mainAstro;
+ 
+        mainAstro = (MainAsteroid)this.gameObject.transform.parent.GetComponent<Asteroid>();
+
+        // Debug.Log(mainAstro);
+        // Debug.Log(mainAstro.derivedAsteroids);
+        foreach ( KeyValuePair<Vector2, GameObject> kvp in mainAstro.derivedAsteroids )
+        {
+            MeshRenderer derivedAstroRenderer = kvp.Value.transform.Find("Texture").GetComponent<MeshRenderer>();
+            derivedAstroRenderer.material.mainTexture = texture;
+            MeshFilter derivedAstroMeshFilter = kvp.Value.transform.Find("Texture").GetComponent<MeshFilter>();
+            derivedAstroMeshFilter.mesh = mesh;
+        }
 
         
         // Debug.Log(meshTriangles.Length);

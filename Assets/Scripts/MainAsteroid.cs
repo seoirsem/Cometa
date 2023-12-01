@@ -65,10 +65,7 @@ public class MainAsteroid : Asteroid
                 }
                 
             }
-            foreach(KeyValuePair<Vector2,GameObject> kvp in derivedAsteroids)
-            {
-                Debug.Log(kvp.Key);
-            }
+
             //Vector2 velocityNorm = new Vector2(Mathf.RoundToInt(velocity.normalized.x),Mathf.RoundToInt(velocity.normalized.y));
             //Debug.Log(velocityNorm);
             //derivedAsteroids[-1*velocityNorm].gameObject.layer = LayerMask.NameToLayer("DerivedAsteroid");
@@ -293,7 +290,7 @@ public class MainAsteroid : Asteroid
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-//        Debug.Log(collision.gameObject.name);
+    //    Debug.Log(collision.gameObject.name);
         ResolveCollision(collision.gameObject, collision, null, new Vector2(0,0));
     }
 
@@ -312,6 +309,7 @@ public class MainAsteroid : Asteroid
 
     void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
     {
+        // Debug.Log(otherObject.name);
         int numberOfSquaresInAsteroid = squareMesh.NumberOfSquaresInMesh();
         Vector2 collisionLocation;
 
@@ -411,9 +409,7 @@ public class MainAsteroid : Asteroid
             List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(position, radius);
 
             if(newAstroidMeshes != null)
-            {
-                Debug.Log("New asteroid chunks passed for spawning");
-                Debug.Log(newAstroidMeshes.Count);
+            {   
                 /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
                 Reference.asteroidController.AsteroidHit(this, position, projectile.gameObject, asteroidPack, newAstroidMeshes, numberOfSquaresInAsteroid, new Vector2(0,0));
             }

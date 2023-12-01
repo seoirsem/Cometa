@@ -35,14 +35,9 @@ public class TouchToStartController : MonoBehaviour
         text = this.GetComponent<Text>();
         tweenScale = 1.1f;
         lastPulse = timeAwake - pulseCooldown;
-<<<<<<< HEAD
-        color = Color.red;
-        // Debug.Log(Color.red);
-=======
         color = new Color(255,0,216);
         //color1 = new Color(172,0,255);
 //        Debug.Log(Color.red);
->>>>>>> 4982013a87c6b0fc2db5d3f48fbe0e647732f256
 
     }
 

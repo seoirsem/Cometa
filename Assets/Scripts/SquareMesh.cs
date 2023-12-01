@@ -43,11 +43,11 @@ public class SquareMesh
         // asteroid.gameObject.GetComponent<LineRenderer>().SetPositions((Vector3)xyPoints);  
     }
 
-    public void RedrawMesh()
-    {
-        // ResetMesh();
-        ResetColliderMesh();
-    }
+    // public void RedrawMesh()
+    // {
+    //     ResetMesh();
+    //     ResetColliderMesh();
+    // }
 
     public void FindCentreOfMass()
     {
@@ -74,15 +74,15 @@ public class SquareMesh
 
     }
 
-    public List<SquareMesh> OnSplit()
+    public List<SquareMesh> GetChunksByCrawling(SquareMesh initMesh)
     {
         // Create a master list of squares that need to be sorted into asteroid chunks
         HashSet<Square> allSquares = new HashSet<Square>();
-        for ( int i = 0; i < this.squares.GetLength(0); i++ ) 
+        for ( int i = 0; i < initMesh.squares.GetLength(0); i++ ) 
         { 
-            for ( int j = 0; j < this.squares.GetLength(1); j++ )
+            for ( int j = 0; j < initMesh.squares.GetLength(1); j++ )
             {
-                if ( this.squares[i,j] != null ) { allSquares.Add(this.squares[i,j]); }
+                if ( initMesh.squares[i,j] != null ) { allSquares.Add(initMesh.squares[i,j]); }
             }
         }
         // Initialize a container for the asteroid chunks
@@ -141,13 +141,21 @@ public class SquareMesh
             safety += 1;
             if (safety > 4) { Debug.Log("Couldn't resolve all squares into chunks - tripped anti-infinity-loop safety"); break; }
         }
+        return chunks;
+    }
+
+    public List<SquareMesh> OnSplit()
+    {
+        List<SquareMesh> chunks = GetChunksByCrawling(this);
+
         if ( chunks.Count == 0 ) 
-        { 
+        {
             // There was no break-through split
             if ( VoidThresholdExceeded() == true )
             {
                 // There was a void-fraction split
                 chunks = SplitIntoQuarters(this);
+                // Debug.Log(chunks.Count);
                 // Debug.Log("Void fraction splitting!");
                 if ( chunks != null ) 
                 { 
@@ -157,6 +165,37 @@ public class SquareMesh
                         chunks[m] = UpdateNeighboursAndEdges(chunks[m]);
                         chunks[m].UpdateSquaresInQuartersCount();
                     }
+                    List<SquareMesh> subchunks = new List<SquareMesh>();
+                    List<SquareMesh> allNewSubchunks = new List<SquareMesh>();
+                    List<SquareMesh> chunksToRemove = new List<SquareMesh>();
+                    // for ( int m = 0; m < chunks.Count; m++ )
+                    // {
+                        // if ( chunks[m] == null ) { continue; }
+                    //     subchunks = new List<SquareMesh>();
+                    //     subchunks = GetChunksByCrawling(chunks[m]);
+                    //     if ( subchunks.Count > 1 )
+                    //     {
+                    //         foreach ( SquareMesh sub in subchunks) 
+                    //         { 
+                    //             // DO I JUST WANT TO CHECK IN ASTEROIDHIT IF CHUNKS HAVE DETACHED SUB-CHUNKS AND JUST CALL 
+                    //             sub.leftmostSplitCoord = chunks[m].leftmostSplitCoord;
+                    //             sub.rightmostSplitCoord = chunks[m].rightmostSplitCoord;
+                    //             sub.bottomSplitCoord = chunks[m].bottomSplitCoord;
+                    //             sub.topSplitCoord = chunks[m].topSplitCoord;
+                    //             allNewSubchunks.Add(sub);
+                    //         }
+                    //         chunksToRemove.Add(chunks[m]);
+                    //     }
+                        
+                    // }
+                    // foreach ( SquareMesh toRemove in chunksToRemove ) { chunks.Remove(toRemove); }
+                    // foreach ( SquareMesh sub in allNewSubchunks ) { chunks.Add(sub); }
+                    // for ( int m = 0; m < chunks.Count; m++ )
+                    // {
+                        // if ( chunks[m] == null ) { continue; }
+                        // chunks[m] = UpdateNeighboursAndEdges(chunks[m]);
+                        // chunks[m].UpdateSquaresInQuartersCount();
+                    // }
                 }
             }
             else
@@ -184,7 +223,7 @@ public class SquareMesh
 
     List<SquareMesh> SplitIntoQuarters(SquareMesh sm)
     {
-        Debug.Log("Split into quarters");
+        // Debug.Log("Split into quarters");
         SquareMesh topLeft = new SquareMesh();
         Square[,] tL = new Square[(int)Mathf.Ceil(sm.squares.GetLength(0)/2f), (int)(sm.squares.GetLength(1)/2f)];
         bool isEmptyTL = true;
@@ -208,11 +247,12 @@ public class SquareMesh
                 { 
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f)  -1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) 
                     { 
-                        if( Random.Range(0,1f) > 0.5f) 
-                        { 
-                            continue; 
-                            }
-                        }
+                        // if( Random.Range(0,1f) > 0.5f) 
+                        // { 
+                        //     continue; 
+                        // }
+                        // Doesn't need another block as the vanishing chunk bug can't happen in the bottom-left chunk
+                    }
                     bL[x, y] = new Square(x, y); 
                     isEmptyBL = false;
                 }
@@ -221,10 +261,15 @@ public class SquareMesh
                 { 
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) - 1 ) 
                     {
-                        if( Random.Range(0,1f) > 0.5f) 
-                        { 
-                            continue; 
-                        } 
+                        // if( Random.Range(0,1f) > 0.5f) 
+                        // { 
+                        //     continue; 
+                        // } 
+                        // if ( s.x == 0 && s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) )
+                        // {
+                        //     // Reason for this is same as last if-block, see below
+                        //     continue;
+                        // }
                     }
                     tL[x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = new Square(x, y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
                     isEmptyTL = false;
@@ -234,10 +279,15 @@ public class SquareMesh
                 { 
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) - 1 || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) 
                     { 
-                        if( Random.Range(0,1f) > 0.5f) 
-                        { 
-                            continue; 
-                        }
+                        // if( Random.Range(0,1f) > 0.5f) 
+                        // { 
+                        //     continue; 
+                        // }
+                        // if ( s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y == 0 )
+                        // {
+                        //     // Reason for this is same as last if-block, see below
+                        //     continue;
+                        // }
                     }
                     bR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y] = new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y); 
                     isEmptyBR = false;
@@ -247,17 +297,17 @@ public class SquareMesh
                 { 
                     if ( s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) || s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) ) 
                     { 
-                        if( Random.Range(0,1f) > 0.5f) 
-                        { 
-                            continue; 
-                        }
-                        if ( s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) )
-                        {
-                            // This if solves the 'vanishing chunk' by making sure the bottom-left square of 
-                            // top-right split is never present (and therefore can't get 'trapped' with top and right 
-                            // neighbours removed)
-                            continue;
-                        }
+                        // if( Random.Range(0,1f) > 0.5f) 
+                        // { 
+                        //     continue; 
+                        // }
+                        // if ( s.x == Mathf.Ceil(sm.squares.GetLength(0)/2f) && s.y == Mathf.Ceil(sm.squares.GetLength(1)/2f) )
+                        // {
+                        //     // This if solves the 'vanishing chunk' by making sure the bottom-left square of 
+                        //     // top-right split is never present (and therefore can't get 'trapped' with top and right 
+                        //     // neighbours removed)
+                        //     continue;
+                        // }
                     }
                     tR[x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)] = 
                                 new Square(x - (int)Mathf.Ceil(sm.squares.GetLength(0)/2f), y - (int)Mathf.Ceil(sm.squares.GetLength(1)/2f)); 
@@ -315,7 +365,7 @@ public class SquareMesh
     bool VoidThresholdExceeded()
     {
         bool voidThresholdExceeded = false;
-        float threshold = 0.8f;
+        float threshold = 0.5f;
         float maxCountInQuarter = (float)this.squares.GetLength(0) * (float)this.squares.GetLength(1) / 4f;
 
         if( topLeftCount/maxCountInQuarter < threshold  || botLeftCount/maxCountInQuarter < threshold || 
@@ -478,6 +528,25 @@ public class SquareMesh
         perimeterIndices[(meshVertices.Count)*2-1] = 0;
 
         mesh2.SetIndices(perimeterIndices, MeshTopology.Lines, 0);
+        MainAsteroid mainAstro;
+        if ( this.asteroid.gameObject.name.Contains("Derived") ) 
+        { 
+            DerivedAsteroid derived = (DerivedAsteroid)this.asteroid;
+            mainAstro = derived.mainAsteroid.GetComponent<MainAsteroid>(); 
+        }
+        else
+        {
+            mainAstro = (MainAsteroid)this.asteroid;
+        }
+        foreach ( KeyValuePair<Vector2, GameObject> kvp in mainAstro.derivedAsteroids )
+        {
+            MeshFilter derivedAstroMeshFilter = kvp.Value.GetComponent<MeshFilter>();
+            Mesh derivedAstroMesh = new Mesh();
+            
+            derivedAstroMesh.vertices = meshVertices.ToArray();
+            derivedAstroMeshFilter.mesh = derivedAstroMesh;
+            derivedAstroMesh.SetIndices(perimeterIndices, MeshTopology.Lines, 0);
+        }
     }
 
     public List<Square> SquaresInRadius(Vector2 collisionPointInWC, float radius)
