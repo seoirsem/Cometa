@@ -7,7 +7,7 @@ public class DerivedAsteroid : Asteroid
 
     Vector2 offset;
     public Vector2 location;
-    GameObject mainAsteroid;
+    public GameObject mainAsteroid;
     MainAsteroid mainAsteroidClass;
 
     Vector3 thisStepMainPosition;
@@ -39,7 +39,7 @@ public class DerivedAsteroid : Asteroid
         gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, -1);
         thisStepMainPosition = mainAsteroidClass.rigid_body.position + offset;
         thisStepMainRotation = mainAsteroidClass.rigid_body.rotation;
-
+        // DrawAsteroid(size, null, squareMesh)
     }
 
     // Update is called once per frame
@@ -70,7 +70,7 @@ public class DerivedAsteroid : Asteroid
         squareMesh.FindOutline();
         squareMesh.ScaleEdgeLengthAndShift();
 
-        this.squareMesh.RedrawMesh();
+        this.squareMesh.ResetColliderMesh();
         squareMesh.FindCentreOfMass();
 
         //DrawMesh(meshVertices, meshTriangles);
@@ -94,7 +94,7 @@ public class DerivedAsteroid : Asteroid
 
     public void ApplyExplosionImpulse(Vector3 direction, Vector2 position, float explosionSize, Projectile projectile)
     {// any nearby explosions are simply handed up to the parent
-        mainAsteroidClass.ApplyExplosionImpulse(direction, position + offset, explosionSize, projectile);
+        mainAsteroidClass.ApplyExplosionImpulse(direction, position - offset, explosionSize, projectile);
     }
 
     public void DerivedAsteroidHitShields(float distance, Vector2 relativeVelocity, Vector2 relativePosition, Vector2 closestPoint, float shieldDamage)

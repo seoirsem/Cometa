@@ -39,8 +39,8 @@ public class AnimationController : MonoBehaviour
 
     public void SpawnParticleSprayAnimationGo(Vector3 collisionPoint, Quaternion rotation)
     {
-        GameObject dustCloudAnimationGo = SimplePool.Spawn(particleSprayAniumationPrefab, collisionPoint, rotation);
-        particleSprayAniumationPrefab.transform.SetParent(this.gameObject.transform);
+        GameObject particleSprayAniumationGo = SimplePool.Spawn(particleSprayAniumationPrefab, collisionPoint, rotation);
+        particleSprayAniumationGo.transform.SetParent(this.gameObject.transform);
     }
 
     public void SpawnDustCloudAnimationOnBulletHit(Vector3 collisionPoint)

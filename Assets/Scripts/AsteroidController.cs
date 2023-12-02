@@ -73,17 +73,17 @@ public class AsteroidController : MonoBehaviour
         }
 
         /// position
-        //Vector3 position = new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);
+        // Vector3 position = new Vector3(directionOrientation.x*(worldSize.x/2 - size*Asteroid.celSize),directionOrientation.y*(worldSize.y/2 - size*Asteroid.celSize),0);
         if(velocity != new Vector3(0,0,0))
         {
             direction = velocity;
         }
-        SpawnAsteroid(size, position + asteroidPositionOffset, direction, new Vector3(0, 0, 0), GaussianRandom.generateNormalRandom(0,30f), null, true, directionOrientation);    
+        SpawnAsteroid(size, position + asteroidPositionOffset, direction, new Vector3(0, 0, 0), GaussianRandom.generateNormalRandom(0,0f), null, null, true, directionOrientation);    
     }
 
     public void SpawnRandomAsteroid(int size, Vector3 position)
     {
-        SpawnAsteroid(size, position, new Vector3(0,0,0), new Vector3(0, 0, 0), Random.Range(-20f,20f), null, false, new Vector2(0,0));    
+        SpawnAsteroid(size, position, new Vector3(0,0,0), new Vector3(0, 0, 0), Random.Range(-20f,20f), null, null, false, new Vector2(0,0));    
     }
 
     public void AsteroidHit(Asteroid asteroid, Vector2 contact, GameObject otherObject, List<GameObject> asteroidPack, List<SquareMesh> newAstroidMeshes, int numberOfSquaresInAsteroid, Vector3 offsetFromActualCollision = new Vector3())
@@ -118,7 +118,7 @@ public class AsteroidController : MonoBehaviour
             // Debug.Log(rotatedCornerOffsetY);
             Vector3 asteroidCornerInWC = preSplitPosition - new Vector3( rotatedCornerOffsetX, rotatedCornerOffsetY, 0f );
 
-            DespawnAsteroid(asteroid,asteroidPack);
+            
 
             // Check if all meshes are null; this would mean there was a split but all sub-asteroids are destroyed
             bool allNullFlag = true;
@@ -148,19 +148,28 @@ public class AsteroidController : MonoBehaviour
 
                         Vector3 splitOffset = new Vector3(rotatedSplitOffsetX, rotatedSplitOffsetY, 0f);
                         Vector3 postSplitPosition = asteroidCornerInWC + splitOffset;
-                        SpawnAsteroid(squareMesh.size, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, squareMesh, false, new Vector2(0,0));
+                        SpawnAsteroid(squareMesh.size, postSplitPosition, preSplitVelocity, preSplitEulerAngles, preSplitAngularVelocity, asteroid.squareMesh, squareMesh, false, new Vector2(0,0));
+                        // CALL SOMETHING LIKE 
+                        if (squareMesh.GetChunksByCrawling(squareMesh).Count > 1) 
+                        {  
+                            List<SquareMesh> subChunks = squareMesh.OnSplit();
+                            AsteroidHit( squareMesh.asteroid, new Vector2(), null, squareMesh.asteroid.asteroidPack, subChunks, 0);
+
+                        }
+
                         numberOfSquaresLost -= squareMesh.NumberOfSquaresInMesh();
                     }
                 }
             }  
         }
+        DespawnAsteroid(asteroid,asteroidPack);
 
         Reference.scoreController.IncrementScore((float)numberOfSquaresLost, contact);
         // Reference.hudController.ScoreText(contact, numberOfSquaresLost, new Color(255,215,0));
-        if(otherObject.GetComponent<ShipShields>() != null)
-        {
-            otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost,contact);
-        }
+        // if(otherObject.GetComponent<ShipShields>() != null)
+        // {
+        //     otherObject.GetComponent<ShipShields>().ShieldsDestroyedAsteroidSquares(numberOfSquaresLost,contact);
+        // }
     }
     
     public void AsteroidAstroidCollision(Asteroid asteroid, Vector2 contact, List<GameObject> asteroidPack)
@@ -204,7 +213,7 @@ public class AsteroidController : MonoBehaviour
 
 
 
-    void SpawnAsteroid(int size, Vector3 position, Vector3 velocity, Vector3 eulerAngles, float angularVelocity, SquareMesh squareMesh, bool NewAsteroid, Vector2 positionOrientation )
+    void SpawnAsteroid(int size, Vector3 position, Vector3 velocity, Vector3 eulerAngles, float angularVelocity, SquareMesh oldMesh, SquareMesh squareMesh, bool NewAsteroid, Vector2 positionOrientation )
     {
         List<GameObject> asteroidPack = new List<GameObject>();
 
@@ -236,9 +245,26 @@ public class AsteroidController : MonoBehaviour
         asteroidPack.Add(asteroidgo7);
         asteroidPack.Add(asteroidgo8);
 
+        // asteroidgo1.SetActive(false);
+        // asteroidgo2.SetActive(false);
+        // asteroidgo3.SetActive(false);
+        // asteroidgo4.SetActive(false);
+        // asteroidgo5.SetActive(false);
+        // asteroidgo6.SetActive(false);
+        // asteroidgo7.SetActive(false);
+        // asteroidgo8.SetActive(false);
+
+        mainAsteroid.derivedAsteroids.Add(new Vector2(1, 0),asteroidgo1);
+        mainAsteroid.derivedAsteroids.Add(new Vector2(-1, 0),asteroidgo2);
+        mainAsteroid.derivedAsteroids.Add(new Vector2(0, 1),asteroidgo3);
+        mainAsteroid.derivedAsteroids.Add(new Vector2(0, -1),asteroidgo4);
+        mainAsteroid.derivedAsteroids.Add(new Vector2(-1, -1),asteroidgo5);
+        mainAsteroid.derivedAsteroids.Add(new Vector2(1, -1),asteroidgo6);
+        mainAsteroid.derivedAsteroids.Add(new Vector2(-1, 1),asteroidgo7);
+        mainAsteroid.derivedAsteroids.Add(new Vector2(1, 1),asteroidgo8);
 
         asteroidgo.transform.SetParent(this.gameObject.transform);
-        asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, angularVelocity, squareMesh, NewAsteroid, positionOrientation);
+        asteroidgo.GetComponent<MainAsteroid>().OnSpawn(size, new Vector2(0, 0), asteroidPack, asteroidgo, velocity, angularVelocity, oldMesh, squareMesh, NewAsteroid, positionOrientation);
         asteroidgo.transform.position = position;
         asteroids.Add(asteroidgo);
 
@@ -246,49 +272,49 @@ public class AsteroidController : MonoBehaviour
         asteroidgo1.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo1);
         if(NewAsteroid){asteroidgo1.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(1, 0),asteroidgo1);
+        
 
         asteroidgo2.transform.SetParent(this.gameObject.transform);
         asteroidgo2.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, 0), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo2);
         if(NewAsteroid){asteroidgo2.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(-1, 0),asteroidgo2);
+        
 
         asteroidgo3.transform.SetParent(this.gameObject.transform);
         asteroidgo3.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo3);
         if(NewAsteroid){asteroidgo3.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(0, 1),asteroidgo3);
+        
 
         asteroidgo4.transform.SetParent(this.gameObject.transform);
         asteroidgo4.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(0, -1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo4);
         if(NewAsteroid){asteroidgo4.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(0, -1),asteroidgo4);
+        
 
         asteroidgo5.transform.SetParent(this.gameObject.transform);
         asteroidgo5.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, -1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo5);
         if(NewAsteroid){asteroidgo5.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(-1, -1),asteroidgo5);
+        
 
         asteroidgo6.transform.SetParent(this.gameObject.transform);
         asteroidgo6.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, -1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo6);
         if(NewAsteroid){asteroidgo6.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(1, -1),asteroidgo6);
+        
 
         asteroidgo7.transform.SetParent(this.gameObject.transform);
         asteroidgo7.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(-1, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo7);
         if(NewAsteroid){asteroidgo7.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(-1, 1),asteroidgo7);
+        
 
         asteroidgo8.transform.SetParent(this.gameObject.transform);
         asteroidgo8.GetComponent<DerivedAsteroid>().OnSpawn(size, new Vector2(1, 1), asteroidPack, asteroidgo, velocity);
         asteroids.Add(asteroidgo8);
         if(NewAsteroid){asteroidgo8.SetActive(false);}
-        mainAsteroid.derivedAsteroids.Add(new Vector2(1, 1),asteroidgo8);
+        
 
         asteroidSets.Add(asteroidPack);
 

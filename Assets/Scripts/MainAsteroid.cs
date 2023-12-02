@@ -31,8 +31,9 @@ public class MainAsteroid : Asteroid
         }
     }
 
-    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, float rotationRate, SquareMesh squareMesh, bool spawning, Vector2 positionOrientation)
+    public void OnSpawn(int size, Vector2 location, List<GameObject> asteroidPack, GameObject mainAsteroid, Vector2 velocity, float rotationRate, SquareMesh oldMesh, SquareMesh squareMesh, bool spawning, Vector2 positionOrientation)
     {
+        // Debug.Log(size);
         this.timeAlive = Time.time;
 
         waitFrames = 0;
@@ -64,10 +65,7 @@ public class MainAsteroid : Asteroid
                 }
                 
             }
-            foreach(KeyValuePair<Vector2,GameObject> kvp in derivedAsteroids)
-            {
-                Debug.Log(kvp.Key);
-            }
+
             //Vector2 velocityNorm = new Vector2(Mathf.RoundToInt(velocity.normalized.x),Mathf.RoundToInt(velocity.normalized.y));
             //Debug.Log(velocityNorm);
             //derivedAsteroids[-1*velocityNorm].gameObject.layer = LayerMask.NameToLayer("DerivedAsteroid");
@@ -94,17 +92,25 @@ public class MainAsteroid : Asteroid
         this.rigid_body.velocity = velocity;
         this.worldSize = Reference.worldController.worldSize;
         this.location = location;
-        this.rigid_body.centerOfMass = new Vector2(0,0);
+        if ( squareMesh != null )
+        {
+            this.rigid_body.centerOfMass = squareMesh.centreOfMass;
+        }
+        else
+        {
+            this.rigid_body.centerOfMass = new Vector2(0,0);
+        }
+        
+        
         // this.rotationRate = Mathf.Pow(Random.Range(-1f, 1f),2f) * 0;//random rotation rate
         this.rigid_body.angularVelocity = rotationRate;
         this.rigid_body.mass = mass;
         this.rigidBodyVelocity = rigid_body.velocity;
 
-        
 
         float timeAlive; // set in asteroid controller on spawn
 
-        DrawAsteroid(size,squareMesh);
+        DrawAsteroid(size, oldMesh, squareMesh);
 
         //this.size = GetPolygonArea(new List<Vector3>(this.meshVertices));
     }
@@ -284,7 +290,7 @@ public class MainAsteroid : Asteroid
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-//        Debug.Log(collision.gameObject.name);
+    //    Debug.Log(collision.gameObject.name);
         ResolveCollision(collision.gameObject, collision, null, new Vector2(0,0));
     }
 
@@ -303,6 +309,7 @@ public class MainAsteroid : Asteroid
 
     void ResolveCollision(GameObject otherObject, Collision2D collision, Collider2D collider, Vector2 offset)
     {
+        // Debug.Log(otherObject.name);
         int numberOfSquaresInAsteroid = squareMesh.NumberOfSquaresInMesh();
         Vector2 collisionLocation;
 
@@ -332,6 +339,7 @@ public class MainAsteroid : Asteroid
         // }
         if (otherObject.GetComponent<PlayerSpriteController>() != null)
         {
+            // Lol this is a fucking dirty way of checking if the collision object is the player :D
             //Debug.Log("Asteroid hit player");
         }
         else if(otherObject.GetComponent<Asteroid>() != null)
@@ -362,6 +370,7 @@ public class MainAsteroid : Asteroid
                 float random = Random.Range(0,1);
                 if(random<0.5f)/// USE THIS TO CHANGE THE NUMBER OF SMALL ASTEROIDS ON SCREEN
                 {
+                    Debug.Log("Asteroid despawned due to small size");
                     asteroidController.DespawnAsteroid(this,asteroidPack);
                 }
             }
@@ -400,9 +409,9 @@ public class MainAsteroid : Asteroid
             List<SquareMesh> newAstroidMeshes = this.squareMesh.RemoveSquaresInRadius(position, radius);
 
             if(newAstroidMeshes != null)
-            {
+            {   
                 /// code to tell asteroid controller to destroy theis mesh and spawn multiple new ones
-                Reference.asteroidController.AsteroidHit(this, position, projectile.gameObject, asteroidPack, newAstroidMeshes,numberOfSquaresInAsteroid,new Vector2(0,0));
+                Reference.asteroidController.AsteroidHit(this, position, projectile.gameObject, asteroidPack, newAstroidMeshes, numberOfSquaresInAsteroid, new Vector2(0,0));
             }
         }
     }

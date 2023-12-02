@@ -10,6 +10,8 @@ public class Square
     public Square[] neighbourSquares; // only full face neighbbours, i.e. no diagonals
     // public bool[] externalEdges; 
     public SquareEdge[] externalEdges; // 0 is top, then clockwise: 1 is right etc.
+    public List<Vector2> perimeterVertices;
+    public List<Vector2> textureUVs;
 
     public Square(int x, int y)
     {
@@ -17,6 +19,10 @@ public class Square
         this.y = y;
         this.externalEdges = new SquareEdge[4]; 
         this.neighbourSquares = new Square[4];
+        perimeterVertices = new List<Vector2>();
+        textureUVs = new List<Vector2>();
+
+
     }
 
     public void AddEdge(int index)
