@@ -19,7 +19,7 @@ TagManager:
   - EdgeCollider
   - Projectile
   - Target
-  - 
+  - NoInteractions
   - 
   - 
   - 

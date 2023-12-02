@@ -36,7 +36,7 @@ public class Asteroid : MonoBehaviour
     public SquareMesh squareMesh;
 
     private void Awake() {
-        celSize = 0.3f;
+        celSize = 0.15f;
     }
 
     public void ReDrawAsteroid()
@@ -62,8 +62,8 @@ public class Asteroid : MonoBehaviour
         {
             squareMesh = new SquareMesh();
             squareMesh.SetAsteroid(this);
-            // squareMesh.GenerateRandomShapeMesh(size,celSize);
-            squareMesh.GenerateCircularMesh(size,celSize);
+            squareMesh.GenerateRandomShapeMesh(size,celSize);
+            //squareMesh.GenerateCircularMesh(size,celSize);
             squareMesh.FindOutline();
             // Debug.Log(squareMesh.perimeterVertices.Count);
             squareMesh.ScaleEdgeLengthAndShift();

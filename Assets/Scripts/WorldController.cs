@@ -27,7 +27,7 @@ public class WorldController : MonoBehaviour
 
     float colliderThickness = 0.01f;
 
-    float freqOfNewAsteroids = 100f;
+    float freqOfNewAsteroids = 15f;
     float warningLifespan = 3f;
     int newAsteroidDirection;
     Vector3 asteroidPositionOffset;
@@ -38,6 +38,8 @@ public class WorldController : MonoBehaviour
     public int minAsteroidSize = 20;
     float howToTime = 10f;
     float howToStart;
+
+    Vector3 spawnVelocity = new Vector3(0,0,0);
 
     float spawnCooldown;
 
@@ -150,7 +152,7 @@ public class WorldController : MonoBehaviour
             escPressed = true;
 
         }
-        if(Time.time - spawnCooldown > freqOfNewAsteroids - warningLifespan && warningOff)
+         if(Time.time - spawnCooldown > freqOfNewAsteroids - warningLifespan && warningOff)
         {
             warningOff = false;
             
@@ -175,15 +177,16 @@ public class WorldController : MonoBehaviour
              //spawnn new asteroid
             spawnCooldown = Time.time;
             warningOff = true;
-            Reference.asteroidController.SpawnNewAsteroid(Random.Range(minAsteroidSize, maxAsteroidSize),newAsteroidDirection, asteroidPositionOffset,new Vector3(0,0,0));
+            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18),newAsteroidDirection, asteroidPositionOffset,new Vector3(0,0,0));
         }
 
         if ((Reference.playerInputController.p && Time.time - spawnCooldown > 2f) && !isPaused)
         {
             spawnCooldown = Time.time;
             int randomInt = Random.Range(0,3);
-            Reference.asteroidController.SpawnNewAsteroid(Random.Range(minAsteroidSize, maxAsteroidSize), randomInt, GenerateAsteroidPositionOffset(randomInt),new Vector3(0,0,0));   
+            Reference.asteroidController.SpawnNewAsteroid(Random.Range(7,18), randomInt, GenerateAsteroidPositionOffset(randomInt),new Vector3(0,0,0));   
         }
+
 
     }
     Vector3 GenerateAsteroidPositionOffset(int direction)

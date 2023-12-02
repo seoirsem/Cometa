@@ -1483,6 +1483,8 @@ MonoBehaviour:
   worldSize: {x: 20, y: 15}
   isPaused: 0
   platform: 
+  maxAsteroidSize: 30
+  minAsteroidSize: 20
 --- !u!1 &620657608
 GameObject:
   m_ObjectHideFlags: 0

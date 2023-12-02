@@ -19,12 +19,20 @@ public class AsteroidTextureController : MonoBehaviour
         texture = Resources.Load<Texture2D>("texture");
         // hitboxVertexToVisualVertex = new Dictionary<Vector2, Vector2>();
         UpdateTexture();
+
     }
 
     public void UpdateTexture()
     {
-        List<Vector2> meshVertices2D = this.transform.parent.GetComponent<MainAsteroid>().squareMesh.perimeterVertices;
-        
+        List<Vector2> meshVertices2D;
+        if(this.transform.parent.GetComponent<MainAsteroid>() != null)
+        {
+            meshVertices2D = this.transform.parent.GetComponent<MainAsteroid>().squareMesh.perimeterVertices;
+        }
+        else
+        {
+            meshVertices2D = this.transform.parent.GetComponent<DerivedAsteroid>().squareMesh.perimeterVertices;
+        }
         if ( hitboxVertexToVisualVertex == null ) { hitboxVertexToVisualVertex = new Dictionary<Vector2, Vector2>();}
         float cellSize = Asteroid.celSize;
         for (int j = 0; j < meshVertices2D.Count; j++)
@@ -83,7 +91,15 @@ public class AsteroidTextureController : MonoBehaviour
         // Will also be able to move the UVs inside the texture to give different asteroids different patches of the texture
         List<Vector2> UVs = new List<Vector2>();
         scale = 1;
-        float currAsteroidToMaxAsteroidSizeRatio = (float)this.transform.parent.GetComponent<MainAsteroid>().size / (float)Reference.worldController.maxAsteroidSize;
+        float currAsteroidToMaxAsteroidSizeRatio;
+        if(this.transform.parent.GetComponent<MainAsteroid>() != null)
+        {
+            currAsteroidToMaxAsteroidSizeRatio = (float)this.transform.parent.GetComponent<MainAsteroid>().size / (float)Reference.worldController.maxAsteroidSize;
+        }
+        else
+        {
+            currAsteroidToMaxAsteroidSizeRatio = (float)this.transform.parent.GetComponent<DerivedAsteroid>().size / (float)Reference.worldController.maxAsteroidSize;
+        }
         float maxAsteroidDimension = Mathf.Max( ( Mathf.Abs(minX) + Mathf.Abs(maxX) ), ( Mathf.Abs(minY) + Mathf.Abs(maxY) ) );
         float normalisation = maxAsteroidDimension * currAsteroidToMaxAsteroidSizeRatio;
         foreach ( Vector3 v3 in meshVertices )
