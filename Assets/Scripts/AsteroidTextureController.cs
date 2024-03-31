@@ -37,16 +37,16 @@ public class AsteroidTextureController : MonoBehaviour
     {
         alreadyTextured = 1;
         cellSize = Asteroid.celSize;
-        SquareMesh squareMesh;
+        SquareMesh squareMesh = this.transform.parent.GetComponent<Asteroid>().squareMesh;
         if(this.transform.parent.GetComponent<MainAsteroid>() != null)
         {
-            meshVertices2D = this.transform.parent.GetComponent<Asteroid>().squareMesh;
+            //meshVertices2D = this.transform.parent.GetComponent<Asteroid>().squareMesh;
 
-        meshVertices2D = new List<Vector2>();
-        foreach ( Vector2 v in squareMesh.perimeterVertices )
-        {
-            meshVertices2D.Add(v); // This for loop is necessary as we don't want to pass by reference!
-        }
+            meshVertices2D = new List<Vector2>();
+            foreach ( Vector2 v in squareMesh.perimeterVertices )
+            {
+                meshVertices2D.Add(v); // This for loop is necessary as we don't want to pass by reference!
+            }
         }
         else
         {
